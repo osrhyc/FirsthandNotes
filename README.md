@@ -2,13 +2,13 @@
 
 > 记录值得长期保存的知识
 
-基于 [Astro](https://astro.build/) 的个人博客，托管在 GitHub Pages：<https://osrhyc.github.io/FirsthandNotes/>
+基于 [Astro](https://astro.build/) 的个人博客，托管在 GitHub Pages：<https://blog.dizhuig.com/>
 
 ## 本地开发
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321/FirsthandNotes/
+npm run dev      # http://localhost:4321/
 npm run build    # 构建到 ./dist/
 npm run preview  # 本地预览构建结果
 ```
