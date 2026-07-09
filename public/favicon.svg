@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
+	<style>
+		.ink { stroke: #1e2a3b; }
+		.ink-fill { fill: #1e2a3b; }
+		.paper { fill: #f7f2e8; }
+		@media (prefers-color-scheme: dark) {
+			.ink { stroke: #f7f2e8; }
+			.ink-fill { fill: #f7f2e8; }
+			.paper { fill: #1e2a3b; }
+		}
+	</style>
+	<path d="M38 40 H46 V57 L42 52.5 L38 57 Z" fill="#d9a62e"/>
+	<path class="ink" d="M32 15.5 C27 10.5, 16 9, 9 11 V46.5 C16 44.5, 27 46, 32 51 C37 46, 48 44.5, 55 46.5 V11 C48 9, 37 10.5, 32 15.5 Z" stroke-width="3.5" stroke-linejoin="round"/>
+	<path class="ink" d="M14 21 L25 20" stroke-width="3" stroke-linecap="round"/>
+	<path class="ink" d="M14 27.5 L25 26.5" stroke-width="3" stroke-linecap="round"/>
+	<path class="ink" d="M14 34 L25 33" stroke-width="3" stroke-linecap="round"/>
+	<path class="ink paper" d="M42 42 L36.5 30 C36.5 23, 38.5 18.5, 42 16.5 C45.5 18.5, 47.5 23, 47.5 30 Z" stroke-width="2.5" stroke-linejoin="round"/>
+	<circle class="ink-fill" cx="42" cy="27.5" r="1.8"/>
+	<path class="ink" d="M42 30 V38.5" stroke-width="2" stroke-linecap="round"/>
+</svg>

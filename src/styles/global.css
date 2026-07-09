@@ -1,0 +1,143 @@
+/*
+  一手笔记 Firsthand Notes 品牌配色：
+  藏青（墨色）+ 金色（书签）+ 米白（纸面）
+  布局基于 Bear Blog 默认样式（MIT License）。
+ */
+
+:root {
+	--accent: #a87c15; /* 金色（加深以保证正文对比度） */
+	--accent-dark: #7d5c0f;
+	--gold: #d9a62e; /* 品牌金，用于装饰性元素 */
+	--black: 30, 42, 59; /* 藏青墨色 #1e2a3b */
+	--gray: 108, 116, 132;
+	--gray-light: 232, 225, 210;
+	--gray-dark: 42, 54, 74;
+	--paper: #f7f2e8; /* 米白纸面 */
+	--gray-gradient: rgba(var(--gray-light), 50%), var(--paper);
+	--box-shadow:
+		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
+		0 16px 32px rgba(var(--gray), 33%);
+	--logo-gold: var(--gold);
+	--logo-paper: var(--paper);
+}
+body {
+	font-family:
+		var(--font-atkinson), 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Source Han Sans SC',
+		'Microsoft YaHei', sans-serif;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	background: var(--paper);
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	color: rgb(var(--gray-dark));
+	font-size: 20px;
+	line-height: 1.8;
+}
+main {
+	width: 720px;
+	max-width: calc(100% - 2em);
+	margin: auto;
+	padding: 3em 1em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 0.5rem 0;
+	color: rgb(var(--black));
+	line-height: 1.3;
+}
+h1 {
+	font-size: 2.6em;
+}
+h2 {
+	font-size: 2em;
+}
+h3 {
+	font-size: 1.6em;
+}
+h4 {
+	font-size: 1.3em;
+}
+h5 {
+	font-size: 1.15em;
+}
+strong,
+b {
+	font-weight: 700;
+}
+a {
+	color: var(--accent);
+}
+a:hover {
+	color: var(--accent-dark);
+}
+p {
+	margin-bottom: 1em;
+}
+.prose p {
+	margin-bottom: 1.6em;
+}
+textarea {
+	width: 100%;
+	font-size: 16px;
+}
+input {
+	font-size: 16px;
+}
+table {
+	width: 100%;
+}
+img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+code {
+	padding: 2px 5px;
+	background-color: rgb(var(--gray-light));
+	border-radius: 2px;
+}
+pre {
+	padding: 1.5em;
+	border-radius: 8px;
+}
+pre > code {
+	all: unset;
+}
+blockquote {
+	border-left: 4px solid var(--gold);
+	padding: 0 0 0 20px;
+	margin: 0;
+	font-size: 1.1em;
+	color: rgb(var(--gray));
+}
+hr {
+	border: none;
+	border-top: 1px solid rgb(var(--gray-light));
+}
+@media (max-width: 720px) {
+	body {
+		font-size: 18px;
+	}
+	main {
+		padding: 1em;
+	}
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px 1px 1px 1px);
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
