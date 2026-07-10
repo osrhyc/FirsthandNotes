@@ -2,7 +2,7 @@
 
 > 记录值得长期保存的知识
 
-基于 [Astro](https://astro.build/) 的个人博客，格纹工作台风格（方格纸底 + 侧边导航 + 硬阴影卡片），托管在 GitHub Pages：<https://blog.dizhuig.com/>
+基于 React + Ant Design + Vite 的静态文章管理后台，托管在 GitHub Pages：<https://blog.dizhuig.com/>
 
 ## 本地开发
 
@@ -26,16 +26,16 @@ tags: ['标签'] # 可选
 ---
 ```
 
-推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动构建并发布到 GitHub Pages。
+React 应用会在构建时读取 `src/content/blog/*.md`，解析 frontmatter 并渲染到文章管理后台。
+
+推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
 ## 项目结构
 
 ```
 src/
-├── assets/          # 图片等资源
-├── components/      # Header / Footer / Logo 等组件
-├── content/blog/    # 文章（Markdown / MDX）
-├── layouts/         # 文章页布局
-├── pages/           # 首页、笔记列表、关于、RSS
-└── styles/          # 全局样式（格纹工作台主题）
+├── content/blog/    # 文章（Markdown）
+├── react/           # React + Ant Design 管理后台
+├── main.tsx         # React 入口
+└── vite-env.d.ts    # Vite 类型声明
 ```

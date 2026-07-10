@@ -2,13 +2,14 @@
 	"version": "0.0.1",
 	"configurations": [
 		{
-			"name": "astro-dev",
+			"name": "vite-dev",
 			"runtimeExecutable": "/usr/bin/env",
 			"runtimeArgs": [
 				"PATH=/Users/chengyongliu/.nvm/versions/node/v22.14.0/bin:/usr/bin:/bin",
-				"npx",
-				"astro",
+				"npm",
+				"run",
 				"dev",
+				"--",
 				"--port",
 				"4321"
 			],

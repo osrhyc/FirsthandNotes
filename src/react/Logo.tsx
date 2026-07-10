@@ -1,0 +1,37 @@
+// 品牌 Logo：书本（知识的载体）+ 笔尖（记录与思考）+ 书签（标记重要内容）
+export function Logo({ size = 40 }: { size?: number }) {
+	return (
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 64 64"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+			fill="none"
+		>
+			{/* 金色书签，从笔尖下方垂到书页外 */}
+			<path d="M38 40 H46 V57 L42 52.5 L38 57 Z" fill="#d9a62e" />
+			{/* 摊开的书本 */}
+			<path
+				d="M32 15.5 C27 10.5, 16 9, 9 11 V46.5 C16 44.5, 27 46, 32 51 C37 46, 48 44.5, 55 46.5 V11 C48 9, 37 10.5, 32 15.5 Z"
+				stroke="currentColor"
+				strokeWidth="3.5"
+				strokeLinejoin="round"
+			/>
+			{/* 左页文字行 */}
+			<path d="M14 21 L25 20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+			<path d="M14 27.5 L25 26.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+			<path d="M14 34 L25 33" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+			{/* 右页笔尖 */}
+			<path
+				d="M42 42 L36.5 30 C36.5 23, 38.5 18.5, 42 16.5 C45.5 18.5, 47.5 23, 47.5 30 Z"
+				fill="var(--logo-paper, #ffffff)"
+				stroke="currentColor"
+				strokeWidth="2.5"
+				strokeLinejoin="round"
+			/>
+			<circle cx="42" cy="27.5" r="1.8" fill="currentColor" />
+			<path d="M42 30 V38.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+		</svg>
+	);
+}

@@ -1,0 +1,22 @@
+---
+description: Research-first writing workflow for Firsthand Notes articles
+globs:
+  - "src/content/blog/**/*.md"
+  - "src/content/blog/**/*.mdx"
+  - "*.md"
+alwaysApply: true
+---
+
+# Research-First Writing Agent
+
+For writing tasks in this repository, follow the shared project workflow in `.ai/writing-agent.md`.
+
+Key requirements:
+
+- Research before drafting when the topic depends on facts, recent events, named people, companies, books, or public claims.
+- Prefer primary and reputable sources.
+- Separate verified facts, analysis, opinion, rumors, and inference.
+- Use Markdown links for source-backed claims.
+- Save publishable posts under `src/content/blog/` with frontmatter.
+- After every writing change, build the project and run the local dev server with `npm run dev -- --port 4321`.
+- Do not publish, push, deploy, or send article changes to GitHub until the user explicitly approves after local review.
