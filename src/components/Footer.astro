@@ -5,44 +5,40 @@ const today = new Date();
 ---
 
 <footer>
-	<p>
-		<span class="comment">// &copy; {today.getFullYear()} {SITE_TITLE} · {SITE_TITLE_EN}</span>
-	</p>
+	<span>&copy; {today.getFullYear()} {SITE_TITLE} · {SITE_TITLE_EN}</span>
 	<div class="links">
-		<a href={withBase('/rss.xml')}>rss</a>
-		<span class="sep">|</span>
-		<a href={GITHUB_URL} target="_blank">github</a>
-		<span class="sep">|</span>
-		<a href="https://astro.build/" target="_blank">astro</a>
+		<a href={withBase('/rss.xml')}>RSS</a>
+		<a href={GITHUB_URL} target="_blank">GitHub</a>
 	</div>
 </footer>
 <style>
 	footer {
-		padding: 2em 1em 3em;
-		border-top: 1px solid var(--border);
-		color: var(--dim);
-		text-align: center;
-		font-size: 0.85em;
-	}
-	footer p {
-		margin: 0 0 0.4em;
-	}
-	.comment {
-		color: var(--dim);
+		padding: 1.2em 3em 2em;
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1em;
+		flex-wrap: wrap;
+		color: var(--faint);
+		font-size: 0.8em;
+		border-top: 1px dashed var(--faint);
+		max-width: 760px;
+		box-sizing: border-box;
 	}
 	.links {
 		display: flex;
-		justify-content: center;
-		gap: 0.8em;
+		gap: 1.4em;
 	}
 	.links a {
-		color: var(--dim);
+		color: var(--faint);
 		text-decoration: none;
 	}
 	.links a:hover {
-		color: var(--accent);
+		color: var(--ink);
 	}
-	.sep {
-		color: var(--border);
+	@media (max-width: 720px) {
+		footer {
+			padding: 1.2em 1.2em 2em;
+		}
 	}
 </style>

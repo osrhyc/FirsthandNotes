@@ -4,12 +4,11 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import Logo from '../components/Logo.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_TITLE_EN, withBase } from '../consts';
 
 const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-	.slice(0, 5);
+	.slice(0, 6);
 ---
 
 <!doctype html>
@@ -21,48 +20,34 @@ const posts = (await getCollection('blog'))
 		<Header />
 		<main>
 			<section class="hero">
-				<div class="terminal">
-					<div class="term-bar">
-						<span class="dot red"></span>
-						<span class="dot yellow"></span>
-						<span class="dot green"></span>
-						<span class="term-title">firsthand-notes — zsh</span>
-					</div>
-					<div class="term-body">
-						<p><span class="prompt">$</span> whoami</p>
-						<p class="out brand-line"><Logo size={22} /> {SITE_TITLE} · {SITE_TITLE_EN}</p>
-						<p><span class="prompt">$</span> cat slogan.txt</p>
-						<p class="out">{SITE_DESCRIPTION}</p>
-						<p><span class="prompt">$</span> <span class="cursor"></span></p>
-					</div>
-				</div>
+				<p class="eyebrow">{SITE_TITLE_EN}</p>
+				<h1>{SITE_TITLE}</h1>
+				<p class="standfirst">{SITE_DESCRIPTION}</p>
 			</section>
-			<section class="recent">
-				<h2><span class="cmd-prefix">$</span> ls notes/ --latest</h2>
+			<section class="latest">
 				{
 					posts.length > 0 ? (
-						<ul class="post-list">
+						<div class="cards">
 							{posts.map((post) => (
-								<li>
-									<a href={withBase(`/blog/${post.id}/`)}>
-										<span class="post-date">
-											<FormattedDate date={post.data.pubDate} />
-										</span>
-										<span class="post-title">{post.data.title}</span>
-									</a>
-								</li>
+								<a class="note-card row" href={withBase(`/blog/${post.id}/`)}>
+									<span class="title">{post.data.title}</span>
+									<span class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</span>
+								</a>
 							))}
-						</ul>
+						</div>
 					) : (
-						<p class="empty">
-							<span class="comment">// TODO: 第一篇笔记正在路上……</span>
-						</p>
+						<div class="note-card row empty">
+							<span class="title">第一篇笔记正在路上……</span>
+							<span class="date">敬请期待</span>
+						</div>
 					)
 				}
 				{
 					posts.length > 0 && (
 						<p class="all-posts">
-							<a href={withBase('/blog')}>cd notes/ →</a>
+							<a href={withBase('/blog')}>全部笔记 →</a>
 						</p>
 					)
 				}
@@ -74,130 +59,57 @@ const posts = (await getCollection('blog'))
 
 <style>
 	.hero {
-		padding: 2em 0 3em;
+		margin-bottom: 2.2em;
 	}
-	.terminal {
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		background: var(--surface);
-		overflow: hidden;
-		box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+	.hero h1 {
+		margin: 0 0 0.15em;
 	}
-	.term-bar {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		padding: 9px 12px;
-		background: #21262d;
-		border-bottom: 1px solid var(--border);
-	}
-	.dot {
-		width: 11px;
-		height: 11px;
-		border-radius: 50%;
-	}
-	.dot.red {
-		background: #ff5f57;
-	}
-	.dot.yellow {
-		background: #febc2e;
-	}
-	.dot.green {
-		background: #28c840;
-	}
-	.term-title {
-		margin-left: 0.8em;
+	.standfirst {
 		color: var(--dim);
-		font-size: 0.75em;
-	}
-	.term-body {
-		padding: 1.2em 1.4em;
+		margin: 0;
 		font-size: 0.95em;
 	}
-	.term-body p {
-		margin: 0 0 0.3em;
-	}
-	.prompt {
-		color: var(--accent);
-	}
-	.out {
-		color: var(--heading);
-		margin-bottom: 0.8em !important;
-	}
-	.brand-line {
+	.cards {
 		display: flex;
-		align-items: center;
-		gap: 0.5em;
-		font-weight: 700;
+		flex-direction: column;
+		gap: 0.9em;
 	}
-	.brand-line :global(svg) {
-		color: var(--heading);
-	}
-	.cursor {
-		display: inline-block;
-		width: 0.55em;
-		height: 1.1em;
-		background: var(--accent);
-		vertical-align: text-bottom;
-		animation: blink 1.1s steps(1) infinite;
-	}
-	@keyframes blink {
-		50% {
-			opacity: 0;
-		}
-	}
-	.recent h2 {
-		font-size: 1.1em;
-		font-weight: 400;
-		color: var(--heading);
-		border-bottom: 1px dashed var(--border);
-		padding-bottom: 0.5em;
-	}
-	.cmd-prefix {
-		color: var(--accent);
-	}
-	.post-list {
-		list-style: none;
-		margin: 0.8em 0 0;
-		padding: 0;
-	}
-	.post-list a {
+	.row {
 		display: flex;
+		justify-content: space-between;
 		align-items: baseline;
 		gap: 1.2em;
-		padding: 0.45em 0.2em;
-		text-decoration: none;
+		padding: 0.7em 1.1em;
+		font-size: 0.95em;
 	}
-	.post-date {
-		color: var(--dim);
-		font-size: 0.85em;
+	.title {
+		font-weight: 700;
+	}
+	.date {
+		color: var(--faint);
+		font-size: 0.82em;
+		font-variant-numeric: tabular-nums;
 		white-space: nowrap;
 	}
-	.post-title {
-		color: var(--text);
-	}
-	.post-list a:hover .post-title {
-		color: var(--accent);
-	}
-	.post-list a:hover .post-title::after {
-		content: ' ←';
-	}
-	.empty {
-		margin-top: 1em;
+	.empty .title {
 		color: var(--dim);
+		font-weight: 400;
 	}
 	.all-posts {
-		margin-top: 1.2em;
-		text-align: right;
+		margin-top: 1.8em;
 		font-size: 0.9em;
 	}
 	.all-posts a {
 		text-decoration: none;
+		font-weight: 700;
+	}
+	.all-posts a:hover {
+		text-decoration: underline;
 	}
 	@media (max-width: 720px) {
-		.post-list a {
+		.row {
 			flex-direction: column;
-			gap: 0;
+			gap: 0.1em;
 		}
 	}
 </style>

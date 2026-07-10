@@ -16,83 +16,88 @@ const posts = (await getCollection('blog')).sort(
 	<head>
 		<BaseHead title={`笔记 · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
-			.page-title {
-				font-size: 1.1em;
-				font-weight: 400;
-				color: var(--heading);
-				border-bottom: 1px dashed var(--border);
-				padding-bottom: 0.5em;
-				margin-bottom: 1em;
+			.page-head {
+				margin-bottom: 1.8em;
 			}
-			.cmd-prefix {
-				color: var(--accent);
-			}
-			ul {
-				list-style-type: none;
+			.page-head h1 {
 				margin: 0;
-				padding: 0;
 			}
-			ul li + li {
-				border-top: 1px dashed var(--border);
+			.cards {
+				display: flex;
+				flex-direction: column;
+				gap: 1em;
 			}
-			ul li a {
-				display: block;
-				padding: 0.9em 0.2em;
-				text-decoration: none;
+			.note-card {
+				padding: 0.9em 1.2em;
+			}
+			.top {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 1.2em;
 			}
 			.title {
 				margin: 0;
-				color: var(--text);
-				line-height: 1.5;
-				font-size: 1em;
+				font-size: 1.02em;
 				font-weight: 700;
+				line-height: 1.5;
 			}
-			.meta {
-				margin: 0.2em 0 0;
-				color: var(--dim);
+			.date {
+				color: var(--faint);
 				font-size: 0.8em;
-			}
-			.tags {
-				color: var(--accent);
+				font-variant-numeric: tabular-nums;
+				white-space: nowrap;
 			}
 			.description {
-				margin: 0.3em 0 0;
+				margin: 0.25em 0 0;
 				color: var(--dim);
-				font-size: 0.9em;
+				font-size: 0.88em;
 			}
-			ul li a:hover .title {
-				color: var(--accent);
+			.tags {
+				margin: 0.4em 0 0;
+				font-size: 0.75em;
+				color: var(--accent-text);
 			}
 			.empty {
 				color: var(--dim);
+				padding: 0.9em 1.2em;
+			}
+			@media (max-width: 720px) {
+				.top {
+					flex-direction: column;
+					gap: 0.1em;
+				}
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1 class="page-title"><span class="cmd-prefix">$</span> ls notes/ --all</h1>
+			<div class="page-head">
+				<p class="eyebrow">All Notes</p>
+				<h1>全部笔记</h1>
+			</div>
 			<section>
 				{
 					posts.length > 0 ? (
-						<ul>
+						<div class="cards">
 							{posts.map((post) => (
-								<li>
-									<a href={withBase(`/blog/${post.id}/`)}>
+								<a class="note-card" href={withBase(`/blog/${post.id}/`)}>
+									<div class="top">
 										<h4 class="title">{post.data.title}</h4>
-										<p class="meta">
+										<span class="date">
 											<FormattedDate date={post.data.pubDate} />
-											{post.data.tags.length > 0 && (
-												<span class="tags">{post.data.tags.map((t) => `#${t}`).join(' ')}</span>
-											)}
-										</p>
-										<p class="description">{post.data.description}</p>
-									</a>
-								</li>
+										</span>
+									</div>
+									<p class="description">{post.data.description}</p>
+									{post.data.tags.length > 0 && (
+										<p class="tags">{post.data.tags.map((t) => `#${t}`).join('  ')}</p>
+									)}
+								</a>
 							))}
-						</ul>
+						</div>
 					) : (
-						<p class="empty">// 目录为空，第一篇笔记正在路上……</p>
+						<div class="note-card empty">第一篇笔记正在路上，敬请期待。</div>
 					)
 				}
 			</section>
