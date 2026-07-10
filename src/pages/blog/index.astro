@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -15,14 +14,18 @@ const posts = (await getCollection('blog')).sort(
 <!doctype html>
 <html lang="zh-CN">
 	<head>
-		<BaseHead title={`文章 · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<BaseHead title={`笔记 · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			.page-title {
-				font-size: 1.4em;
-				border-bottom: 2px solid var(--gold);
-				display: inline-block;
-				padding-bottom: 0.2em;
+				font-size: 1.1em;
+				font-weight: 400;
+				color: var(--heading);
+				border-bottom: 1px dashed var(--border);
+				padding-bottom: 0.5em;
 				margin-bottom: 1em;
+			}
+			.cmd-prefix {
+				color: var(--accent);
 			}
 			ul {
 				list-style-type: none;
@@ -30,68 +33,68 @@ const posts = (await getCollection('blog')).sort(
 				padding: 0;
 			}
 			ul li + li {
-				border-top: 1px solid rgb(var(--gray-light));
+				border-top: 1px dashed var(--border);
 			}
 			ul li a {
 				display: block;
-				padding: 1em 0.2em;
+				padding: 0.9em 0.2em;
 				text-decoration: none;
-			}
-			ul li img {
-				margin-bottom: 0.5em;
-				border-radius: 12px;
 			}
 			.title {
 				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1.4;
-				font-size: 1.15em;
+				color: var(--text);
+				line-height: 1.5;
+				font-size: 1em;
+				font-weight: 700;
 			}
 			.meta {
-				display: flex;
-				align-items: baseline;
-				gap: 0.8em;
-				margin: 0.3em 0 0;
-				color: rgb(var(--gray));
+				margin: 0.2em 0 0;
+				color: var(--dim);
 				font-size: 0.8em;
 			}
-			.category {
+			.tags {
 				color: var(--accent);
 			}
 			.description {
 				margin: 0.3em 0 0;
-				color: rgb(var(--gray-dark));
+				color: var(--dim);
 				font-size: 0.9em;
 			}
 			ul li a:hover .title {
-				color: var(--accent-dark);
+				color: var(--accent);
+			}
+			.empty {
+				color: var(--dim);
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1 class="page-title">全部文章</h1>
+			<h1 class="page-title"><span class="cmd-prefix">$</span> ls notes/ --all</h1>
 			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={withBase(`/blog/${post.id}/`)}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="meta">
-										{post.data.category && <span class="category">{post.data.category}</span>}
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-									<p class="description">{post.data.description}</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+				{
+					posts.length > 0 ? (
+						<ul>
+							{posts.map((post) => (
+								<li>
+									<a href={withBase(`/blog/${post.id}/`)}>
+										<h4 class="title">{post.data.title}</h4>
+										<p class="meta">
+											<FormattedDate date={post.data.pubDate} />
+											{post.data.tags.length > 0 && (
+												<span class="tags">{post.data.tags.map((t) => `#${t}`).join(' ')}</span>
+											)}
+										</p>
+										<p class="description">{post.data.description}</p>
+									</a>
+								</li>
+							))}
+						</ul>
+					) : (
+						<p class="empty">// 目录为空，第一篇笔记正在路上……</p>
+					)
+				}
 			</section>
 		</main>
 		<Footer />

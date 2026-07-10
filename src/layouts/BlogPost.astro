@@ -8,7 +8,7 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, category } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
 ---
 
 <html lang="zh-CN">
@@ -16,45 +16,30 @@ const { title, description, pubDate, updatedDate, heroImage, category } = Astro.
 		<BaseHead title={title} description={description} />
 		<style>
 			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
+				width: 760px;
 			}
 			.hero-image img {
 				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
+				margin: 0 auto 1.5em;
 			}
 			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
+				margin-bottom: 1.5em;
+				padding-bottom: 1em;
+				border-bottom: 1px dashed var(--border);
 			}
 			.title h1 {
-				margin: 0 0 0.5em 0;
+				margin: 0.2em 0 0.4em;
 			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
+			.meta {
+				color: var(--dim);
+				font-size: 0.85em;
+			}
+			.meta .tags {
+				color: var(--accent);
+				margin-left: 0.8em;
 			}
 			.last-updated-on {
 				font-style: italic;
-			}
-			.category {
-				color: var(--accent);
-				margin-right: 0.6em;
 			}
 		</style>
 	</head>
@@ -68,9 +53,9 @@ const { title, description, pubDate, updatedDate, heroImage, category } = Astro.
 				</div>
 				<div class="prose">
 					<div class="title">
-						<div class="date">
-							{category && <span class="category">{category}</span>}
+						<div class="meta">
 							<FormattedDate date={pubDate} />
+							{tags.length > 0 && <span class="tags">{tags.map((t) => `#${t}`).join(' ')}</span>}
 							{
 								updatedDate && (
 									<div class="last-updated-on">
@@ -80,7 +65,6 @@ const { title, description, pubDate, updatedDate, heroImage, category } = Astro.
 							}
 						</div>
 						<h1>{title}</h1>
-						<hr />
 					</div>
 					<slot />
 				</div>

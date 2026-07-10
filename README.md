@@ -2,7 +2,7 @@
 
 > 记录值得长期保存的知识
 
-基于 [Astro](https://astro.build/) 的个人博客，托管在 GitHub Pages：<https://blog.dizhuig.com/>
+基于 [Astro](https://astro.build/) 的个人博客，极客风深色主题，托管在 GitHub Pages：<https://blog.dizhuig.com/>
 
 ## 本地开发
 
@@ -21,9 +21,8 @@ npm run preview  # 本地预览构建结果
 ---
 title: '文章标题'
 description: '一句话摘要'
-pubDate: '2026-07-09'
-category: '学习' # 可选：学习 / 阅读 / 人物 / 行业 / 时间线
-tags: ['标签']
+pubDate: '2026-07-10'
+tags: ['标签'] # 可选
 ---
 ```
 
@@ -37,6 +36,6 @@ src/
 ├── components/      # Header / Footer / Logo 等组件
 ├── content/blog/    # 文章（Markdown / MDX）
 ├── layouts/         # 文章页布局
-├── pages/           # 首页、文章列表、关于、RSS
-└── styles/          # 全局样式（品牌配色）
+├── pages/           # 首页、笔记列表、关于、RSS
+└── styles/          # 全局样式（极客风主题）
 ```

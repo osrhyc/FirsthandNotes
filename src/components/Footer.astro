@@ -1,57 +1,48 @@
 ---
-import { GITHUB_URL, SITE_DESCRIPTION, SITE_TITLE, SITE_TITLE_EN, withBase } from '../consts';
-import Logo from './Logo.astro';
+import { GITHUB_URL, SITE_TITLE, SITE_TITLE_EN, withBase } from '../consts';
 
 const today = new Date();
 ---
 
 <footer>
-	<div class="brand">
-		<Logo size={28} />
-		<span>{SITE_TITLE} · {SITE_TITLE_EN}</span>
-	</div>
-	<p class="slogan">{SITE_DESCRIPTION}</p>
-	<p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}</p>
+	<p>
+		<span class="comment">// &copy; {today.getFullYear()} {SITE_TITLE} · {SITE_TITLE_EN}</span>
+	</p>
 	<div class="links">
-		<a href={withBase('/rss.xml')}>RSS</a>
-		<a href={GITHUB_URL} target="_blank">GitHub</a>
+		<a href={withBase('/rss.xml')}>rss</a>
+		<span class="sep">|</span>
+		<a href={GITHUB_URL} target="_blank">github</a>
+		<span class="sep">|</span>
+		<a href="https://astro.build/" target="_blank">astro</a>
 	</div>
 </footer>
 <style>
 	footer {
-		padding: 2em 1em 4em 1em;
-		border-top: 1px solid rgb(var(--gray-light));
-		color: rgb(var(--gray));
+		padding: 2em 1em 3em;
+		border-top: 1px solid var(--border);
+		color: var(--dim);
 		text-align: center;
-	}
-	.brand {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.4em;
-		color: rgb(var(--black));
-		font-weight: 700;
-	}
-	.slogan {
-		margin: 0.5em 0 0.2em;
 		font-size: 0.85em;
 	}
-	.copyright {
-		margin: 0;
-		font-size: 0.85em;
+	footer p {
+		margin: 0 0 0.4em;
+	}
+	.comment {
+		color: var(--dim);
 	}
 	.links {
 		display: flex;
 		justify-content: center;
-		gap: 1.2em;
-		margin-top: 0.8em;
-		font-size: 0.9em;
+		gap: 0.8em;
 	}
 	.links a {
-		color: rgb(var(--gray));
+		color: var(--dim);
 		text-decoration: none;
 	}
 	.links a:hover {
-		color: var(--accent-dark);
+		color: var(--accent);
+	}
+	.sep {
+		color: var(--border);
 	}
 </style>

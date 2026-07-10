@@ -14,8 +14,6 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
-			// 品牌设计中的五个栏目
-			category: z.enum(['学习', '阅读', '人物', '行业', '时间线']).optional(),
 			tags: z.array(z.string()).default([]),
 		}),
 });
