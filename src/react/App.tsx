@@ -19,7 +19,7 @@ import {
 import { Button, ConfigProvider, Dropdown, Empty, Input, Layout, Menu, theme } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Book } from './books';
-import { bookGroups, books } from './books';
+import { bookGroupsByModule, books } from './books';
 import type { Article } from './content';
 import { articles } from './content';
 import type { Term } from './glossary';
@@ -44,6 +44,12 @@ const MODULES = [
 		],
 	},
 	{
+		key: 'library',
+		label: '书房',
+		icon: <BookOutlined />,
+		children: [{ key: 'library-books', label: '书架', icon: <ReadOutlined /> }],
+	},
+	{
 		key: 'poker',
 		label: '德州扑克',
 		icon: <CrownOutlined />,
@@ -53,6 +59,19 @@ const MODULES = [
 		],
 	},
 ];
+
+// 书架栏目 → 书籍模块 的映射（frontmatter 的 bookModule 字段）
+const BOOKSHELF_SECTIONS: Record<string, string> = {
+	'quant-books': 'quant',
+	'library-books': 'library',
+};
+
+function shelfSectionOfBook(book: Book) {
+	return (
+		Object.keys(BOOKSHELF_SECTIONS).find((key) => BOOKSHELF_SECTIONS[key] === book.module) ??
+		'quant-books'
+	);
+}
 
 const SECTIONS = MODULES.flatMap((module) => module.children);
 const DEFAULT_SECTION = 'quant-school';
@@ -141,7 +160,7 @@ function getInitialState(): Route {
 				Math.max(Number.parseInt(ch ?? '1', 10) - 1 || 0, 0),
 				book.chapters.length - 1,
 			);
-			return { sectionKey: 'quant-books', itemId: id, chapter };
+			return { sectionKey: shelfSectionOfBook(book), itemId: id, chapter };
 		}
 	}
 
@@ -153,12 +172,11 @@ function getInitialState(): Route {
 
 	const sectionSlug = hash.replace(/^#\/section\//, '');
 	if (SECTIONS.some((section) => section.key === sectionSlug)) {
-		const first =
-			sectionSlug === 'quant-books' // 书屋默认进书架总览
-				? undefined
-				: isGlossarySection(sectionSlug)
-					? termsOfModule(moduleOf(sectionSlug))[0]?.id
-					: sectionArticles.get(sectionSlug)?.[0]?.id;
+		const first = BOOKSHELF_SECTIONS[sectionSlug] // 书架栏目默认进总览
+			? undefined
+			: isGlossarySection(sectionSlug)
+				? termsOfModule(moduleOf(sectionSlug))[0]?.id
+				: sectionArticles.get(sectionSlug)?.[0]?.id;
 		return { sectionKey: sectionSlug, itemId: first };
 	}
 	return { sectionKey: DEFAULT_SECTION, itemId: sectionArticles.get(DEFAULT_SECTION)?.[0]?.id };
@@ -206,7 +224,8 @@ export function App() {
 	}, [itemId, route.chapter]);
 
 	const glossaryMode = isGlossarySection(sectionKey);
-	const bookshelfSection = sectionKey === 'quant-books';
+	const shelfModule = BOOKSHELF_SECTIONS[sectionKey];
+	const bookshelfSection = Boolean(shelfModule);
 	const moduleKey = moduleOf(sectionKey);
 	const moduleTerms = useMemo(() => termsOfModule(moduleKey), [moduleKey]);
 	const sectionLabel = SECTIONS.find((section) => section.key === sectionKey)?.label ?? '';
@@ -232,9 +251,10 @@ export function App() {
 		: 0;
 	const currentChapter = currentBook?.chapters[chapterIndex];
 	const filteredBookGroups = useMemo(() => {
+		const groups = bookGroupsByModule.get(shelfModule ?? '') ?? [];
 		const q = query.trim().toLowerCase();
-		if (!q) return bookGroups;
-		return bookGroups
+		if (!q) return groups;
+		return groups
 			.map((group) => ({
 				name: group.name,
 				items: group.items.filter((book) =>
@@ -242,7 +262,7 @@ export function App() {
 				),
 			}))
 			.filter((group) => group.items.length > 0);
-	}, [query]);
+	}, [query, shelfModule]);
 	const filteredChapters = useMemo(() => {
 		if (!currentBook) return [];
 		const q = query.trim().toLowerCase();
@@ -300,12 +320,11 @@ export function App() {
 	);
 
 	function openSection(key: string) {
-		const first =
-			key === 'quant-books' // 书屋默认进书架总览
-				? undefined
-				: isGlossarySection(key)
-					? termsOfModule(moduleOf(key))[0]?.id
-					: sectionArticles.get(key)?.[0]?.id;
+		const first = BOOKSHELF_SECTIONS[key] // 书架栏目默认进总览
+			? undefined
+			: isGlossarySection(key)
+				? termsOfModule(moduleOf(key))[0]?.id
+				: sectionArticles.get(key)?.[0]?.id;
 		setRoute({ sectionKey: key, itemId: first });
 		setTermWindows([]);
 		setQuery('');
@@ -314,13 +333,16 @@ export function App() {
 	}
 
 	function backToShelf() {
-		setRoute({ sectionKey: 'quant-books', itemId: undefined });
+		const shelfKey = BOOKSHELF_SECTIONS[sectionKey] ? sectionKey : 'quant-books';
+		setRoute({ sectionKey: shelfKey, itemId: undefined });
 		setQuery('');
-		window.history.replaceState(null, '', '#/section/quant-books');
+		window.history.replaceState(null, '', `#/section/${shelfKey}`);
 	}
 
 	function openBook(id: string, chapter = 0) {
-		setRoute({ sectionKey: 'quant-books', itemId: id, chapter });
+		const book = books.find((item) => item.id === id);
+		if (!book) return;
+		setRoute({ sectionKey: shelfSectionOfBook(book), itemId: id, chapter });
 		setQuery('');
 		window.history.replaceState(null, '', `#/book/${id}/${chapter + 1}`);
 	}
@@ -328,7 +350,7 @@ export function App() {
 	function openChapter(index: number) {
 		if (!currentBook) return;
 		const chapter = Math.min(Math.max(index, 0), currentBook.chapters.length - 1);
-		setRoute({ sectionKey: 'quant-books', itemId: currentBook.id, chapter });
+		setRoute({ sectionKey, itemId: currentBook.id, chapter });
 		window.history.replaceState(null, '', `#/book/${currentBook.id}/${chapter + 1}`);
 	}
 

@@ -15,6 +15,7 @@ export type Book = {
 	author: string;
 	note: string;
 	category: string;
+	module: string; // 归属一级模块：quant（量化书屋）/ library（书房）
 	seq: number;
 	chapters: BookChapter[];
 };
@@ -38,6 +39,7 @@ for (const raw of Object.values(modules)) {
 			author: String(data.author ?? ''),
 			note: String(data.note ?? ''),
 			category: String(data.bookCategory ?? '未分类'),
+			module: String(data.bookModule ?? 'quant'),
 			seq: Number(data.seq ?? 999),
 			chapters: [],
 		});
@@ -58,13 +60,18 @@ for (const book of books) {
 	book.chapters.sort((a, b) => a.order - b.order);
 }
 
-// 书架分组：按分类聚合，保持书目注册表的原始顺序
-export const bookGroups: { name: string; items: Book[] }[] = [];
+// 书架分组：按模块 → 分类聚合，保持 seq 顺序
+export const bookGroupsByModule = new Map<string, { name: string; items: Book[] }[]>();
 for (const book of books) {
-	let group = bookGroups.find((g) => g.name === book.category);
+	let groups = bookGroupsByModule.get(book.module);
+	if (!groups) {
+		groups = [];
+		bookGroupsByModule.set(book.module, groups);
+	}
+	let group = groups.find((g) => g.name === book.category);
 	if (!group) {
 		group = { name: book.category, items: [] };
-		bookGroups.push(group);
+		groups.push(group);
 	}
 	group.items.push(book);
 }
