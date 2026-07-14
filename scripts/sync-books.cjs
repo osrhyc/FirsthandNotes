@@ -26,15 +26,24 @@ const esc = (s) => (s || '').replace(/'/g, '’');
 // 站内相对链接转纯文本
 const cleanBody = (t) => t.replace(/\[([^\]]+)\]\((\/[^)]*)\)/g, '$1');
 
+// 这些书已由读书 agent「真读原书」重写，同步时跳过、不覆盖、不清除
+const TRUE_READ = new Set(['blackbox']);
+
 fs.mkdirSync(OUT, { recursive: true });
-// 清掉旧章节，避免残留已下架的书
+// 清掉旧章节，避免残留已下架的书（真读书除外）
 for (const f of fs.readdirSync(OUT).filter((f) => f.endsWith('.md'))) {
+	const slug = f.split('--')[0];
+	if (TRUE_READ.has(slug)) continue;
 	fs.unlinkSync(path.join(OUT, f));
 }
 
 let bookCount = 0;
 let chapterCount = 0;
 books.forEach((b, seq) => {
+	if (TRUE_READ.has(b.id)) {
+		console.log('[真读版保留，跳过]', b.title);
+		return;
+	}
 	const dir = path.join(SRC, b.id);
 	if (!fs.existsSync(dir)) {
 		console.log('MISSING DIR:', b.id);

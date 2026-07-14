@@ -52,3 +52,15 @@ The body is a concise Markdown explanation (definition first, then examples / ta
 - turned into clickable `.term-link` elements wherever they appear in article bodies (a side card shows the explanation).
 
 Keep explanations self-contained and beginner-friendly. Do not duplicate an existing term file — update it instead.
+
+## Reading Agent (真读速读)
+
+For "真读原书" book notes, follow `.claude/commands/read-book.md` (the `/read-book` command). Key rules:
+
+- Book files (PDF/EPUB) are provided by the user. NEVER download books from the internet or GitHub collections — those are pirated copies.
+- Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published).
+- Notes must be derived from the extracted chapter text only — no reviews, no summaries from memory. If text is missing/garbled (scanned PDF), report instead of improvising.
+- Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (1200~2000 字，论证脉络+案例+要点).
+- Copyright guardrails: paraphrase-first; direct quotes ≤2 per chapter, ≤25 chars each, with page numbers.
+- Output chapters to `src/content/books/<slug>--NN.md` using the existing schema (book/bookTitle/author/note/bookCategory/seq/chapter/title).
+- Publishing still requires explicit user approval.

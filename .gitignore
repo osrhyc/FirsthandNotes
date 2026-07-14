@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# 读书 agent 的原文提取工作区（版权内容，绝不入库）
+book-workspace/
+*.epub
+*.mobi
+*.pdf
