@@ -568,9 +568,6 @@ export function App() {
 							<nav className="course-nav">
 								{bookshelfSection && currentBook ? (
 									<>
-										<p className="course-group-title chapter-book-title" title={currentBook.title}>
-											{currentBook.title}
-										</p>
 										{filteredChapters.length > 0 ? (
 											<ul>
 												{filteredChapters.map((chapter) => (

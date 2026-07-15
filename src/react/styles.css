@@ -390,14 +390,6 @@ ul + .course-group {
 	margin-bottom: 8px;
 }
 
-.chapter-book-title {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	padding-bottom: 8px;
-	border-bottom: 1px dashed var(--border-soft);
-}
-
 .chapter-pager {
 	display: flex;
 	justify-content: space-between;
