@@ -10,18 +10,19 @@ alwaysApply: true
 
 # Read-Book Agent
 
-For "真读原书", "真读速读", chapter notes, or source-book notes in this repository, follow the shared workflow in `.ai/read-book.md`.
+For "真读原书", chapter notes, or source-book notes in this repository, follow the shared workflow in `.ai/read-book.md`.
 
 Key requirements:
 
 - Use only user-provided PDF/EPUB files or explicitly public-domain sources.
-- Choose the right reading mode: full-book chapter notes or targeted fast reading for the user's specific questions.
-- Extract real text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/`.
+- **精读 is the only mode.** Read every book completely, chapter by chapter. There is no fast-reading / targeted / skim mode.
+- **One note per real chapter, minimum. Never merge chapters** — a note titled "第1~2章" is a defect. Short chapters get short notes; dense chapters may be expanded or split into 上/下.
+- Extract real text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/`, and verify the chapter split matches the printed 目录 one-to-one before dispatching reading agents.
+- One sub-agent per real chapter; batch them if the book is long, rather than merging units.
 - Raw book files, extracted text, page images, and `book-workspace/` must never be committed or published.
 - Do not write from book reviews, summaries, search snippets, or model memory.
-- In targeted mode, state which chapters/page ranges were read and which were not covered yet.
 - Preserve extraction failures, garbled text, missing chapters, and uncertain readings instead of filling gaps.
-- Save publishable notes under `src/content/books/` with the project book frontmatter.
+- Save publishable notes under `src/content/books/` with the project book frontmatter (`chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结).
 - Create/update useful glossary entries under `src/content/glossary/` without duplicates.
-- After writing, run `npx tsc --noEmit && npm run build`, refresh `npm run dev -- --port 4321`, and provide the local preview URL.
+- After writing, run `npx tsc --noEmit && npm run build`, refresh the local dev server (auto-port), and provide the local preview URL.
 - Do not commit, push, publish, or deploy until the user explicitly approves after local review.

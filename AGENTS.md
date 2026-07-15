@@ -53,7 +53,7 @@ The body is a concise Markdown explanation (definition first, then examples / ta
 
 Keep explanations self-contained and beginner-friendly. Do not duplicate an existing term file — update it instead.
 
-## Reading Agent (真读速读)
+## Reading Agent (真读精读)
 
 For "真读原书" book notes, follow the shared workflow in `.ai/read-book.md`.
 Claude Code can also use `.claude/commands/read-book.md` as the `/read-book` command, and Cursor can use `.cursor/rules/read-book.mdc`.
@@ -61,10 +61,12 @@ Claude Code can also use `.claude/commands/read-book.md` as the `/read-book` com
 Key rules:
 
 - Book files (PDF/EPUB) are provided by the user. NEVER download books from the internet or GitHub collections — those are pirated copies.
-- Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published).
-- Support both full-book chapter notes and targeted fast reading for the user's specific questions; targeted notes must state what was and was not read.
+- Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published). Verify the split matches the printed 目录 one-to-one before reading.
+- **精读 is the only mode** — every book is read completely, chapter by chapter. There is no fast-reading/targeted/skim mode.
+- **One note per real chapter, minimum; never merge chapters.** A note titled `第1~2章` is a defect. Short chapters get short notes; dense chapters may be expanded or split into 上/下. Reading effort is never a reason to compress a book.
+- One sub-agent per real chapter; batch them if the book is long, rather than merging units.
 - Notes must be derived from the extracted chapter text only — no reviews, no summaries from memory. If text is missing/garbled (scanned PDF), report instead of improvising.
-- Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (1200~2000 字，论证脉络+案例+要点).
+- Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (短章 800~1200 字 / 常规 1200~2000 字 / 厚章 2000~3000 字，论证脉络+案例+要点) + 案例档案 + 延伸案例（编者补）+ 怎么用 + 要点清单.
 - Copyright guardrails: paraphrase-first; direct quotes ≤2 per chapter, ≤25 chars each, with page numbers.
-- Output chapters to `src/content/books/<slug>--NN.md` using the existing schema (book/bookTitle/author/note/bookCategory/seq/chapter/title).
+- Output chapters to `src/content/books/<slug>--NN.md` using the existing schema (book/bookTitle/author/note/bookCategory/bookModule/seq/chapter/title). `chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结.
 - Publishing still requires explicit user approval.
