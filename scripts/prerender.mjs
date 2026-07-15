@@ -39,9 +39,18 @@ function collectStyle(style) {
 	}
 }
 
+// 正文按需加载后，本页那一篇要内联进 HTML：客户端 hydration 首帧必须同步拿到
+// 同一份正文，否则 React 会认定不匹配、把预渲染的内容整页擦掉重画。
+// </script> 和 <!-- 必须转义，否则会提前截断这个 script 标签。
+function seedTag(seed) {
+	if (!seed || !Object.keys(seed).length) return '';
+	const json = JSON.stringify(seed).replace(/</g, '\\u003c');
+	return `\n\t\t<script id="__seed" type="application/json">${json}</script>`;
+}
+
 for (const path of paths) {
 	try {
-		const { html, style, meta } = render(path);
+		const { html, style, meta, seed } = await render(path);
 		collectStyle(style);
 		const page = template
 			.replace(
@@ -60,7 +69,7 @@ for (const path of paths) {
 				].join('\n\t\t'),
 			)
 			.replace('</head>', `\t${STYLE_LINK}\n\t</head>`)
-			.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+			.replace('<div id="root"></div>', `<div id="root">${html}</div>${seedTag(seed)}`);
 
 		const outDir = path === '/' ? dist : join(dist, path);
 		await mkdir(outDir, { recursive: true });

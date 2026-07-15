@@ -1,5 +1,5 @@
-import { marked } from 'marked';
-import { parseFrontmatter } from './content';
+import { keyOf } from './bodies';
+import type { Meta } from './content';
 
 export type Term = {
 	id: string;
@@ -7,7 +7,7 @@ export type Term = {
 	aliases: string[];
 	module: string; // 归属一级模块：quant / poker
 	category: string; // 二级分类，决定名词手册里的分组
-	html: string;
+	src: string; // 正文的 body key，用 useBody(src) 取（见 bodies.ts）
 };
 
 // 分类顺序：平台自有概念按学习路径排，出自某本书的词单独成组、排在其后，
@@ -26,27 +26,24 @@ const CATEGORY_ORDER = [
 ];
 
 const modules = import.meta.glob('../content/glossary/*.md', {
-	query: '?raw',
+	query: '?meta',
 	import: 'default',
 	eager: true,
-}) as Record<string, string>;
+}) as Record<string, Meta>;
 
 function getId(path: string) {
 	return path.split('/').pop()?.replace(/\.md$/, '') ?? path;
 }
 
 export const terms: Term[] = Object.entries(modules)
-	.map(([path, raw]) => {
-		const { data, content } = parseFrontmatter(raw);
-		return {
-			id: getId(path),
-			term: String(data.term ?? getId(path)),
-			aliases: Array.isArray(data.aliases) ? data.aliases.map(String) : [],
-			module: String(data.module ?? 'quant'),
-			category: String(data.category ?? '未分类'),
-			html: marked.parse(content, { async: false }) as string,
-		};
-	})
+	.map(([path, { data }]) => ({
+		id: getId(path),
+		term: String(data.term ?? getId(path)),
+		aliases: Array.isArray(data.aliases) ? data.aliases.map(String) : [],
+		module: String(data.module ?? 'quant'),
+		category: String(data.category ?? '未分类'),
+		src: keyOf(path),
+	}))
 	.sort((a, b) => a.term.localeCompare(b.term, 'zh-CN'));
 
 // 名词手册分组：按模块 → 分类聚合，组内保持词条的拼音顺序

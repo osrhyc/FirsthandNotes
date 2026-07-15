@@ -19,6 +19,7 @@ import {
 import { Button, ConfigProvider, Dropdown, Empty, Input, Layout, Menu, theme } from 'antd';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { bodyHtml, useBodies, useBody } from './bodies';
 import type { Book } from './books';
 import { bookGroupsByModule, books } from './books';
 import type { Article } from './content';
@@ -216,41 +217,53 @@ export function App({ initialPath }: { initialPath?: string } = {}) {
 		? (moduleTerms.find((term) => term.id === itemId) ?? firstTermOfModule(moduleKey))
 		: undefined;
 
+	// 正文按需加载：useBody 命中缓存就同步返回，预渲染页首帧靠内联的种子命中（见 bodies.ts）
+	const articleBody = useBody(selectedArticle?.src);
+	const chapterBody = useBody(currentChapter?.src);
+	const termBody = useBody(selectedTerm?.src);
+
 	const decoratedArticleHtml = useMemo(
-		() => (selectedArticle ? decorateTerms(selectedArticle.html, moduleTerms) : ''),
-		[selectedArticle, moduleTerms],
+		() => (articleBody ? decorateTerms(articleBody, moduleTerms) : ''),
+		[articleBody, moduleTerms],
 	);
 	const decoratedChapterHtml = useMemo(
-		() => (currentChapter ? decorateTerms(currentChapter.html, moduleTerms) : ''),
-		[currentChapter, moduleTerms],
+		() => (chapterBody ? decorateTerms(chapterBody, moduleTerms) : ''),
+		[chapterBody, moduleTerms],
 	);
 	// 每个浮窗的正文（拖动只改位置，不重新解析 HTML）
 	const windowIds = termWindows.map((window) => window.id).join(',');
+	const windowTerms = windowIds
+		.split(',')
+		.filter(Boolean)
+		.map((id) => moduleTerms.find((item) => item.id === id))
+		.filter((term): term is Term => Boolean(term));
+	const windowVersion = useBodies(windowTerms.map((term) => term.src));
 	const windowHtml = useMemo(() => {
 		const map = new Map<string, string>();
-		for (const id of windowIds.split(',').filter(Boolean)) {
-			const term = moduleTerms.find((item) => item.id === id);
-			if (term) {
-				map.set(
-					id,
-					decorateTerms(
-						term.html,
-						moduleTerms.filter((item) => item.id !== term.id),
-					),
-				);
-			}
+		for (const term of windowTerms) {
+			const body = bodyHtml(term.src);
+			if (!body) continue; // 还没下完：这一帧先不画，加载好会重渲染
+			map.set(
+				term.id,
+				decorateTerms(
+					body,
+					moduleTerms.filter((item) => item.id !== term.id),
+				),
+			);
 		}
 		return map;
-	}, [windowIds, moduleTerms]);
+		// windowVersion 变化 = 有浮窗的正文刚下载完，需要重算
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [windowIds, moduleTerms, windowVersion]);
 	const decoratedTermHtml = useMemo(
 		() =>
-			selectedTerm
+			selectedTerm && termBody
 				? decorateTerms(
-						selectedTerm.html,
+						termBody,
 						moduleTerms.filter((term) => term.id !== selectedTerm.id),
 					)
 				: '',
-		[selectedTerm, moduleTerms],
+		[selectedTerm, termBody, moduleTerms],
 	);
 
 	// 用 pushState 而不是 replaceState，否则后退键没东西可退

@@ -12,6 +12,21 @@
 			],
 			"port": 4321,
 			"autoPort": true
+		},
+		{
+			"name": "dist-static",
+			"runtimeExecutable": "/usr/bin/env",
+			"runtimeArgs": [
+				"PATH=/Users/chengyongliu/.nvm/versions/node/v22.14.0/bin:/usr/bin:/bin",
+				"npx",
+				"-y",
+				"serve",
+				"dist",
+				"-l",
+				"4322"
+			],
+			"port": 4322,
+			"autoPort": true
 		}
 	]
 }

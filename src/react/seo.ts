@@ -1,5 +1,6 @@
 // 每个路由的 <title> / <meta description> / canonical。
 // 纯函数，预渲染脚本在 Node 里调。
+import { bodyHtml } from './bodies';
 import { books } from './books';
 import { articles } from './content';
 import { terms } from './glossary';
@@ -12,7 +13,9 @@ const SITE_TAGLINE = '记录值得长期保存的知识';
 
 export type PageMeta = { title: string; description: string; canonical: string };
 
-/** 从渲染好的 HTML 里扒纯文本，用来当 meta description。 */
+/** 从渲染好的 HTML 里扒纯文本，用来当 meta description。
+ * 正文现在按需加载，这里读的是缓存——预渲染脚本会在 render 之前先 preload
+ * 当前这一页的正文，所以取得到；取不到就退回到各自的兜底描述。 */
 function textOf(html: string, max = 150) {
 	const text = html
 		.replace(/<pre[\s\S]*?<\/pre>/g, ' ')
@@ -56,7 +59,8 @@ export function metaOf(path: string): PageMeta {
 		if (!book || !ch) return fallback;
 		return {
 			title: `${ch.title} · ${book.title} · ${SITE_NAME}`,
-			description: textOf(ch.html) || `《${book.title}》（${book.author}）逐章精读笔记。`,
+			description:
+				textOf(bodyHtml(ch.src) ?? '') || `《${book.title}》（${book.author}）逐章精读笔记。`,
 			canonical: `${SITE_URL}/book/${book.id}/${(chapter ?? 0) + 1}`,
 		};
 	}
@@ -67,7 +71,7 @@ export function metaOf(path: string): PageMeta {
 		const alias = term.aliases.length ? `（又称${term.aliases.join('、')}）` : '';
 		return {
 			title: `${term.term} 是什么 · ${SITE_NAME}名词手册`,
-			description: textOf(term.html) || `${term.term}${alias}的解释。`,
+			description: textOf(bodyHtml(term.src) ?? '') || `${term.term}${alias}的解释。`,
 			canonical: `${SITE_URL}/term/${term.id}`,
 		};
 	}
@@ -76,7 +80,7 @@ export function metaOf(path: string): PageMeta {
 	if (!article) return fallback;
 	return {
 		title: `${article.title} · ${SITE_NAME}`,
-		description: article.description || textOf(article.html),
+		description: article.description || textOf(bodyHtml(article.src) ?? ''),
 		canonical: `${SITE_URL}/article/${article.id}`,
 	};
 }

@@ -1,10 +1,10 @@
-import { marked } from 'marked';
-import { countChineseWords, parseFrontmatter } from './content';
+import { keyOf } from './bodies';
+import type { Meta } from './content';
 
 export type BookChapter = {
 	order: number;
 	title: string;
-	html: string;
+	src: string; // 正文的 body key，用 useBody(src) 取（见 bodies.ts）
 	wordCount: number;
 	readingMinutes: number;
 };
@@ -25,15 +25,14 @@ export type Book = {
 const DEEP_READ_PREFIX = '真读逐章精读：';
 
 const modules = import.meta.glob('../content/books/*.md', {
-	query: '?raw',
+	query: '?meta',
 	import: 'default',
 	eager: true,
-}) as Record<string, string>;
+}) as Record<string, Meta>;
 
 const map = new Map<string, Book>();
 
-for (const raw of Object.values(modules)) {
-	const { data, content } = parseFrontmatter(raw);
+for (const [path, { data, wordCount }] of Object.entries(modules)) {
 	const id = String(data.book ?? '');
 	if (!id) continue;
 	if (!map.has(id)) {
@@ -51,12 +50,10 @@ for (const raw of Object.values(modules)) {
 			chapters: [],
 		});
 	}
-	const text = content.replace(/```[\s\S]*?```/g, '').replace(/[#>*_`[\]()!-]/g, '');
-	const wordCount = countChineseWords(text);
 	map.get(id)?.chapters.push({
 		order: Number(data.chapter ?? 0),
 		title: String(data.title ?? ''),
-		html: marked.parse(content, { async: false }) as string,
+		src: keyOf(path),
 		wordCount,
 		readingMinutes: Math.max(1, Math.ceil(wordCount / 450)),
 	});

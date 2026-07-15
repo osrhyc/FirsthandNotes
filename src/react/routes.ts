@@ -139,6 +139,30 @@ export function parseRoute(pathname: string): Route {
 	return { sectionKey: DEFAULT_SECTION, itemId: firstItemOfSection(DEFAULT_SECTION) };
 }
 
+/**
+ * 这个路由渲染时要用到的正文 key。
+ *
+ * 预渲染据此在 render 之前把正文读进缓存，并把它内联进 HTML 当 hydration 的种子：
+ * 客户端首帧必须同步拿到同一份正文，否则 React 会把预渲染好的内容整页擦掉。
+ * 注意栏目页也有默认落地项（firstItemOfSection），一样要算进来。
+ */
+export function bodyKeysOf(route: Route): string[] {
+	const { sectionKey, itemId, chapter } = route;
+	if (!itemId) return [];
+
+	if (BOOKSHELF_SECTIONS[sectionKey]) {
+		const book = books.find((item) => item.id === itemId);
+		const ch = book?.chapters[Math.min(chapter ?? 0, (book?.chapters.length ?? 1) - 1)];
+		return ch ? [ch.src] : [];
+	}
+	if (isGlossarySection(sectionKey)) {
+		const term = terms.find((item) => item.id === itemId);
+		return term ? [term.src] : [];
+	}
+	const article = articles.find((item) => item.id === itemId);
+	return article ? [article.src] : [];
+}
+
 /** parseRoute 的反函数：路由状态 → URL 路径。 */
 export function routeToPath(route: Route): string {
 	const { sectionKey, itemId, chapter } = route;

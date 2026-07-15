@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import { keyOf } from './bodies';
 
 export type Article = {
 	id: string;
@@ -8,16 +9,19 @@ export type Article = {
 	category: string;
 	level: string;
 	tags: string[];
-	html: string;
+	src: string; // 正文的 body key，用 useBody(src) 取（见 bodies.ts）
 	readingMinutes: number;
 	wordCount: number;
 };
 
+// 只取 frontmatter 与字数：正文走 ?body 按需加载，不进首屏包
+export type Meta = { data: Record<string, unknown>; wordCount: number };
+
 const modules = import.meta.glob('../content/blog/*.md', {
-	query: '?raw',
+	query: '?meta',
 	import: 'default',
 	eager: true,
-}) as Record<string, string>;
+}) as Record<string, Meta>;
 
 marked.use({
 	gfm: true,
@@ -66,23 +70,16 @@ export function countChineseWords(text: string) {
 }
 
 export const articles: Article[] = Object.entries(modules)
-	.map(([path, raw]) => {
-		const parsed = parseFrontmatter(raw);
-		const data = parsed.data;
-		const text = parsed.content.replace(/```[\s\S]*?```/g, '').replace(/[#>*_`[\]()!-]/g, '');
-		const wordCount = countChineseWords(text);
-
-		return {
-			id: getId(path),
-			title: String(data.title ?? getId(path)),
-			description: String(data.description ?? ''),
-			pubDate: toDateString(data.pubDate),
-			category: String(data.category ?? '量化学堂'),
-			level: String(data.level ?? data.group ?? ''),
-			tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-			html: marked.parse(parsed.content, { async: false }) as string,
-			readingMinutes: Math.max(1, Math.ceil(wordCount / 450)),
-			wordCount,
-		};
-	})
+	.map(([path, { data, wordCount }]) => ({
+		id: getId(path),
+		title: String(data.title ?? getId(path)),
+		description: String(data.description ?? ''),
+		pubDate: toDateString(data.pubDate),
+		category: String(data.category ?? '量化学堂'),
+		level: String(data.level ?? data.group ?? ''),
+		tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+		src: keyOf(path),
+		readingMinutes: Math.max(1, Math.ceil(wordCount / 450)),
+		wordCount,
+	}))
 	.sort((a, b) => b.pubDate.localeCompare(a.pubDate));
