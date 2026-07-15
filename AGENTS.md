@@ -61,10 +61,11 @@ Claude Code can also use `.claude/commands/read-book.md` as the `/read-book` com
 Key rules:
 
 - Book files (PDF/EPUB) are provided by the user. NEVER download books from the internet or GitHub collections — those are pirated copies.
-- Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published). Verify the split matches the printed 目录 one-to-one before reading.
+- 先 `python3 scripts/extract-book.py <file> --slug S --plan` 看 TOC 树与单元建议，核对印刷目录后再去掉 --plan 落盘；`--spec plan.json` 可手工精确控制。原文进 `book-workspace/<slug>/`（已 gitignore，绝不入库/发布）。
 - **精读 is the only mode** — every book is read completely, chapter by chapter. There is no fast-reading/targeted/skim mode.
-- **One note per real chapter, minimum; never merge chapters.** A note titled `第1~2章` is a defect. Short chapters get short notes; dense chapters may be expanded or split into 上/下. Reading effort is never a reason to compress a book.
-- One sub-agent per real chapter; batch them if the book is long, rather than merging units.
+- **阅读单元 = 一篇笔记**：默认一章一个单元；章 >1.5万字且有节 → 按节分组成若干单元（不跨章）；无节可用 → 派两个 agent 出（上）（下）。部/篇 只是分组，永不做单元。目标 5k~15k 字/单元。
+- **绝不合并章**：`第1~2章` 这种标题即缺陷。短章写短笔记；细化永远允许，合并永远不行。
+- 一个阅读单元一个子 agent；书长就分批跑，绝不合并单元。
 - Notes must be derived from the extracted chapter text only — no reviews, no summaries from memory. If text is missing/garbled (scanned PDF), report instead of improvising.
 - Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (短章 800~1200 字 / 常规 1200~2000 字 / 厚章 2000~3000 字，论证脉络+案例+要点) + 案例档案 + 延伸案例（编者补）+ 怎么用 + 要点清单.
 - Copyright guardrails: paraphrase-first; direct quotes ≤2 per chapter, ≤25 chars each, with page numbers.

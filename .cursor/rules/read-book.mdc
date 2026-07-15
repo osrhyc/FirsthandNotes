@@ -16,9 +16,9 @@ Key requirements:
 
 - Use only user-provided PDF/EPUB files or explicitly public-domain sources.
 - **精读 is the only mode.** Read every book completely, chapter by chapter. There is no fast-reading / targeted / skim mode.
-- **One note per real chapter, minimum. Never merge chapters** — a note titled "第1~2章" is a defect. Short chapters get short notes; dense chapters may be expanded or split into 上/下.
-- Extract real text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/`, and verify the chapter split matches the printed 目录 one-to-one before dispatching reading agents.
-- One sub-agent per real chapter; batch them if the book is long, rather than merging units.
+- **阅读单元 = 一篇笔记**：默认一章一篇；厚章（>1.5万字）有节就按节分组、无节就派两个 agent 出（上）（下）；部/篇 永不做单元。单元目标 5k~15k 字，**绝不跨章**。
+- 先跑 `--plan` 看 TOC 树与单元建议、核对印刷目录，再落盘；必要时用 `--spec plan.json` 手工控制。
+- 一个阅读单元一个子 agent；书长分批跑，不合并。
 - Raw book files, extracted text, page images, and `book-workspace/` must never be committed or published.
 - Do not write from book reviews, summaries, search snippets, or model memory.
 - Preserve extraction failures, garbled text, missing chapters, and uncertain readings instead of filling gaps.

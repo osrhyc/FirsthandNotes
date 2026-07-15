@@ -21,39 +21,85 @@ Before reading, confirm or infer:
 
 If any required text is missing, garbled, scanned without readable text, or incomplete, report it instead of improvising.
 
-## 2. 精读原则 (Non-Negotiable)
+## 2. 阅读单元 (Non-Negotiable)
 
-These three rules override any convenience consideration:
+A **阅读单元 (reading unit)** is what one sub-agent reads and what becomes one note file. Choosing units correctly is the single highest-leverage decision in this workflow — get it wrong and every downstream note inherits the error.
 
-1. **One note per real chapter, minimum.** Every chapter in the book's real table of contents gets its own note file. A book with 18 chapters produces at least 18 chapter notes (plus 导读 and 总结).
-2. **Never merge chapters.** Do not combine "第1~2章" into one note, however short or thematically similar the chapters are. Short chapters get short notes — that is fine and expected. Chapter count is driven by the book, not by effort budget.
-3. **Rich chapters may be expanded.** When a chapter is unusually dense (long text, many cases, a central argument), expand it — either write a longer note, or split it into 上/下 across two files. Expansion is always allowed; merging never is.
+### 2.1 The unit ladder
 
-Corollary: the number of reading units equals the number of real chapters. Do not compress a long book into 8-20 units. A 30-chapter book gets 30+ chapter agents, run in batches if necessary.
+A book's structure has up to four layers. They are **not** interchangeable:
 
-### Note length targets
+| Layer | Example | Role |
+| --- | --- | --- |
+| 部 / 篇 / Part | 「第一部分　处理复杂性」 | **Grouping only. Never a unit.** It has no content of its own — recurse into its chapters. |
+| 章 / 讲 / Chapter | 「第3章　周期的规律」 | **The default unit.** |
+| 节 | 「1.1 系统」 | Used only to subdivide a chapter that is too thick. |
+| 前置/后置 | 序、前言、导论、绪论、附录、后记 | Own unit if substantive. Skip 目录/版权/封面/作者简介/推荐语. |
 
-| Chapter type | `## 详读` target |
+### 2.2 Three hard rules
+
+1. **Every real chapter is covered.** No chapter may be skipped.
+2. **A unit never spans two chapters.** Combining 「第1~2章」 into one note is a defect. Short chapters get short notes — that is fine and expected. When a thick chapter is split by 节, the section groups still live entirely inside that one chapter.
+3. **Splitting finer is always allowed; merging never is.**
+
+### 2.3 Unit size drives the split (adaptive)
+
+Target **5,000–15,000 汉字 of source per unit**. This is the rule that decides 章 vs 节:
+
+| Chapter size | Unit |
 | --- | --- |
-| Short chapter (original < 6,000 字) | 800~1,200 字 |
-| Normal chapter | 1,200~2,000 字 |
-| Dense chapter (original > 25,000 字, or case-heavy) | 2,000~3,000 字, or split into 上/下 |
+| ≤ 15,000 字 | The whole chapter — one unit. |
+| > 15,000 字, **has** usable 节 | Group its 节 into runs of ~10,000 字 → 「第2章（一）」「第2章（二）」… A tail run under ~5,000 字 merges into the previous run. |
+| > 15,000 字, **no** usable 节 | One unit, flagged `oversized-no-subsections` → dispatch **two agents** with explicit non-overlapping content ranges, producing 「第X章（上）」「第X章（下）」. |
 
-Never pad a thin chapter to hit a word count, and never truncate a rich chapter to stay under one.
+Why: a 18,500-字 chapter compressed into one 1,500-字 note keeps 8% of the source. That is a summary, not 真读. Units in the 5k–15k band land at a 15–40% ratio, which is.
+
+`scripts/extract-book.py --plan` computes all of this and prints the proposed units with 字数 — see §3.
+
+### 2.4 Note length targets
+
+Driven by the **unit's** source size, not the chapter's:
+
+| Unit source size | `## 详读` target |
+| --- | --- |
+| < 6,000 字 | 800~1,200 字 |
+| 6,000~12,000 字 | 1,200~2,000 字 |
+| > 12,000 字 (or case-heavy) | 2,000~3,000 字 |
+
+Never pad a thin unit to hit a word count, and never truncate a rich one to stay under one.
 
 ## 3. Extraction Paths
 
 ### A. Text-Based PDF/EPUB
 
-Run:
+**Always plan before extracting.** Step 1 prints the TOC tree with 汉字 counts and the proposed units (§2.3), and writes nothing:
 
 ```bash
-python3 scripts/extract-book.py <PDF/EPUB 文件路径> [--slug <slug>] [--level N]
+python3 scripts/extract-book.py <PDF/EPUB 文件路径> --slug <slug> --plan
 ```
 
-Review `book-workspace/<slug>/meta.json` and the chapter table. **The chapter boundaries must match the real table of contents exactly, one file per real chapter.** If TOC pages are mostly `0`, chapters are too large (a "chapter" file spanning several real chapters means the level is too coarse), or boundaries are wrong, retry with `--level`; use heading-regex fallback only when TOC is unusable.
+Read the proposed unit list against the book's printed 目录 and check:
 
-Verifying the split is part of the job: compare the chapter list in `meta.json` against the book's printed 目录 before dispatching any reading agent. A wrong split silently produces merged notes, which this workflow forbids.
+- Every real chapter appears. Nothing is skipped, nothing spans two chapters.
+- No 部/篇 became a unit (it should have been recursed into).
+- Front matter (赞誉/推荐序/目录) did not leak into 第1章 — a suspiciously fat first unit is the tell.
+- `⚠超长` units: these need two agents each (上/下).
+- `·薄` units: fine if the chapter really is short; suspicious if the book isn't.
+
+Then extract for real (drop `--plan`). Escape hatches when the auto-plan is wrong:
+
+- `--level N` — force a TOC level (use when the tree is clean but the heuristic misjudged).
+- `--spec plan.json` — edit the generated `book-workspace/<slug>/plan.json` by hand and re-run. This is the last word; the script has no opinion the spec can't override.
+
+Known failure modes the script handles, and what they look like:
+
+| Symptom | Cause | Handling |
+| --- | --- | --- |
+| `⚠️ TOC 页码大多为 0` | EPUB TOC anchors unresolved | Auto-falls back to heading regex + longest-increasing chapter-number chain (drops 目录/前言 false hits) |
+| A 部 swallowed a whole chapter | 部 and 章 headings share a page | Heading scan matches 章 only, never 部 |
+| A unit titled with a full sentence | Prose like 「第3章对数据驱动型模型进行了…」 matched as a heading | Heading must be ≤40 chars with a separator after the chapter number |
+
+Verifying the split is part of the job. A wrong split silently produces bad units, and every note inherits the error.
 
 ### B. Scanned Or Image-Based Book
 
@@ -67,15 +113,17 @@ If total extracted characters are near zero:
 
 ## 4. Parallel Chapter Reading
 
-**One sub-agent per real chapter.** Never give one agent two chapters. If the book has many chapters, run them in batches (e.g. 10-12 concurrent at a time) rather than merging them into fewer units.
+**One sub-agent per 阅读单元** (§2). Never give one agent two units, and never give one agent two chapters. If the book yields many units, run them in batches (e.g. 10-12 concurrent at a time) rather than merging.
 
-For a dense chapter being split into 上/下, dispatch two agents with explicit, non-overlapping content ranges (by section heading or offset range), and tell each which half it owns and what the other half covers.
+For an `oversized-no-subsections` unit, dispatch **two** agents with explicit, non-overlapping content ranges, and tell each which half it owns and what the other half covers → 「第X章（上）」「第X章（下）」.
+
+For a `section-group` unit, tell the agent which 小节 it owns (the plan's `含小节：` line) and that the rest of the chapter is covered by sibling units — so it writes about its own sections only and doesn't summarize the whole chapter.
 
 Each chapter prompt must include:
 
 - The absolute material path.
 - An instruction to read the full file/page range, using offset chunks if needed.
-- The note length target for this chapter's type (see §2).
+- The unit's source 字数 and the matching note length target (see §2.4).
 - A fidelity rule: source-traceable, report missing text, and no background-knowledge filling.
 - The copyright quote policy.
 
@@ -188,8 +236,10 @@ When useful, create 3-8 glossary entries per book in `src/content/glossary/`.
 
 Before writing final Markdown, check:
 
-- **Chapter coverage is complete**: every real chapter has at least one note. Count them against the book's 目录.
-- **No note covers more than one real chapter.** A title like `第1~2章` is a defect — go back and split it.
+- **Chapter coverage is complete**: every real chapter is covered by at least one unit. Count against the book's 目录.
+- **No unit spans two chapters.** A title like `第1~2章` is a defect — go back and split it.
+- **No 部/篇 became a unit.**
+- **Unit sizes are in band**: no unit over ~15,000 字 of source went to a single agent (§2.3).
 - TL;DR has 3-5 sentences.
 - `## 详读` has real `###` sections and hits the length target for that chapter's type.
 - The note follows the original chapter order.
