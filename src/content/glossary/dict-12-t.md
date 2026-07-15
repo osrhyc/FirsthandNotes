@@ -2,6 +2,7 @@
 term: 't 统计量'
 aliases: ['t 值']
 module: 'quant'
+category: '因子研究'
 pubDate: '2026-07-10'
 ---
 

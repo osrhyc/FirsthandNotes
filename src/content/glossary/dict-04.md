@@ -2,6 +2,7 @@
 term: '基准'
 aliases: ['Benchmark']
 module: 'quant'
+category: '入门通识'
 pubDate: '2026-07-10'
 ---
 

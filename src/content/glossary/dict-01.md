@@ -2,6 +2,7 @@
 term: '量化投资'
 aliases: []
 module: 'quant'
+category: '入门通识'
 pubDate: '2026-07-10'
 ---
 

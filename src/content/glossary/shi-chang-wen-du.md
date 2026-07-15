@@ -2,6 +2,7 @@
 term: '市场温度'
 aliases: ['测量市场温度', '周期定位']
 module: 'quant'
+category: '周期与心理'
 pubDate: '2026-07-15'
 ---
 

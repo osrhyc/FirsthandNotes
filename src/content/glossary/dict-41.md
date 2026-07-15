@@ -2,6 +2,7 @@
 term: '未来函数'
 aliases: ['前视偏差', 'Look-ahead Bias']
 module: 'quant'
+category: '研究陷阱'
 pubDate: '2026-07-10'
 ---
 

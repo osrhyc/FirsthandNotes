@@ -2,6 +2,7 @@
 term: '卡玛比率'
 aliases: ['Calmar Ratio']
 module: 'quant'
+category: '回测与评价'
 pubDate: '2026-07-10'
 ---
 

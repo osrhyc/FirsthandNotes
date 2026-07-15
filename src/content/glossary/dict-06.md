@@ -2,6 +2,7 @@
 term: '因子'
 aliases: ['Factor']
 module: 'quant'
+category: '入门通识'
 pubDate: '2026-07-10'
 ---
 

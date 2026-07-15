@@ -2,6 +2,7 @@
 term: '飞轮'
 aliases: ['飞轮效应', '亚马逊飞轮', '自我强化']
 module: 'library'
+category: '商业模式'
 pubDate: '2026-07-15'
 ---
 

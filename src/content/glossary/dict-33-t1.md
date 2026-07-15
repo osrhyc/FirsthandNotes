@@ -2,6 +2,7 @@
 term: 'T+1'
 aliases: []
 module: 'quant'
+category: '市场制度与数据'
 pubDate: '2026-07-10'
 ---
 

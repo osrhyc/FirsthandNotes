@@ -23,7 +23,7 @@ import { bookGroupsByModule, books } from './books';
 import type { Article } from './content';
 import { articles } from './content';
 import type { Term } from './glossary';
-import { decorateTerms, terms } from './glossary';
+import { decorateTerms, termGroupsByModule, terms } from './glossary';
 import { Logo } from './Logo';
 
 const { Sider, Content, Header } = Layout;
@@ -117,6 +117,11 @@ function termsOfModule(moduleKey: string) {
 	return terms.filter((term) => term.module === moduleKey);
 }
 
+// 默认词条取分类顺序里的第一个，与名词手册列表的首项保持一致
+function firstTermOfModule(moduleKey: string) {
+	return termGroupsByModule.get(moduleKey)?.[0]?.items[0];
+}
+
 function circledNumber(index: number) {
 	return index < 20 ? String.fromCodePoint(0x2460 + index) : `${index + 1}.`;
 }
@@ -178,7 +183,7 @@ function getInitialState(): Route {
 		const first = BOOKSHELF_SECTIONS[sectionSlug] // 书架栏目默认进总览
 			? undefined
 			: isGlossarySection(sectionSlug)
-				? termsOfModule(moduleOf(sectionSlug))[0]?.id
+				? firstTermOfModule(moduleOf(sectionSlug))?.id
 				: sectionArticles.get(sectionSlug)?.[0]?.id;
 		return { sectionKey: sectionSlug, itemId: first };
 	}
@@ -281,8 +286,15 @@ export function App() {
 			`${term.term} ${term.aliases.join(' ')}`.toLowerCase().includes(q),
 		);
 	}, [query, moduleTerms]);
+	// 分组保持 termGroupsByModule 的分类顺序，只留下命中搜索的词条
+	const groupedTerms = useMemo(() => {
+		const hit = new Set(filteredTerms.map((term) => term.id));
+		return (termGroupsByModule.get(moduleKey) ?? [])
+			.map((group) => ({ name: group.name, items: group.items.filter((t) => hit.has(t.id)) }))
+			.filter((group) => group.items.length > 0);
+	}, [filteredTerms, moduleKey]);
 	const selectedTerm = glossaryMode
-		? (moduleTerms.find((term) => term.id === itemId) ?? moduleTerms[0])
+		? (moduleTerms.find((term) => term.id === itemId) ?? firstTermOfModule(moduleKey))
 		: undefined;
 
 	const decoratedArticleHtml = useMemo(
@@ -326,7 +338,7 @@ export function App() {
 		const first = BOOKSHELF_SECTIONS[key] // 书架栏目默认进总览
 			? undefined
 			: isGlossarySection(key)
-				? termsOfModule(moduleOf(key))[0]?.id
+				? firstTermOfModule(moduleOf(key))?.id
 				: sectionArticles.get(key)?.[0]?.id;
 		setRoute({ sectionKey: key, itemId: first });
 		setTermWindows([]);
@@ -592,8 +604,15 @@ export function App() {
 										)}
 									</>
 								) : glossaryMode ? (
-									filteredTerms.length > 0 ? (
-										<ul>{filteredTerms.map(renderTermItem)}</ul>
+									groupedTerms.length > 0 ? (
+										<>
+											{groupedTerms.map((group) => (
+												<div className="course-group" key={group.name}>
+													<p className="course-group-title">{group.name}</p>
+													<ul>{group.items.map(renderTermItem)}</ul>
+												</div>
+											))}
+										</>
 									) : (
 										<Empty
 											description={query ? '没有匹配的名词' : '还没有收录名词'}

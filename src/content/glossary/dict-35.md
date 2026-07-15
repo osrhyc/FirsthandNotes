@@ -2,6 +2,7 @@
 term: '交易成本 / 滑点'
 aliases: []
 module: 'quant'
+category: '市场制度与数据'
 pubDate: '2026-07-10'
 ---
 

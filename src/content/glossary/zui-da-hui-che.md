@@ -2,6 +2,7 @@
 term: '最大回撤'
 aliases: ['回撤', 'Max Drawdown', 'MDD']
 module: 'quant'
+category: '回测与评价'
 pubDate: '2026-07-10'
 ---
 

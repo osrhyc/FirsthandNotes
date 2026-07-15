@@ -2,6 +2,7 @@
 term: '复权'
 aliases: ['前复权', '后复权', '不复权', '除权除息']
 module: 'quant'
+category: '市场制度与数据'
 pubDate: '2026-07-10'
 ---
 

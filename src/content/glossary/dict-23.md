@@ -2,6 +2,7 @@
 term: '总收益 / 年化收益'
 aliases: []
 module: 'quant'
+category: '回测与评价'
 pubDate: '2026-07-10'
 ---
 

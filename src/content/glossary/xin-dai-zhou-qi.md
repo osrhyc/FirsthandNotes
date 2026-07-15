@@ -2,6 +2,7 @@
 term: '信贷周期'
 aliases: ['信贷窗口', '信用周期']
 module: 'quant'
+category: '周期与心理'
 pubDate: '2026-07-15'
 ---
 

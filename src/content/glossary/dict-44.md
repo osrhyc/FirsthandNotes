@@ -2,6 +2,7 @@
 term: '多重检验问题'
 aliases: []
 module: 'quant'
+category: '研究陷阱'
 pubDate: '2026-07-10'
 ---
 

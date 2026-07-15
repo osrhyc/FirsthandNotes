@@ -2,6 +2,7 @@
 term: '不对称业绩'
 aliases: ['不对称性', '非对称收益']
 module: 'quant'
+category: '周期与心理'
 pubDate: '2026-07-15'
 ---
 

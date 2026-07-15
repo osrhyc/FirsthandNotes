@@ -2,6 +2,7 @@
 term: '两个比萨团队'
 aliases: ['两个披萨团队', 'two-pizza team']
 module: 'library'
+category: '商业模式'
 pubDate: '2026-07-15'
 ---
 

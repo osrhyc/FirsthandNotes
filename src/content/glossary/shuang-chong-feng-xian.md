@@ -2,6 +2,7 @@
 term: '双重风险'
 aliases: ['踏空风险', '亏钱风险']
 module: 'quant'
+category: '周期与心理'
 pubDate: '2026-07-15'
 ---
 

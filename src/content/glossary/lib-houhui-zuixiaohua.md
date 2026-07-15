@@ -2,6 +2,7 @@
 term: '后悔最小化模型'
 aliases: ['遗憾最小化框架', '后悔最小化框架']
 module: 'library'
+category: '商业模式'
 pubDate: '2026-07-15'
 ---
 

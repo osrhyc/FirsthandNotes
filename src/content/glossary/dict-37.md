@@ -2,6 +2,7 @@
 term: '动量'
 aliases: ['Momentum']
 module: 'quant'
+category: '经典异象'
 pubDate: '2026-07-10'
 ---
 

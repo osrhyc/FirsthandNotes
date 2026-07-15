@@ -2,6 +2,7 @@
 term: '增强回路'
 aliases: ['正反馈回路', '飞轮效应']
 module: 'library'
+category: '系统思维'
 pubDate: '2026-07-15'
 ---
 

@@ -6,8 +6,23 @@ export type Term = {
 	term: string;
 	aliases: string[];
 	module: string; // 归属一级模块：quant / poker
+	category: string; // 二级分类，决定名词手册里的分组
 	html: string;
 };
+
+// 分类顺序按学习路径排（而不是拼音）；未列出的分类排在最后
+const CATEGORY_ORDER = [
+	'入门通识',
+	'市场制度与数据',
+	'因子研究',
+	'回测与评价',
+	'经典异象',
+	'研究陷阱',
+	'周期与心理',
+	'系统思维',
+	'商业模式',
+	'个人与协作',
+];
 
 const modules = import.meta.glob('../content/glossary/*.md', {
 	query: '?raw',
@@ -27,10 +42,34 @@ export const terms: Term[] = Object.entries(modules)
 			term: String(data.term ?? getId(path)),
 			aliases: Array.isArray(data.aliases) ? data.aliases.map(String) : [],
 			module: String(data.module ?? 'quant'),
+			category: String(data.category ?? '未分类'),
 			html: marked.parse(content, { async: false }) as string,
 		};
 	})
 	.sort((a, b) => a.term.localeCompare(b.term, 'zh-CN'));
+
+// 名词手册分组：按模块 → 分类聚合，组内保持词条的拼音顺序
+export const termGroupsByModule = new Map<string, { name: string; items: Term[] }[]>();
+for (const term of terms) {
+	let groups = termGroupsByModule.get(term.module);
+	if (!groups) {
+		groups = [];
+		termGroupsByModule.set(term.module, groups);
+	}
+	let group = groups.find((g) => g.name === term.category);
+	if (!group) {
+		group = { name: term.category, items: [] };
+		groups.push(group);
+	}
+	group.items.push(term);
+}
+for (const groups of termGroupsByModule.values()) {
+	const rank = (name: string) => {
+		const i = CATEGORY_ORDER.indexOf(name);
+		return i === -1 ? CATEGORY_ORDER.length : i;
+	};
+	groups.sort((a, b) => rank(a.name) - rank(b.name) || a.name.localeCompare(b.name, 'zh-CN'));
+}
 
 function escapeRegExp(text: string) {
 	return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

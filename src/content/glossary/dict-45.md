@@ -2,6 +2,7 @@
 term: '样本外检验'
 aliases: ['Out-of-Sample']
 module: 'quant'
+category: '研究陷阱'
 pubDate: '2026-07-10'
 ---
 

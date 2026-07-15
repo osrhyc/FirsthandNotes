@@ -2,6 +2,7 @@
 term: '低波动异象'
 aliases: []
 module: 'quant'
+category: '经典异象'
 pubDate: '2026-07-10'
 ---
 

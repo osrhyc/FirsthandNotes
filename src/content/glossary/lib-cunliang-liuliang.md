@@ -2,6 +2,7 @@
 term: '存量与流量'
 aliases: ['存量', '流量', '水管图']
 module: 'library'
+category: '系统思维'
 pubDate: '2026-07-15'
 ---
 

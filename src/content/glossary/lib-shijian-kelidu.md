@@ -2,6 +2,7 @@
 term: '时间颗粒度'
 aliases: []
 module: 'library'
+category: '个人与协作'
 pubDate: '2026-07-15'
 ---
 

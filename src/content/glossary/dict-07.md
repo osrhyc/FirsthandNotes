@@ -2,6 +2,7 @@
 term: '截面'
 aliases: ['Cross-section']
 module: 'quant'
+category: '入门通识'
 pubDate: '2026-07-10'
 ---
 

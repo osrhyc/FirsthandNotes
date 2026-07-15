@@ -2,6 +2,7 @@
 term: '换手率'
 aliases: ['日换手率', 'turnover rate']
 module: 'quant'
+category: '市场制度与数据'
 pubDate: '2026-07-10'
 ---
 

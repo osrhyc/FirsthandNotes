@@ -2,6 +2,7 @@
 term: '过拟合'
 aliases: ['Overfitting']
 module: 'quant'
+category: '研究陷阱'
 pubDate: '2026-07-10'
 ---
 

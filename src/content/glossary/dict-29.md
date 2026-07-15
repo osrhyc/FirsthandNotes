@@ -2,6 +2,7 @@
 term: '信息比率'
 aliases: ['IR', 'Information Ratio']
 module: 'quant'
+category: '回测与评价'
 pubDate: '2026-07-10'
 ---
 

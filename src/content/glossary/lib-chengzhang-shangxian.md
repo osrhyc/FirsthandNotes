@@ -2,6 +2,7 @@
 term: '成长上限'
 aliases: ['增长极限', '成长的极限']
 module: 'library'
+category: '系统思维'
 pubDate: '2026-07-15'
 ---
 

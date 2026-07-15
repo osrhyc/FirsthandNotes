@@ -2,6 +2,7 @@
 term: 'IC>0 占比'
 aliases: []
 module: 'quant'
+category: '因子研究'
 pubDate: '2026-07-10'
 ---
 

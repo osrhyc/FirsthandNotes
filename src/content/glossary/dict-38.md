@@ -2,6 +2,7 @@
 term: '反转'
 aliases: ['Reversal']
 module: 'quant'
+category: '经典异象'
 pubDate: '2026-07-10'
 ---
 

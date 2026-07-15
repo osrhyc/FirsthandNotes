@@ -2,6 +2,7 @@
 term: '控制杆'
 aliases: ['杠杆', '政策变量']
 module: 'library'
+category: '系统思维'
 pubDate: '2026-07-15'
 ---
 

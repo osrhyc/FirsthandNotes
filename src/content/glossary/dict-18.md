@@ -2,6 +2,7 @@
 term: '因子方向约定'
 aliases: []
 module: 'quant'
+category: '因子研究'
 pubDate: '2026-07-10'
 ---
 

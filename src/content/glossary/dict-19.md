@@ -2,6 +2,7 @@
 term: '调仓'
 aliases: ['Rebalance']
 module: 'quant'
+category: '回测与评价'
 pubDate: '2026-07-10'
 ---
 

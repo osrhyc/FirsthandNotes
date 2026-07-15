@@ -2,6 +2,7 @@
 term: '分层回测'
 aliases: ['分组回测']
 module: 'quant'
+category: '因子研究'
 pubDate: '2026-07-10'
 ---
 
