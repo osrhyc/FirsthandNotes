@@ -6,6 +6,19 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>一手笔记 · Firsthand Notes</title>
 		<meta name="description" content="记录值得长期保存的知识" />
+		<script>
+			// 在 React 之前把主题打上去，否则深色用户会看到一帧浅色。
+			// React 那边固定从 system 起步以保证 hydration 一致，视觉靠这段兜底。
+			(() => {
+				try {
+					const saved = localStorage.getItem('theme-mode');
+					const dark =
+						saved === 'dark' ||
+						(saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+					document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+				} catch {}
+			})();
+		</script>
 	</head>
 	<body>
 		<div id="root"></div>

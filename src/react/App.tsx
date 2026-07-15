@@ -96,6 +96,7 @@ function groupArticles(list: Article[]) {
 type ThemeMode = 'system' | 'light' | 'dark';
 
 function getStoredMode(): ThemeMode {
+	if (typeof localStorage === 'undefined') return 'system';
 	const saved = localStorage.getItem('theme-mode');
 	return saved === 'light' || saved === 'dark' ? saved : 'system';
 }
@@ -112,13 +113,18 @@ export function App({ initialPath }: { initialPath?: string } = {}) {
 	const zCounter = useRef(1);
 	const [navVisible, setNavVisible] = useState(true);
 	const [query, setQuery] = useState('');
-	const [mode, setMode] = useState<ThemeMode>(getStoredMode);
-	const [systemDark, setSystemDark] = useState(
-		() => window.matchMedia('(prefers-color-scheme: dark)').matches,
-	);
+	// 主题必须在服务端和客户端首帧取同一个值，否则 hydration 会整片重画。
+	// 所以这里固定从 'system'/false 起步，挂载后再去读 localStorage 和 matchMedia。
+	// 首屏不闪是靠 index.html 里那段内联脚本提前把 data-theme 打上去。
+	const [mode, setMode] = useState<ThemeMode>('system');
+	const [systemDark, setSystemDark] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
 		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		setMode(getStoredMode());
+		setSystemDark(media.matches);
+		setMounted(true);
 		const onChange = (event: MediaQueryListEvent) => setSystemDark(event.matches);
 		media.addEventListener('change', onChange);
 		return () => media.removeEventListener('change', onChange);
@@ -127,9 +133,10 @@ export function App({ initialPath }: { initialPath?: string } = {}) {
 	const isDark = mode === 'dark' || (mode === 'system' && systemDark);
 
 	useEffect(() => {
+		if (!mounted) return; // 别在读出用户偏好之前就把 'system' 写回去
 		document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 		localStorage.setItem('theme-mode', mode);
-	}, [mode, isDark]);
+	}, [mode, isDark, mounted]);
 
 	// 整页不滚动，切换文章/章节时重置正文卡片内部滚动
 	useEffect(() => {
