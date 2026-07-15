@@ -219,7 +219,9 @@ def plan_units(nodes, depth=0):
             else:
                 runs.append(cur)
         for i, run in enumerate(runs, 1):
-            label = f"{n['title']}（{'一二三四五六七八九十'[i - 1]}）" if len(runs) > 1 else n["title"]
+            # 只是占位标签，落盘成笔记前必须换成带真实副标题的标题（见 .ai/read-book.md §7）
+            marks = {2: "上下", 3: "上中下"}.get(len(runs)) or "一二三四五六七八九十"
+            label = f"{n['title']}（{marks[i - 1]}）" if len(runs) > 1 else n["title"]
             sub = "｜".join(c["title"] for c in run)
             out.append({"title": label, "page": run[0]["page"], "end": run[-1]["end"],
                         "chars": sum(c["chars"] for c in run), "kind": "section-group",
