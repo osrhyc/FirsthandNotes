@@ -196,16 +196,16 @@ The `title` is what the reader sees in the sidebar and as the article heading. I
 | Unit | Title | Why |
 | --- | --- | --- |
 | A whole chapter | **The author's own chapter title, verbatim.** 「第1章　是非对错的底层逻辑」 | Faithfulness. If the author titled all five chapters monotonously, that is the author's choice — do not "improve" it. Rewriting a real chapter's title misrepresents the book. |
-| A split unit | 「第N章（上/中/下）　<subtitle>」 | The chapter title alone is ambiguous across siblings, so a subtitle is required. |
+| A split unit | 「第N章　<subtitle>」 | The chapter title alone is ambiguous across siblings, so a subtitle replaces it. |
 
 Rules for the subtitle of a split unit:
 
 - **It must be derived from the 小节 the unit actually covers** (the plan's `含小节：` line) — never invented, never a theme you wish were there.
 - It must say something. 「（一）（二）（三）」 alone is a defect: it distinguishes the files but tells the reader nothing about what is inside.
-- Prefer 上/下 for two parts, 上/中/下 for three, （一）…（四） for four or more.
+- **No part markers.** Do not append 「（上）」「（中）」「（下）」「（一）」. The subtitle already distinguishes the siblings, and the sidebar already numbers them in order — a bracketed marker is redundant and ugly. Three notes all beginning 「第2章　」 with different subtitles is correct and readable.
 - Keep it short enough to survive a narrow sidebar (roughly ≤ 20 全角字符 after the chapter number).
 
-For 上/下 splits of an `oversized-no-subsections` chapter, derive the subtitle from the actual content each half covers, after the agents report back.
+Same rule for the two halves of an `oversized-no-subsections` chapter: give each a subtitle drawn from the content it actually covers, after the agents report back — not 「（上）」「（下）」.
 
 `chapter` is a **running sequence number** used for ordering and for the "第 X / N 章" display — not a mapping from the original chapter number. Assign it in reading order:
 

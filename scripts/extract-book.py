@@ -219,9 +219,10 @@ def plan_units(nodes, depth=0):
             else:
                 runs.append(cur)
         for i, run in enumerate(runs, 1):
-            # 只是占位标签，落盘成笔记前必须换成带真实副标题的标题（见 .ai/read-book.md §7）
-            marks = {2: "上下", 3: "上中下"}.get(len(runs)) or "一二三四五六七八九十"
-            label = f"{n['title']}（{marks[i - 1]}）" if len(runs) > 1 else n["title"]
+            # 仅仅是占位标签，用来在 --plan 里对齐。落盘成笔记前必须换成
+            #「第N章　<从本单元小节里长出来的副标题>」，且不带（上）（下）这类括号标记，
+            # 见 .ai/read-book.md §7「Titling units」。
+            label = f"{n['title']}［{i}/{len(runs)}］" if len(runs) > 1 else n["title"]
             sub = "｜".join(c["title"] for c in run)
             out.append({"title": label, "page": run[0]["page"], "end": run[-1]["end"],
                         "chars": sum(c["chars"] for c in run), "kind": "section-group",
