@@ -16,6 +16,7 @@ Before reading, confirm or infer:
 - Book title, author, slug, category, and target module:
   - `bookModule: 'quant'` for 量化书屋.
   - `bookModule: 'library'` for 书房.
+- Slug collision: check `ls src/content/books/ | grep <slug>`. If the book already exists (e.g. replacing a knowledge-based version with a true-read version), delete the old `<slug>--*.md` files first and keep the old `seq` so the shelf position is stable.
 - Whether to create/update glossary entries in `src/content/glossary/`.
 - Whether the extracted text is readable enough to proceed.
 
@@ -58,6 +59,7 @@ Rules:
 
 - Targeted mode can read selected chapters first, but it must say what was not read yet.
 - Do not pretend targeted mode covered the whole book.
+- Targeted mode output stays in the conversation by default. Do NOT write it into `src/content/books/` — that directory is for full-mode chapter notes only.
 - If the user later asks to publish book notes, convert targeted findings into the full frontmatter/chapter workflow instead of publishing a partial extraction as full-book notes.
 
 ## 3. Extraction Paths
@@ -77,7 +79,7 @@ Review `book-workspace/<slug>/meta.json` and the chapter table. The chapter boun
 If total extracted characters are near zero:
 
 1. Inspect 2-3 pages first to confirm layout: horizontal/vertical text, footnotes, annotations, and page order.
-2. Build a page-to-chapter mapping table: page number, starting chapter, and first visible text column/line.
+2. Build a page-to-chapter mapping table: page number, starting chapter, and first visible text column/line. Delegate this to one dedicated mapping sub-agent (it reads every content page once) so the main session stays small; chapter agents then receive exact page ranges.
 3. Read chapter page images directly; do not OCR blindly if layout is complex.
 4. If the user provides a public-domain reference text, store it in `book-workspace/<slug>/reference.md` as a checking base.
 5. For ancient/public-domain texts, preserve uncertainty: mark missing, damaged, doubtful, or reference-filled text as `存疑` / `据参照本补`. Do not silently repair text.
@@ -169,7 +171,7 @@ title: '导读'
 ---
 ```
 
-`seq` controls bookshelf order. Check existing values with:
+`seq` controls bookshelf order. Convention: quant books use the historical 0-99 range; 书房 books start from 100. Check existing values with:
 
 ```bash
 grep -h "seq:" src/content/books/*.md | sort -n
@@ -183,6 +185,7 @@ When useful, create 3-8 glossary entries per book in `src/content/glossary/`.
 - Use `module: 'library'` for general library books.
 - Do not duplicate existing terms; update existing files instead.
 - Terms must be beginner-friendly and self-contained.
+- The `term` (and `aliases`) must match how the word is actually written in the notes, otherwise the clickable term-links will not fire. Add common variants as aliases.
 
 ## 9. Quality Gate Before Writing Files
 
@@ -205,7 +208,7 @@ Before writing final Markdown, check:
 After writing:
 
 1. Run `npx tsc --noEmit && npm run build`.
-2. Start or refresh the local preview with `npm run dev -- --port 4321`.
+2. Start or refresh the local preview via the `vite-dev` entry in `.claude/launch.json` (auto-port enabled — do not assume 4321; another session may hold it. The dev server reads `PORT` via vite.config.ts).
 3. Check that the book appears on the correct shelf, chapters are complete, and navigation works.
 4. Spot-check at least 2 chapters by grepping key sentences, case names, or numbers back to extracted text.
 5. Run `git status` and confirm `book-workspace/`, source books, extracted text, PDFs, EPUBs, and page images are not tracked.
