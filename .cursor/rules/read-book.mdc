@@ -15,9 +15,11 @@ For "真读原书", "真读速读", chapter notes, or source-book notes in this 
 Key requirements:
 
 - Use only user-provided PDF/EPUB files or explicitly public-domain sources.
+- Choose the right reading mode: full-book chapter notes or targeted fast reading for the user's specific questions.
 - Extract real text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/`.
 - Raw book files, extracted text, page images, and `book-workspace/` must never be committed or published.
 - Do not write from book reviews, summaries, search snippets, or model memory.
+- In targeted mode, state which chapters/page ranges were read and which were not covered yet.
 - Preserve extraction failures, garbled text, missing chapters, and uncertain readings instead of filling gaps.
 - Save publishable notes under `src/content/books/` with the project book frontmatter.
 - Create/update useful glossary entries under `src/content/glossary/` without duplicates.

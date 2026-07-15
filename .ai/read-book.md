@@ -9,6 +9,9 @@ Core goal: extract publishable chapter notes from the real book text into `src/c
 Before reading, confirm or infer:
 
 - Source file path exists and points to a user-provided PDF/EPUB.
+- Reading mode:
+  - `full`: full-book chapter-by-chapter notes.
+  - `targeted`: fast reading for the user's specific questions, problems, or interests.
 - Whether the book is copyrighted or public-domain.
 - Book title, author, slug, category, and target module:
   - `bookModule: 'quant'` for 量化书屋.
@@ -18,7 +21,46 @@ Before reading, confirm or infer:
 
 If any required text is missing, garbled, scanned without readable text, or incomplete, report it instead of improvising.
 
-## 2. Extraction Paths
+## 2. Reading Modes
+
+### A. Full Mode
+
+Use full mode when the user asks for complete chapter notes, full-book reading, or publishable book entries.
+
+Output:
+
+- A导读 chapter.
+- One note per real chapter or merged chapter unit.
+- A final summary and action checklist.
+- Optional glossary entries.
+
+### B. Targeted Mode
+
+Use targeted mode when the user wants to read quickly, extract useful parts, answer a specific question, learn a narrow skill, or decide whether the book is worth deeper reading.
+
+Before writing, turn the user's intent into 3-7 reading questions, for example:
+
+- 这本书对我现在的问题有什么直接帮助？
+- 哪几章最值得先读？
+- 作者的核心方法是什么？
+- 哪些案例可以直接迁移到量化/投资/写作/产品场景？
+- 哪些内容可以跳过？
+
+Targeted mode output should include:
+
+1. `先读结论`: 5-10 条直接答案, each tied to a chapter or page range.
+2. `阅读路线`: must-read / skim / skip table.
+3. `关键摘取`: frameworks, cases, numbers, terms, and operational steps that answer the user's question.
+4. `原书依据`: source chapter/page pointers for every important claim.
+5. `下一步`: whether to continue into full mode, and which chapters to expand first.
+
+Rules:
+
+- Targeted mode can read selected chapters first, but it must say what was not read yet.
+- Do not pretend targeted mode covered the whole book.
+- If the user later asks to publish book notes, convert targeted findings into the full frontmatter/chapter workflow instead of publishing a partial extraction as full-book notes.
+
+## 3. Extraction Paths
 
 ### A. Text-Based PDF/EPUB
 
@@ -40,9 +82,11 @@ If total extracted characters are near zero:
 4. If the user provides a public-domain reference text, store it in `book-workspace/<slug>/reference.md` as a checking base.
 5. For ancient/public-domain texts, preserve uncertainty: mark missing, damaged, doubtful, or reference-filled text as `存疑` / `据参照本补`. Do not silently repair text.
 
-## 3. Parallel Chapter Reading
+## 4. Parallel Chapter Reading
 
-Use one sub-agent per chapter or merged unit when available. If there are more than 20 chapters, merge by part/section into 8-20 reading units. If a single chapter exceeds 30,000 Chinese characters, either split it or allow up to about 2,600 Chinese characters in the note.
+In full mode, use one sub-agent per chapter or merged unit when available. If there are more than 20 chapters, merge by part/section into 8-20 reading units. If a single chapter exceeds 30,000 Chinese characters, either split it or allow up to about 2,600 Chinese characters in the note.
+
+In targeted mode, use agents by question or chapter cluster. The prompt must state the user's target question and the chapter/page range being checked.
 
 Each chapter prompt must include:
 
@@ -53,13 +97,13 @@ Each chapter prompt must include:
 
 Sub-agents return body text only. The main session writes files.
 
-## 4. Quote And Copyright Policy
+## 5. Quote And Copyright Policy
 
 - Copyrighted books: paraphrase first. Direct quotes are limited to at most 2 per chapter, each no more than 25 Chinese characters, with approximate page numbers.
 - Public-domain books: original text may be included in full when useful, with simplified Chinese and punctuation if the project format needs it.
 - Raw book files, extracted text, page images, and `book-workspace/` content must never be committed or published.
 
-## 5. Chapter Note Template
+## 6. Chapter Note Template
 
 Use this structure for each real chapter:
 
@@ -101,7 +145,7 @@ Rules:
 - If adding examples outside the book, put them under a separate `延伸案例（编者补）` block and start with `编者补，非原书内容`。
 - Extended examples must not be mixed into TL;DR, the main detailed reading, or the original-book case index.
 
-## 6. Assembly And Frontmatter
+## 7. Assembly And Frontmatter
 
 The main session creates:
 
@@ -131,7 +175,7 @@ title: '导读'
 grep -h "seq:" src/content/books/*.md | sort -n
 ```
 
-## 7. Glossary Generation
+## 8. Glossary Generation
 
 When useful, create 3-8 glossary entries per book in `src/content/glossary/`.
 
@@ -140,10 +184,12 @@ When useful, create 3-8 glossary entries per book in `src/content/glossary/`.
 - Do not duplicate existing terms; update existing files instead.
 - Terms must be beginner-friendly and self-contained.
 
-## 8. Quality Gate Before Writing Files
+## 9. Quality Gate Before Writing Files
 
 Before writing final Markdown, check:
 
+- The output mode is clear: full or targeted.
+- Targeted mode does not claim full-book coverage unless all chapters were read.
 - TL;DR has 3-5 sentences.
 - `## 详读` has real `###` sections.
 - The note follows the original chapter order.
@@ -154,7 +200,7 @@ Before writing final Markdown, check:
 - Chapter mapping is correct.
 - Original-book cases and editor-added examples are clearly separated.
 
-## 9. Verification
+## 10. Verification
 
 After writing:
 
@@ -164,7 +210,7 @@ After writing:
 4. Spot-check at least 2 chapters by grepping key sentences, case names, or numbers back to extracted text.
 5. Run `git status` and confirm `book-workspace/`, source books, extracted text, PDFs, EPUBs, and page images are not tracked.
 
-## 10. Publishing
+## 11. Publishing
 
 Show the local result first. Commit, push, publish, or deploy only after the user explicitly approves.
 

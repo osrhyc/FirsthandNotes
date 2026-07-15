@@ -62,6 +62,7 @@ Key rules:
 
 - Book files (PDF/EPUB) are provided by the user. NEVER download books from the internet or GitHub collections — those are pirated copies.
 - Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published).
+- Support both full-book chapter notes and targeted fast reading for the user's specific questions; targeted notes must state what was and was not read.
 - Notes must be derived from the extracted chapter text only — no reviews, no summaries from memory. If text is missing/garbled (scanned PDF), report instead of improvising.
 - Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (1200~2000 字，论证脉络+案例+要点).
 - Copyright guardrails: paraphrase-first; direct quotes ≤2 per chapter, ≤25 chars each, with page numbers.
