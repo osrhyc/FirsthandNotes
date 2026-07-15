@@ -7,6 +7,7 @@ import { DOMParser, Node, NodeFilter, parseHTML } from 'linkedom';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
+const ssr = join(root, '.ssr'); // SSR 中间产物：不能放 dist，否则会被一起部署到公网
 
 // glossary.ts 的 decorateTerms 用 DOMParser 做术语高亮，Node 里没有这个 API。
 // 补一个 spec 兼容的实现，让 SSR 和浏览器走同一条代码路径 —— 否则两边产出的
@@ -17,7 +18,7 @@ globalThis.document = document;
 globalThis.Node = Node;
 globalThis.NodeFilter = NodeFilter;
 
-const { render, allPaths } = await import(join(dist, 'server/entry-server.js'));
+const { render, allPaths } = await import(join(ssr, 'entry-server.js'));
 
 const template = await readFile(join(dist, 'index.html'), 'utf8');
 const paths = allPaths();
@@ -25,9 +26,23 @@ const paths = allPaths();
 let done = 0;
 const failures = [];
 
+// AntD 的 cssinjs 样式在每页都几乎一样（约 244KB，占单页 86%）。逐页内联的话
+// 641 页要重复 150MB+，而且浏览器跨页还不能复用。这里按内容去重收集，最后
+// 合成一个 antd-ssr.css，各页只留一个 <link>。
+const styleChunks = new Map();
+const STYLE_LINK = '<link rel="stylesheet" href="/assets/antd-ssr.css" />';
+
+function collectStyle(style) {
+	for (const tag of style.match(/<style[^>]*>[\s\S]*?<\/style>/g) ?? []) {
+		const css = tag.replace(/^<style[^>]*>|<\/style>$/g, '');
+		if (css.trim()) styleChunks.set(css, true);
+	}
+}
+
 for (const path of paths) {
 	try {
 		const { html, style, meta } = render(path);
+		collectStyle(style);
 		const page = template
 			.replace(
 				'<title>一手笔记 · Firsthand Notes</title>',
@@ -44,7 +59,7 @@ for (const path of paths) {
 					`<meta property="og:type" content="article" />`,
 				].join('\n\t\t'),
 			)
-			.replace('</head>', `\t${style}\n\t</head>`)
+			.replace('</head>', `\t${STYLE_LINK}\n\t</head>`)
 			.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
 
 		const outDir = path === '/' ? dist : join(dist, path);
@@ -56,7 +71,13 @@ for (const path of paths) {
 	}
 }
 
+// 合成共享样式表：各页的 <link> 指向它
+const css = [...styleChunks.keys()].join('\n');
+await mkdir(join(dist, 'assets'), { recursive: true });
+await writeFile(join(dist, 'assets/antd-ssr.css'), css);
+
 console.log(`预渲染 ${done}/${paths.length} 个页面 → dist/`);
+console.log(`antd-ssr.css：${styleChunks.size} 个去重样式块，${(css.length / 1024) | 0} KB（原先每页内联一份）`);
 if (failures.length) {
 	console.error(`\n${failures.length} 个失败：`);
 	for (const f of failures.slice(0, 10)) console.error(`  ${f}`);
@@ -64,7 +85,7 @@ if (failures.length) {
 }
 
 // sitemap 只收 canonical 地址，避免把 / 和 /section/x 这种同页别名重复提交
-const { SITE_URL, metaOf } = await import(join(dist, 'server/entry-server.js')).then((m) => m);
+const { SITE_URL, metaOf } = await import(join(ssr, 'entry-server.js')).then((m) => m);
 const canonical = [...new Set(paths.map((p) => metaOf(p).canonical))].sort();
 await writeFile(
 	join(dist, 'sitemap.xml'),

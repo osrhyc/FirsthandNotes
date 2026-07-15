@@ -28,3 +28,4 @@ book-workspace/
 *.epub
 *.mobi
 *.pdf
+.ssr/
