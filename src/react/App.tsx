@@ -17,6 +17,7 @@ import {
 	TrophyOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Dropdown, Empty, Input, Layout, Menu, theme } from 'antd';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Book } from './books';
 import { bookGroupsByModule, books } from './books';
@@ -25,101 +26,44 @@ import { articles } from './content';
 import type { Term } from './glossary';
 import { decorateTerms, termGroupsByModule, terms } from './glossary';
 import { Logo } from './Logo';
+import type { Route } from './routes';
+import {
+	BOOKSHELF_SECTIONS,
+	DEFAULT_SECTION,
+	firstTermOfModule,
+	isGlossarySection,
+	MODULES,
+	moduleOf,
+	parseRoute,
+	routeToPath,
+	sectionArticles,
+	sectionOf,
+	SECTIONS,
+	shelfSectionOfBook,
+	termsOfModule,
+} from './routes';
 
 const { Sider, Content, Header } = Layout;
 
-// ===== 栏目结构：一级模块 → 二级栏目，文章通过 frontmatter 的 category 归属 =====
-const MODULES = [
-	{
-		key: 'quant',
-		label: '量化交易',
-		icon: <StockOutlined />,
-		children: [
-			{ key: 'quant-school', label: '量化学堂', icon: <ReadOutlined /> },
-			{ key: 'quant-books', label: '量化书屋', icon: <BookOutlined /> },
-			{ key: 'quant-legends', label: '名人堂', icon: <TrophyOutlined /> },
-			{ key: 'quant-events', label: '大事记', icon: <HistoryOutlined /> },
-			{ key: 'quant-gossip', label: '江湖八卦', icon: <CoffeeOutlined /> },
-			{ key: 'quant-glossary', label: '名词手册', icon: <TagsOutlined /> },
-		],
-	},
-	{
-		key: 'library',
-		label: '书房',
-		icon: <BookOutlined />,
-		children: [
-			{ key: 'library-books', label: '书架', icon: <ReadOutlined /> },
-			{ key: 'library-glossary', label: '名词手册', icon: <TagsOutlined /> },
-		],
-	},
-	{
-		key: 'poker',
-		label: '德州扑克',
-		icon: <CrownOutlined />,
-		children: [
-			{ key: 'poker-school', label: '扑克学堂', icon: <ReadOutlined /> },
-			{ key: 'poker-glossary', label: '名词手册', icon: <TagsOutlined /> },
-		],
-	},
-];
-
-// 书架栏目 → 书籍模块 的映射（frontmatter 的 bookModule 字段）
-const BOOKSHELF_SECTIONS: Record<string, string> = {
-	'quant-books': 'quant',
-	'library-books': 'library',
+// 图标按栏目 key 补上（栏目结构本身在 routes.ts，那边要能在 Node 里跑）
+const MODULE_ICONS: Record<string, ReactNode> = {
+	quant: <StockOutlined />,
+	library: <BookOutlined />,
+	poker: <CrownOutlined />,
 };
 
-function shelfSectionOfBook(book: Book) {
-	return (
-		Object.keys(BOOKSHELF_SECTIONS).find((key) => BOOKSHELF_SECTIONS[key] === book.module) ??
-		'quant-books'
-	);
-}
-
-const SECTIONS = MODULES.flatMap((module) => module.children);
-const DEFAULT_SECTION = 'quant-school';
-
-function isGlossarySection(key: string) {
-	return key.endsWith('-glossary');
-}
-
-function moduleOf(sectionKey: string) {
-	return sectionKey.split('-')[0];
-}
-
-// 支持 frontmatter 里写简称或全称：category: '学堂' / '量化学堂' 均可
-const CATEGORY_ALIASES: Record<string, string> = {
-	学堂: 'quant-school',
-	量化学堂: 'quant-school',
-	名人堂: 'quant-legends',
-	大事记: 'quant-events',
-	八卦: 'quant-gossip',
-	江湖八卦: 'quant-gossip',
-	扑克学堂: 'poker-school',
-	德州扑克: 'poker-school',
+const SECTION_ICONS: Record<string, ReactNode> = {
+	'quant-school': <ReadOutlined />,
+	'quant-books': <BookOutlined />,
+	'quant-legends': <TrophyOutlined />,
+	'quant-events': <HistoryOutlined />,
+	'quant-gossip': <CoffeeOutlined />,
+	'library-books': <ReadOutlined />,
+	'poker-school': <ReadOutlined />,
 };
 
-function sectionOf(article: Article) {
-	return CATEGORY_ALIASES[article.category] ?? DEFAULT_SECTION;
-}
-
-// 每个栏目内按发布时间正序编号：最早的一篇是第 ① 篇
-const sectionArticles = new Map<string, Article[]>(
-	SECTIONS.filter((section) => !isGlossarySection(section.key)).map((section) => [
-		section.key,
-		articles
-			.filter((article) => sectionOf(article) === section.key)
-			.sort((a, b) => a.pubDate.localeCompare(b.pubDate)),
-	]),
-);
-
-function termsOfModule(moduleKey: string) {
-	return terms.filter((term) => term.module === moduleKey);
-}
-
-// 默认词条取分类顺序里的第一个，与名词手册列表的首项保持一致
-function firstTermOfModule(moduleKey: string) {
-	return termGroupsByModule.get(moduleKey)?.[0]?.items[0];
+function iconOfSection(key: string) {
+	return SECTION_ICONS[key] ?? <TagsOutlined />;
 }
 
 function circledNumber(index: number) {
@@ -149,47 +93,6 @@ function groupArticles(list: Article[]) {
 	return { flat, groups: names.map((name) => ({ name, items: map.get(name) ?? [] })) };
 }
 
-type Route = { sectionKey: string; itemId?: string; chapter?: number };
-
-function getInitialState(): Route {
-	const hash = window.location.hash;
-
-	if (hash.startsWith('#/term/')) {
-		const slug = hash.replace('#/term/', '');
-		const term = terms.find((item) => item.id === slug);
-		if (term) return { sectionKey: `${term.module}-glossary`, itemId: term.id };
-	}
-
-	if (hash.startsWith('#/book/')) {
-		const [id, ch] = hash.replace('#/book/', '').split('/');
-		const book = books.find((item) => item.id === id);
-		if (book) {
-			const chapter = Math.min(
-				Math.max(Number.parseInt(ch ?? '1', 10) - 1 || 0, 0),
-				book.chapters.length - 1,
-			);
-			return { sectionKey: shelfSectionOfBook(book), itemId: id, chapter };
-		}
-	}
-
-	if (hash.startsWith('#/article/')) {
-		const slug = hash.replace('#/article/', '');
-		const article = articles.find((item) => item.id === slug);
-		if (article) return { sectionKey: sectionOf(article), itemId: article.id };
-	}
-
-	const sectionSlug = hash.replace(/^#\/section\//, '');
-	if (SECTIONS.some((section) => section.key === sectionSlug)) {
-		const first = BOOKSHELF_SECTIONS[sectionSlug] // 书架栏目默认进总览
-			? undefined
-			: isGlossarySection(sectionSlug)
-				? firstTermOfModule(moduleOf(sectionSlug))?.id
-				: sectionArticles.get(sectionSlug)?.[0]?.id;
-		return { sectionKey: sectionSlug, itemId: first };
-	}
-	return { sectionKey: DEFAULT_SECTION, itemId: sectionArticles.get(DEFAULT_SECTION)?.[0]?.id };
-}
-
 type ThemeMode = 'system' | 'light' | 'dark';
 
 function getStoredMode(): ThemeMode {
@@ -197,8 +100,10 @@ function getStoredMode(): ThemeMode {
 	return saved === 'light' || saved === 'dark' ? saved : 'system';
 }
 
-export function App() {
-	const [route, setRoute] = useState<Route>(getInitialState);
+export function App({ initialPath }: { initialPath?: string } = {}) {
+	const [route, setRoute] = useState<Route>(() =>
+		parseRoute(initialPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname)),
+	);
 	const { sectionKey, itemId } = route;
 	// 名词浮窗：可同时打开多个，各自有位置和层级
 	const [termWindows, setTermWindows] = useState<
@@ -230,6 +135,13 @@ export function App() {
 	useEffect(() => {
 		document.querySelector('.article-card')?.scrollTo(0, 0);
 	}, [itemId, route.chapter]);
+
+	// 浏览器前进/后退：URL 变了就把路由同步回来
+	useEffect(() => {
+		const onPopState = () => setRoute(parseRoute(window.location.pathname));
+		window.addEventListener('popstate', onPopState);
+		return () => window.removeEventListener('popstate', onPopState);
+	}, []);
 
 	const glossaryMode = isGlossarySection(sectionKey);
 	const shelfModule = BOOKSHELF_SECTIONS[sectionKey];
@@ -334,49 +246,59 @@ export function App() {
 		[selectedTerm, moduleTerms],
 	);
 
+	// 用 pushState 而不是 replaceState，否则后退键没东西可退
+	function navigate(next: Route) {
+		window.history.pushState(null, '', routeToPath(next));
+	}
+
 	function openSection(key: string) {
 		const first = BOOKSHELF_SECTIONS[key] // 书架栏目默认进总览
 			? undefined
 			: isGlossarySection(key)
 				? firstTermOfModule(moduleOf(key))?.id
 				: sectionArticles.get(key)?.[0]?.id;
-		setRoute({ sectionKey: key, itemId: first });
+		const next: Route = { sectionKey: key, itemId: first };
+		setRoute(next);
 		setTermWindows([]);
 		setQuery('');
-		const hashPrefix = isGlossarySection(key) ? '#/term/' : '#/article/';
-		window.history.replaceState(null, '', first ? `${hashPrefix}${first}` : `#/section/${key}`);
+		navigate(next);
 	}
 
 	function backToShelf() {
 		const shelfKey = BOOKSHELF_SECTIONS[sectionKey] ? sectionKey : 'quant-books';
-		setRoute({ sectionKey: shelfKey, itemId: undefined });
+		const next: Route = { sectionKey: shelfKey, itemId: undefined };
+		setRoute(next);
 		setQuery('');
-		window.history.replaceState(null, '', `#/section/${shelfKey}`);
+		navigate(next);
 	}
 
 	function openBook(id: string, chapter = 0) {
 		const book = books.find((item) => item.id === id);
 		if (!book) return;
-		setRoute({ sectionKey: shelfSectionOfBook(book), itemId: id, chapter });
+		const next: Route = { sectionKey: shelfSectionOfBook(book), itemId: id, chapter };
+		setRoute(next);
 		setQuery('');
-		window.history.replaceState(null, '', `#/book/${id}/${chapter + 1}`);
+		navigate(next);
 	}
 
 	function openChapter(index: number) {
 		if (!currentBook) return;
 		const chapter = Math.min(Math.max(index, 0), currentBook.chapters.length - 1);
-		setRoute({ sectionKey, itemId: currentBook.id, chapter });
-		window.history.replaceState(null, '', `#/book/${currentBook.id}/${chapter + 1}`);
+		const next: Route = { sectionKey, itemId: currentBook.id, chapter };
+		setRoute(next);
+		navigate(next);
 	}
 
 	function openArticle(id: string) {
-		setRoute({ sectionKey, itemId: id });
-		window.history.replaceState(null, '', `#/article/${id}`);
+		const next: Route = { sectionKey, itemId: id };
+		setRoute(next);
+		navigate(next);
 	}
 
 	function openTerm(id: string) {
-		setRoute({ sectionKey, itemId: id });
-		window.history.replaceState(null, '', `#/term/${id}`);
+		const next: Route = { sectionKey, itemId: id };
+		setRoute(next);
+		navigate(next);
 	}
 
 	// 打开名词浮窗：已打开则置顶，否则新窗口向左层叠排开
@@ -496,11 +418,11 @@ export function App() {
 
 	const menuItems = MODULES.map((module) => ({
 		key: module.key,
-		icon: module.icon,
+		icon: MODULE_ICONS[module.key],
 		label: module.label,
 		children: module.children.map((section) => ({
 			key: section.key,
-			icon: section.icon,
+			icon: iconOfSection(section.key),
 			label: section.label,
 		})),
 	}));
