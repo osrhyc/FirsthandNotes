@@ -450,7 +450,17 @@ export function App() {
 	function renderBookCard(book: Book) {
 		return (
 			<button type="button" className="book-card" key={book.id} onClick={() => openBook(book.id)}>
-				<span className="book-name">{book.title}</span>
+				<span className="book-card-head">
+					<span className="book-name">{book.title}</span>
+					{book.deepRead ? (
+						<span
+							className="book-badge"
+							title={`真读原书：从原书提取真实章节文本，一章一篇，共 ${book.chapters.length} 篇`}
+						>
+							真读逐章
+						</span>
+					) : null}
+				</span>
 				<span className="book-author">{book.author}</span>
 				<span className="book-note">{book.note}</span>
 			</button>

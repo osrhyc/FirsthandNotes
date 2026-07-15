@@ -334,6 +334,13 @@ ul + .course-group {
 	transform: translateY(-2px);
 }
 
+.book-card-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+}
+
 .book-name {
 	font-family: var(--font-serif);
 	font-size: 15px;
@@ -344,6 +351,23 @@ ul + .course-group {
 
 .book-card:hover .book-name {
 	color: var(--accent);
+}
+
+/* 真读逐章徽章：从原书提取真实章节文本、一章一篇的书 */
+.book-badge {
+	flex: none;
+	align-self: flex-start;
+	margin-top: 2px;
+	padding: 1px 7px;
+	border: 1px solid var(--gold);
+	border-radius: 999px;
+	background: var(--gold-soft);
+	color: var(--gold);
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	line-height: 1.6;
+	white-space: nowrap;
 }
 
 .book-author {
