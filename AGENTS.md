@@ -55,7 +55,10 @@ Keep explanations self-contained and beginner-friendly. Do not duplicate an exis
 
 ## Reading Agent (真读速读)
 
-For "真读原书" book notes, follow `.claude/commands/read-book.md` (the `/read-book` command). Key rules:
+For "真读原书" book notes, follow the shared workflow in `.ai/read-book.md`.
+Claude Code can also use `.claude/commands/read-book.md` as the `/read-book` command, and Cursor can use `.cursor/rules/read-book.mdc`.
+
+Key rules:
 
 - Book files (PDF/EPUB) are provided by the user. NEVER download books from the internet or GitHub collections — those are pirated copies.
 - Extract real chapter text with `python3 scripts/extract-book.py <file>` into `book-workspace/<slug>/` (gitignored; raw book text must never be committed or published).

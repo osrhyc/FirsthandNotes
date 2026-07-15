@@ -8,12 +8,10 @@
 				"PATH=/Users/chengyongliu/.nvm/versions/node/v22.14.0/bin:/usr/bin:/bin",
 				"npm",
 				"run",
-				"dev",
-				"--",
-				"--port",
-				"4321"
+				"dev"
 			],
-			"port": 4321
+			"port": 4321,
+			"autoPort": true
 		}
 	]
 }
