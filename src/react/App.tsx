@@ -47,7 +47,10 @@ const MODULES = [
 		key: 'library',
 		label: '书房',
 		icon: <BookOutlined />,
-		children: [{ key: 'library-books', label: '书架', icon: <ReadOutlined /> }],
+		children: [
+			{ key: 'library-books', label: '书架', icon: <ReadOutlined /> },
+			{ key: 'library-glossary', label: '名词手册', icon: <TagsOutlined /> },
+		],
 	},
 	{
 		key: 'poker',
