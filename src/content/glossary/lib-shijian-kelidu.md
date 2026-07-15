@@ -2,7 +2,7 @@
 term: '时间颗粒度'
 aliases: []
 module: 'library'
-category: '个人与协作'
+category: '《底层逻辑》'
 pubDate: '2026-07-15'
 ---
 

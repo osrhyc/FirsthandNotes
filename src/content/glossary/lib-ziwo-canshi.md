@@ -2,7 +2,7 @@
 term: '自我蚕食'
 aliases: ['自我颠覆', '吃掉自己']
 module: 'library'
-category: '商业模式'
+category: '《一网打尽》'
 pubDate: '2026-07-15'
 ---
 

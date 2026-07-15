@@ -2,7 +2,7 @@
 term: '边际交付时间'
 aliases: ['边际交付成本']
 module: 'library'
-category: '个人与协作'
+category: '《底层逻辑》'
 pubDate: '2026-07-15'
 ---
 

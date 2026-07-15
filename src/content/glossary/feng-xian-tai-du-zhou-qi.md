@@ -2,7 +2,7 @@
 term: '风险态度周期'
 aliases: ['风险容忍度', '风险偏好周期']
 module: 'quant'
-category: '周期与心理'
+category: '《周期》'
 pubDate: '2026-07-15'
 ---
 

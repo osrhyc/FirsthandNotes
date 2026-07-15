@@ -2,7 +2,7 @@
 term: '负营运资本'
 aliases: ['负现金周期', '负营运资金']
 module: 'library'
-category: '商业模式'
+category: '《一网打尽》'
 pubDate: '2026-07-15'
 ---
 

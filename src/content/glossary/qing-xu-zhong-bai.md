@@ -2,7 +2,7 @@
 term: '情绪钟摆'
 aliases: ['钟摆', '投资人心理钟摆']
 module: 'quant'
-category: '周期与心理'
+category: '《周期》'
 pubDate: '2026-07-15'
 ---
 

@@ -2,7 +2,7 @@
 term: '调节回路'
 aliases: ['负反馈回路', '平衡回路']
 module: 'library'
-category: '系统思维'
+category: '《系统思考》'
 pubDate: '2026-07-15'
 ---
 

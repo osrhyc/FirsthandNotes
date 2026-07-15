@@ -2,7 +2,7 @@
 term: '系统循环图'
 aliases: ['因果回路图', '循环图']
 module: 'library'
-category: '系统思维'
+category: '《系统思考》'
 pubDate: '2026-07-15'
 ---
 
