@@ -50,24 +50,23 @@ $: visibleCategoryGroups = categories
 		books: filteredBooks.filter((book) => book.category === category),
 	}))
 	.filter((group) => group.books.length > 0);
-$: recentBooks = [...books]
-	.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-	.slice(0, 4);
+$: recentChapters = books
+	.flatMap((book) =>
+		book.chapters.map((chapter) => ({
+			book,
+			chapter,
+		})),
+	)
+	.sort(
+		(a, b) =>
+			b.chapter.updatedAt.localeCompare(a.chapter.updatedAt) ||
+			a.book.sequence - b.book.sequence ||
+			b.chapter.number - a.chapter.number,
+	)
+	.slice(0, 6);
 
 function firstChapterUrl(book: Book) {
 	const chapter = book.chapters[0];
-	return chapter ? url(`/posts/${chapter.postSlug}/`) : url("/books/");
-}
-
-function latestChapter(book: Book) {
-	return [...book.chapters].sort(
-		(a, b) =>
-			b.updatedAt.localeCompare(a.updatedAt) || b.number - a.number,
-	)[0];
-}
-
-function latestChapterUrl(book: Book) {
-	const chapter = latestChapter(book);
 	return chapter ? url(`/posts/${chapter.postSlug}/`) : url("/books/");
 }
 
@@ -227,31 +226,30 @@ onMount(() => {
 		<div class="mb-3 flex items-end justify-between gap-4 px-1">
 			<div>
 				<h2 class="text-lg font-bold text-90">最近更新</h2>
-				<p class="mt-1 text-sm text-50">继续阅读最近补充的章节</p>
+				<p class="mt-1 text-sm text-50">最近补充和修订的章节</p>
 			</div>
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2">
-			{#each recentBooks as book}
+			{#each recentChapters as item}
 				<a
-					href={latestChapterUrl(book)}
+					href={url(`/posts/${item.chapter.postSlug}/`)}
 					class="card-base group flex min-h-32 items-start gap-4 p-5 transition hover:-translate-y-0.5"
 				>
 					<div
 						class="flex h-12 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-lg font-bold text-[var(--primary)]"
 						aria-hidden="true"
 					>
-						{book.title.slice(0, 1)}
+						{item.book.title.slice(0, 1)}
 					</div>
 					<div class="min-w-0 flex-1">
 						<div class="flex items-start justify-between gap-3">
-							<h3 class="line-clamp-1 font-bold text-90 transition group-hover:text-[var(--primary)]">
-								{book.title}
+							<h3 class="line-clamp-2 font-bold leading-6 text-90 transition group-hover:text-[var(--primary)]">
+								{item.chapter.title}
 							</h3>
-							<span class="shrink-0 text-xs text-30">{formatDate(book.updatedAt)}</span>
+							<span class="shrink-0 text-xs text-30">{formatDate(item.chapter.updatedAt)}</span>
 						</div>
-						<p class="mt-1 truncate text-xs text-50">{book.author}</p>
-						<p class="mt-3 line-clamp-1 text-sm text-75">
-							{latestChapter(book)?.title || "查看章节目录"}
+						<p class="mt-2 line-clamp-1 text-sm text-50">
+							《{item.book.title}》 · {item.book.author}
 						</p>
 					</div>
 				</a>
