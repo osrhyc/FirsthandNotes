@@ -19,7 +19,7 @@ The GitHub Pages workflow publishes `dist/`.
 Markdown source data lives under `src/content/blog/`, `src/content/books/`, and `src/content/glossary/`.
 `npm run build` first mirrors those sources into Starlight pages under `src/content/docs/` via `scripts/sync-starlight-content.mjs`, then writes static output to `dist/`.
 
-Use `astro.config.mjs`, `src/content.config.ts`, `src/styles/starlight.css`, and the sync script for site/theme changes. Do not reintroduce the old React + Ant Design application logic.
+Use `astro.config.mjs`, `src/content.config.ts`, `src/styles/starlight.css`, and the sync script for site/theme changes.
 
 ## Research-First Writing Agent
 
