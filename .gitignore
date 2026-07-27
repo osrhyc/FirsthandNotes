@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# generated Starlight content mirror
+src/content/docs/
+
 # dependencies
 node_modules/
 

@@ -2,13 +2,13 @@
 
 > 记录值得长期保存的知识
 
-基于 React + Ant Design + Vite 的静态文章管理后台，托管在 GitHub Pages：<https://blog.dizhuig.com/>
+基于 Astro + Starlight 的静态知识库，托管在 GitHub Pages：<https://blog.dizhuig.com/>
 
 ## 本地开发
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321/
+npm run dev -- --port 4321
 npm run build    # 构建到 ./dist/
 npm run preview  # 本地预览构建结果
 ```
@@ -26,7 +26,7 @@ tags: ['标签'] # 可选
 ---
 ```
 
-React 应用会在构建时读取 `src/content/blog/*.md`，解析 frontmatter 并渲染到文章管理后台。
+构建时会先运行 `scripts/sync-starlight-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步为 Starlight 的 `src/content/docs/` 页面，然后由 Astro 输出静态站点。
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
@@ -34,8 +34,10 @@ React 应用会在构建时读取 `src/content/blog/*.md`，解析 frontmatter �
 
 ```
 src/
-├── content/blog/    # 文章（Markdown）
-├── react/           # React + Ant Design 管理后台
-├── main.tsx         # React 入口
-└── vite-env.d.ts    # Vite 类型声明
+├── content/blog/      # 文章源数据
+├── content/books/     # 读书笔记源数据
+├── content/glossary/  # 名词手册源数据
+├── content/docs/      # Starlight 生成页面
+├── content.config.ts  # Starlight 内容集合
+└── styles/            # Starlight 样式覆盖
 ```

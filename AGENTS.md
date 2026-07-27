@@ -1,6 +1,6 @@
 ## Development
 
-This project now uses React + Ant Design + Vite for a static article management interface.
+This project uses Astro + Starlight for a static, documentation-style knowledge base.
 
 ```
 npm run dev -- --port 4321
@@ -16,7 +16,10 @@ The GitHub Pages workflow publishes `dist/`.
 
 ## Documentation
 
-Use the React code under `src/react/` for UI changes. Markdown articles live under `src/content/blog/` and are loaded by `src/react/content.ts`.
+Markdown source data lives under `src/content/blog/`, `src/content/books/`, and `src/content/glossary/`.
+`npm run build` first mirrors those sources into Starlight pages under `src/content/docs/` via `scripts/sync-starlight-content.mjs`, then writes static output to `dist/`.
+
+Use `astro.config.mjs`, `src/content.config.ts`, `src/styles/starlight.css`, and the sync script for site/theme changes. Do not reintroduce the old React + Ant Design application logic.
 
 ## Research-First Writing Agent
 
@@ -29,7 +32,7 @@ Core requirements:
 - Research before drafting when web/current/source-backed information matters.
 - Filter sources by quality and clearly separate facts, opinions, rumors, and inference.
 - Cite source-backed claims with Markdown links.
-- Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo.
+- Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo. The Starlight docs copy is generated; do not edit generated files under `src/content/docs/` as the source of truth.
 - After every writing change, build the project, run the local dev server with `npm run dev -- --port 4321`, and give the user the preview URL.
 - Do not publish, push, deploy, or send article changes to GitHub until the user has reviewed locally and explicitly approves publishing.
 
