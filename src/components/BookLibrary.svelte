@@ -26,7 +26,7 @@ export let books: Book[] = [];
 let query = "";
 let selectedCategory = "全部";
 let isCategoryMenuOpen = false;
-let categoryMenu: HTMLDivElement;
+let previousBodyOverflow = "";
 
 $: categories = [
 	"全部",
@@ -85,29 +85,38 @@ function categoryCount(category: string) {
 
 function selectCategory(category: string) {
 	selectedCategory = category;
-	isCategoryMenuOpen = false;
+	setCategoryMenuOpen(false);
+}
+
+function setCategoryMenuOpen(open: boolean) {
+	isCategoryMenuOpen = open;
+	if (typeof document === "undefined") return;
+	if (open) {
+		previousBodyOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+	} else {
+		document.body.style.overflow = previousBodyOverflow;
+	}
+}
+
+function portal(node: HTMLElement) {
+	document.body.appendChild(node);
+	return {
+		destroy() {
+			node.remove();
+		},
+	};
 }
 
 onMount(() => {
-	function handlePointerDown(event: PointerEvent) {
-		if (
-			isCategoryMenuOpen &&
-			categoryMenu &&
-			!categoryMenu.contains(event.target as Node)
-		) {
-			isCategoryMenuOpen = false;
-		}
-	}
-
 	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === "Escape") isCategoryMenuOpen = false;
+		if (event.key === "Escape") setCategoryMenuOpen(false);
 	}
 
-	document.addEventListener("pointerdown", handlePointerDown);
 	document.addEventListener("keydown", handleKeyDown);
 
 	return () => {
-		document.removeEventListener("pointerdown", handlePointerDown);
+		document.body.style.overflow = previousBodyOverflow;
 		document.removeEventListener("keydown", handleKeyDown);
 	};
 });
@@ -151,13 +160,13 @@ onMount(() => {
 					/>
 				</label>
 
-				<div class="relative" bind:this={categoryMenu}>
+				<div>
 					<button
 						type="button"
-						aria-haspopup="listbox"
+						aria-haspopup="dialog"
 						aria-expanded={isCategoryMenuOpen}
-						aria-controls="book-category-menu"
-						on:click={() => (isCategoryMenuOpen = !isCategoryMenuOpen)}
+						aria-controls="book-category-dialog"
+						on:click={() => setCategoryMenuOpen(!isCategoryMenuOpen)}
 						class={`flex h-11 w-full items-center gap-3 rounded-xl border bg-[var(--page-bg)] px-4 text-left text-sm outline-none transition ${
 							isCategoryMenuOpen
 								? "border-[var(--primary)] text-90"
@@ -171,55 +180,69 @@ onMount(() => {
 						/>
 						<span class="min-w-0 flex-1 truncate">{selectedCategory}</span>
 						<Icon
-							icon="material-symbols:expand-more-rounded"
+							icon="material-symbols:unfold-more-rounded"
 							width="22"
-							class={`shrink-0 text-50 transition-transform ${
-								isCategoryMenuOpen ? "rotate-180" : ""
-							}`}
+							class="shrink-0 text-50"
 						/>
 					</button>
-
-					{#if isCategoryMenuOpen}
-						<div
-							id="book-category-menu"
-							role="listbox"
-							aria-label="按分类筛选书籍"
-							class="absolute right-0 top-[calc(100%+0.5rem)] z-40 w-full min-w-56 overflow-hidden rounded-lg border border-black/10 bg-[var(--card-bg)] p-2 shadow-xl dark:border-white/10"
-						>
-							<div class="px-2 pb-2 pt-1 text-xs font-semibold text-30">选择分类</div>
-							<div class="max-h-72 overflow-y-auto">
-								{#each categories as category}
-									<button
-										type="button"
-										role="option"
-										aria-selected={selectedCategory === category}
-										on:click={() => selectCategory(category)}
-										class={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition ${
-											selectedCategory === category
-												? "bg-[var(--btn-regular-bg)] font-semibold text-[var(--primary)]"
-												: "text-75 hover:bg-[var(--btn-plain-bg-hover)]"
-										}`}
-									>
-										<span class="min-w-0 flex-1 truncate">{category}</span>
-										<span class="shrink-0 text-xs text-30">{categoryCount(category)}</span>
-										{#if selectedCategory === category}
-											<Icon
-												icon="material-symbols:check-rounded"
-												width="19"
-												class="shrink-0 text-[var(--primary)]"
-											/>
-										{:else}
-											<span class="w-[19px] shrink-0"></span>
-										{/if}
-									</button>
-								{/each}
-							</div>
-						</div>
-					{/if}
 				</div>
 			</div>
-		</div>
-	</header>
+		</header>
+
+		{#if isCategoryMenuOpen}
+			<div use:portal class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+				<button
+					type="button"
+					aria-label="关闭分类选择"
+					class="absolute inset-0 h-full w-full bg-black/45 backdrop-blur-[2px]"
+					on:click={() => setCategoryMenuOpen(false)}
+				></button>
+				<div
+					id="book-category-dialog"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="book-category-title"
+					class="relative z-10 w-full max-w-md overflow-hidden rounded-xl border border-black/10 bg-[var(--card-bg)] shadow-2xl dark:border-white/10"
+				>
+					<header class="flex items-center justify-between gap-4 border-b border-[var(--line-divider)] px-5 py-4">
+						<div>
+							<h2 id="book-category-title" class="text-lg font-bold text-90">选择书籍分类</h2>
+							<p class="mt-1 text-xs text-50">共 {books.length} 本精读书目</p>
+						</div>
+						<button
+							type="button"
+							aria-label="关闭"
+							on:click={() => setCategoryMenuOpen(false)}
+							class="btn-plain flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+						>
+							<Icon icon="material-symbols:close-rounded" width="22" />
+						</button>
+					</header>
+					<div class="grid max-h-[min(28rem,70vh)] grid-cols-1 gap-2 overflow-y-auto p-4 sm:grid-cols-2">
+						{#each categories as category}
+							<button
+								type="button"
+								aria-pressed={selectedCategory === category}
+								on:click={() => selectCategory(category)}
+								class={`flex min-h-12 items-center gap-3 rounded-lg border px-3.5 py-2.5 text-left text-sm transition ${
+									selectedCategory === category
+										? "border-[var(--primary)] bg-[var(--btn-regular-bg)] font-semibold text-[var(--primary)]"
+										: "border-black/10 text-75 hover:border-black/20 hover:bg-[var(--btn-plain-bg-hover)] dark:border-white/10 dark:hover:border-white/20"
+								}`}
+							>
+								<span class="min-w-0 flex-1">{category}</span>
+								<span class="shrink-0 text-xs text-30">{categoryCount(category)}</span>
+								{#if selectedCategory === category}
+									<Icon icon="material-symbols:check-circle-rounded" width="20" class="shrink-0 text-[var(--primary)]" />
+								{:else}
+									<span class="w-5 shrink-0"></span>
+								{/if}
+							</button>
+						{/each}
+					</div>
+				</div>
+			</div>
+		{/if}
 
 	<section>
 		<div class="mb-3 flex items-end justify-between gap-4 px-1">

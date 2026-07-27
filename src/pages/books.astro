@@ -9,6 +9,8 @@ const books = await getBooks();
 <MainGridLayout
 	title="书籍"
 	description="一手笔记的完整精读书目，按书浏览逐章阅读笔记。"
+	fullWidth
+	customSidebar
 >
 	<BookLibrary books={books} client:load />
 </MainGridLayout>
