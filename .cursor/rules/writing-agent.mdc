@@ -18,5 +18,7 @@ Key requirements:
 - Separate verified facts, analysis, opinion, rumors, and inference.
 - Use Markdown links for source-backed claims.
 - Save publishable posts under `src/content/blog/` with frontmatter.
+- Follow `.ai/daily-briefing.md` for the scheduled daily briefing.
+- Follow `.ai/read-book.md` instead when reading a user-provided PDF/EPUB; web summaries cannot substitute for the original book.
 - After every writing change, build the project and run the local dev server with `npm run dev -- --port 4321`.
 - Do not publish, push, deploy, or send article changes to GitHub until the user explicitly approves after local review.

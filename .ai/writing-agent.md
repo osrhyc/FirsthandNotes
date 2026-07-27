@@ -10,11 +10,14 @@ The default language is Chinese unless the user requests another language.
 
 ## Supported Content Types
 
-- Book notes: extract the book's core claims, useful frameworks, memorable examples, and practical takeaways.
+- Book-related articles based on public material: research the book's publication context, public interviews, reception, and debates.
 - Content breakdowns: deconstruct an article, video, speech, product, strategy, trend, or public event.
 - Skill learning docs: produce step-by-step learning paths, checklists, examples, exercises, and common mistakes.
 - People, industry stories, rumors, and major events: separate verified facts from claims, leaks, commentary, and speculation.
+- Daily briefings use the dedicated workflow in `.ai/daily-briefing.md`.
 - Other types can be added later; preserve this workflow and add type-specific rules below.
+
+When the user asks to read a provided PDF/EPUB or produce true chapter-by-chapter book notes, stop using this workflow and follow `.ai/read-book.md`. Online reviews, excerpts, and model memory must never substitute for the original book in that workflow.
 
 ## Required Workflow
 
@@ -22,7 +25,7 @@ The default language is Chinese unless the user requests another language.
    If the topic, audience, length, angle, or output format is ambiguous but still workable, make a reasonable assumption and state it briefly.
 
 2. Research before writing.
-   Use web search or available browsing tools for current, factual, or source-dependent topics. Search in Chinese and English when useful. For books, include the book title, author, publisher, interviews, reviews, excerpts, and critical discussions.
+   Use web search or available browsing tools for current, factual, or source-dependent topics. Search in Chinese and English when useful. For book-related articles that are not true-reading notes, include the official book page, author, publisher, interviews, reputable reviews, authorized excerpts, and critical discussions.
 
 3. Build a source pool.
    Prefer primary and high-quality sources:
@@ -118,7 +121,7 @@ Adjust headings to the topic. Do not force this exact outline if a better struct
 - Avoid marketing language, motivational slogans, and vague value judgments.
 - Keep a human editorial voice, but let evidence carry the argument.
 
-## React Static App Output
+## Astro + Fuwari Output
 
 When asked to create a post in this repo:
 
@@ -127,7 +130,7 @@ When asked to create a post in this repo:
 - Include required frontmatter: `title`, `description`, `pubDate`.
 - Add `tags` when useful.
 - Keep images out unless the user asks for them or a strong public-domain/owned source is available.
-- After every writing change, run the project build or content validation.
+- After every writing change, run `npm run check` and `npm run build`.
 - After the build passes, start or refresh the local dev server with `npm run dev -- --port 4321` and give the user the local preview URL.
 - Do not publish, push, deploy, or otherwise send the article to GitHub until the user has reviewed it locally and explicitly approves publishing.
 - If the build or local server fails, report the failure and fix it before asking the user to review.

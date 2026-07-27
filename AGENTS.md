@@ -21,6 +21,8 @@ Markdown source data lives under `src/content/blog/`, `src/content/books/`, and 
 
 Use `astro.config.mjs`, `src/config.ts`, `src/content.config.ts`, `src/styles/`, `src/components/`, `src/layouts/`, and the sync script for site/theme changes.
 
+The current product and architecture baseline is documented in `docs/product-design.md`. When an older proposal conflicts with that file or the current code, follow the current baseline and implementation.
+
 ## Brand
 
 - Chinese name: `一手笔记`
@@ -36,7 +38,7 @@ Keep the logo proportions and colors intact. Do not replace the mark with a gene
 
 For article-writing tasks, follow the shared workflow in `.ai/writing-agent.md`.
 
-This applies when the user asks for book notes, content breakdowns, skill-learning documents, people or industry stories, rumors, major events, or other source-dependent writing.
+This applies when the user asks for book-related research, content breakdowns, skill-learning documents, people or industry stories, rumors, major events, or other source-dependent writing. True reading from a provided PDF/EPUB uses `.ai/read-book.md` instead.
 
 Core requirements:
 
@@ -46,6 +48,15 @@ Core requirements:
 - Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo. The Fuwari posts copy is generated; do not edit generated files under `.generated/posts/` as the source of truth.
 - After every writing change, build the project, run the local dev server with `npm run dev -- --port 4321`, and give the user the preview URL.
 - Do not publish, push, deploy, or send article changes to GitHub until the user has reviewed locally and explicitly approves publishing.
+
+## Daily Briefing Agent
+
+For the scheduled 每日简报, follow `.ai/daily-briefing.md`.
+
+- The scheduler is a ChatGPT task running daily at 10:00 Asia/Shanghai. Do not introduce n8n.
+- Research dynamically across AI, development, entrepreneurship, marketing, business, finance, stocks, and funds.
+- Keep facts, market interpretation, rumors, and editorial inference distinct, with source links.
+- The daily briefing automation has publication permission only for its own briefing output. Other content still requires local review and explicit approval.
 
 ## Glossary Workflow (名词手册)
 

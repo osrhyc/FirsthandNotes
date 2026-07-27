@@ -32,6 +32,15 @@ tags: ['标签'] # 可选
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
+## 内容工作流
+
+- 产品与架构基线：`docs/product-design.md`
+- 研究型写作：`.ai/writing-agent.md`
+- 原书逐章精读：`.ai/read-book.md`
+- 每日简报：`.ai/daily-briefing.md`
+
+每日简报由 ChatGPT 定时任务在每天 10:00（Asia/Shanghai）触发，不使用 n8n。Codex、Claude Code 和 Cursor 的工具入口都应引用 `.ai/` 中的共享规则，避免维护多份不同规范。
+
 ## 品牌资源
 
 - Logo：`public/assets/brand/logo.png`
@@ -46,10 +55,11 @@ src/
 ├── content/blog/      # 文章源数据
 ├── content/books/     # 读书笔记源数据
 ├── content/glossary/  # 名词手册源数据
-├── content/posts/     # Fuwari 生成页面
 ├── content.config.ts  # Astro 内容集合
 ├── config.ts          # Fuwari 站点配置
 └── styles/            # Fuwari 样式
+
+.generated/            # 构建期生成的文章与模块索引（不提交）
 ```
 
 界面基于 [Fuwari](https://github.com/saicaca/fuwari) 迁移，遵循其 MIT 许可证。
