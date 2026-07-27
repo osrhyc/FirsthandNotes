@@ -82,7 +82,7 @@ export type Tag = {
 
 export async function getTagList(): Promise<Tag[]> {
 	const counts = new Map<string, number>();
-	for (const post of await getRawSortedPosts()) {
+	for (const post of await getTechnicalPosts()) {
 		for (const tag of post.data.tags) {
 			counts.set(tag, (counts.get(tag) || 0) + 1);
 		}
@@ -100,7 +100,7 @@ export type Category = {
 
 export async function getCategoryList(): Promise<Category[]> {
 	const counts = new Map<string, number>();
-	for (const post of await getRawSortedPosts()) {
+	for (const post of await getTechnicalPosts()) {
 		const category = post.data.category || "";
 		if (category) counts.set(category, (counts.get(category) || 0) + 1);
 	}

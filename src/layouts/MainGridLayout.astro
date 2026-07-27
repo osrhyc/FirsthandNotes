@@ -39,6 +39,13 @@ const {
 const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
+const isTechnicalModule =
+	Astro.url.pathname.startsWith("/blog/") ||
+	Astro.url.pathname.startsWith("/series/");
+const hasCustomSidebar = Astro.slots.has("sidebar");
+const useDefaultSidebar = !customSidebar && isTechnicalModule;
+const layoutFullWidth =
+	fullWidth || (!useDefaultSidebar && !hasCustomSidebar);
 
 const mainPanelTop = siteConfig.banner.enable
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
@@ -69,7 +76,7 @@ const mainPanelTop = siteConfig.banner.enable
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class:list={[
             "transition duration-700 w-full left-0 right-0 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto] mx-auto gap-4 px-0 md:px-4",
-            fullWidth ? "grid-cols-1" : "grid-cols-[17.5rem_auto]",
+            layoutFullWidth ? "grid-cols-1" : "grid-cols-[17.5rem_auto]",
         ]}
         >
             <!-- Banner image credit -->
@@ -87,15 +94,15 @@ const mainPanelTop = siteConfig.banner.enable
 
 
             <div id="sidebar-container" class="contents">
-                {!customSidebar && (
-                    <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+                {useDefaultSidebar && (
+                    <SideBar class="hidden mb-4 row-start-2 row-end-3 col-span-2 lg:block lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
                 )}
                 <slot name="sidebar"></slot>
             </div>
 
             <main id="swup-container" class:list={[
                 "transition-swup-fade overflow-hidden",
-                fullWidth ? "col-span-1" : "col-span-2 lg:col-span-1",
+                layoutFullWidth ? "col-span-1" : "col-span-2 lg:col-span-1",
             ]}>
                 <div id="content-wrapper" class="onload-animation">
                     <!-- the overflow-hidden here prevent long text break the layout-->
