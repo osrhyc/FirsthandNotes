@@ -16,13 +16,6 @@ export default defineConfig({
       },
       favicon: '/favicon.svg',
       customCss: ['./src/styles/starlight.css'],
-      social: [
-        {
-          icon: 'github',
-          label: 'GitHub',
-          href: 'https://github.com/osrhyc/FirsthandNotes',
-        },
-      ],
       sidebar: [
         { slug: 'index', label: '首页' },
         {
