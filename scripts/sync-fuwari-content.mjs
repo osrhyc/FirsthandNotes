@@ -3,10 +3,15 @@ import path from "node:path";
 
 const root = process.cwd();
 const contentDir = path.join(root, "src/content");
-const postsDir = path.join(contentDir, "posts");
+const generatedDir = path.join(root, ".generated");
+const postsDir = path.join(generatedDir, "posts");
 const specDir = path.join(contentDir, "spec");
 
 const DEFAULT_DATE = "2026-07-10";
+const postSummary = {
+	categories: {},
+	tags: {},
+};
 
 function ensureDir(dir) {
 	fs.mkdirSync(dir, { recursive: true });
@@ -96,6 +101,15 @@ function writePost(file, meta, body) {
 		"",
 	].join("\n");
 	fs.writeFileSync(target, `${frontmatter}${body.trim()}\n`);
+
+	if (meta.category) {
+		postSummary.categories[meta.category] =
+			(postSummary.categories[meta.category] || 0) + 1;
+	}
+	for (const tag of meta.tags || []) {
+		if (!tag) continue;
+		postSummary.tags[tag] = (postSummary.tags[tag] || 0) + 1;
+	}
 }
 
 function syncBlog() {
@@ -172,5 +186,9 @@ writeAbout();
 syncBlog();
 syncBooks();
 syncGlossary();
+fs.writeFileSync(
+	path.join(generatedDir, "post-summary.json"),
+	`${JSON.stringify(postSummary, null, 2)}\n`,
+);
 
 console.log("Synced Fuwari posts content.");

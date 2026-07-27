@@ -5,6 +5,7 @@ dist/
 
 # generated content mirrors
 src/content/docs/
+.generated/
 src/content/posts/
 
 # dependencies

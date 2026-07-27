@@ -7,11 +7,14 @@ import { getTagUrl } from "../../utils/url-utils";
 import ButtonTag from "../control/ButtonTag.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
-const tags = await getTagList();
+const TAG_LIMIT = 24;
+const tags = (await getTagList())
+	.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+	.slice(0, TAG_LIMIT);
 
 const COLLAPSED_HEIGHT = "7.5rem";
 
-const isCollapsed = tags.length >= 20;
+const isCollapsed = false;
 
 interface Props {
 	class?: string;

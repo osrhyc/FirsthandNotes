@@ -28,7 +28,7 @@ tags: ['标签'] # 可选
 ---
 ```
 
-构建时会先运行 `scripts/sync-fuwari-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步为 Fuwari 的 `src/content/posts/` 页面，然后由 Astro 输出静态站点。
+构建时会先运行 `scripts/sync-fuwari-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步到忽略的 `.generated/posts/` 缓存，然后由 Astro 输出静态站点。缓存放在 `src/content/` 外，避免开发服务器同时扫描原稿和生成副本。
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
