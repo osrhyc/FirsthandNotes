@@ -1,0 +1,114 @@
+---
+import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
+
+interface Chapter {
+	number: number;
+	title: string;
+	postSlug: string;
+}
+
+interface Book {
+	slug: string;
+	title: string;
+	chapters: Chapter[];
+}
+
+interface Props {
+	book: Book;
+	currentChapterIndex: number;
+}
+
+const { book, currentChapterIndex } = Astro.props;
+const currentChapter = book.chapters[currentChapterIndex];
+const previousChapter = book.chapters[currentChapterIndex - 1];
+const nextChapter = book.chapters[currentChapterIndex + 1];
+---
+
+<nav
+	class="card-base sticky top-[4.5rem] z-20 mb-4 p-3 shadow-sm"
+	aria-label={`${book.title}章节导航`}
+>
+	<div class="mb-2 flex min-w-0 items-center justify-between gap-3 px-1">
+		<a
+			href={url(`/books/${book.slug}/`)}
+			class="min-w-0 truncate text-sm font-semibold text-75 transition hover:text-[var(--primary)]"
+			title={`查看《${book.title}》目录`}
+		>
+			{book.title}
+		</a>
+		<span class="shrink-0 text-xs text-30">
+			{currentChapterIndex + 1} / {book.chapters.length}
+		</span>
+	</div>
+
+	<div class="grid grid-cols-[2.5rem_2.5rem_minmax(0,1fr)_2.5rem] gap-2">
+		{previousChapter ? (
+			<a
+				href={getPostUrlBySlug(previousChapter.postSlug)}
+				class="btn-regular flex h-10 items-center justify-center rounded-lg active:scale-95"
+				aria-label={`上一章：${previousChapter.title}`}
+				title={`上一章：${previousChapter.title}`}
+			>
+				<Icon name="material-symbols:chevron-left-rounded" class="text-2xl" />
+			</a>
+		) : (
+			<span
+				class="flex h-10 cursor-not-allowed items-center justify-center rounded-lg bg-black/5 text-black/20 dark:bg-white/5 dark:text-white/20"
+				aria-label="已经是第一章"
+				title="已经是第一章"
+			>
+				<Icon name="material-symbols:chevron-left-rounded" class="text-2xl" />
+			</span>
+		)}
+
+		<a
+			href={url(`/books/${book.slug}/`)}
+			class="btn-regular flex h-10 items-center justify-center rounded-lg active:scale-95"
+			aria-label={`查看《${book.title}》目录`}
+			title="章节目录"
+		>
+			<Icon name="material-symbols:format-list-bulleted-rounded" class="text-xl" />
+		</a>
+
+		<label class="relative min-w-0">
+			<span class="sr-only">切换章节</span>
+			<select
+				class="h-10 w-full appearance-none truncate rounded-lg border border-black/10 bg-[var(--page-bg)] pl-3 pr-9 text-sm text-75 outline-none transition hover:border-[var(--primary)] focus:border-[var(--primary)] dark:border-white/10"
+				onchange="if (this.value) window.location.href = this.value"
+			>
+				{book.chapters.map((chapter, index) => (
+					<option
+						value={getPostUrlBySlug(chapter.postSlug)}
+						selected={chapter.postSlug === currentChapter.postSlug}
+					>
+						{index + 1}. {chapter.title}
+					</option>
+				))}
+			</select>
+			<Icon
+				name="material-symbols:expand-more-rounded"
+				class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xl text-50"
+			/>
+		</label>
+
+		{nextChapter ? (
+			<a
+				href={getPostUrlBySlug(nextChapter.postSlug)}
+				class="btn-regular flex h-10 items-center justify-center rounded-lg active:scale-95"
+				aria-label={`下一章：${nextChapter.title}`}
+				title={`下一章：${nextChapter.title}`}
+			>
+				<Icon name="material-symbols:chevron-right-rounded" class="text-2xl" />
+			</a>
+		) : (
+			<span
+				class="flex h-10 cursor-not-allowed items-center justify-center rounded-lg bg-black/5 text-black/20 dark:bg-white/5 dark:text-white/20"
+				aria-label="已经是最后一章"
+				title="已经是最后一章"
+			>
+				<Icon name="material-symbols:chevron-right-rounded" class="text-2xl" />
+			</span>
+		)}
+	</div>
+</nav>
