@@ -13,15 +13,23 @@ function joinUrl(...parts: string[]): string {
 }
 
 export function getPostUrlBySlug(slug: string): string {
-	return url(`/posts/${slug}/`);
+	return url(`/blog/${slug}/`);
 }
 
-export function getBookNoteUrl(book: string, chapter: number | string): string {
-	return url(`/books/${book}/${chapter}/`);
+export function getSeriesUrl(series: string): string {
+	return url(`/series/${encodeURIComponent(series)}/`);
+}
+
+export function getBookUrl(book: string): string {
+	return url(`/books/${book}/`);
+}
+
+export function getBookNoteUrl(book: string, note: number | string): string {
+	return url(`/books/${book}/notes/${note}/`);
 }
 
 export function getBriefingUrl(date: string): string {
-	return url(`/briefings/${date}/`);
+	return url(`/briefings/${date.replaceAll("-", "/")}/`);
 }
 
 export function getTagUrl(tag: string): string {
@@ -36,6 +44,15 @@ export function getCategoryUrl(category: string | null): string {
 		category.trim().toLowerCase() === i18n(I18nKey.uncategorized).toLowerCase()
 	)
 		return url("/archive/?uncategorized=true");
+	const seriesSlugs: Record<string, string> = {
+		量化学堂: "quant",
+		名人堂: "people",
+		江湖八卦: "industry-stories",
+		大事记: "timelines",
+	};
+	if (seriesSlugs[category.trim()]) {
+		return getSeriesUrl(seriesSlugs[category.trim()]);
+	}
 	return url(`/archive/?category=${encodeURIComponent(category.trim())}`);
 }
 

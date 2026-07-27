@@ -34,17 +34,28 @@ export const siteConfig: SiteConfig = {
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-		LinkPreset.Home,
 		{
-			name: "书籍",
+			name: "首页",
+			url: "/",
+		},
+		{
+			name: "技术",
+			url: "/blog/",
+		},
+		{
+			name: "阅读",
 			url: "/books/",
 		},
 		{
-			name: "简报",
+			name: "晨读",
 			url: "/briefings/",
 		},
 		LinkPreset.Archive,
 		LinkPreset.About,
+		{
+			name: "搜索",
+			url: "/search/",
+		},
 	],
 };
 

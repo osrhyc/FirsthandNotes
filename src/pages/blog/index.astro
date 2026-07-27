@@ -1,0 +1,41 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import PostCard from "@components/PostCard.astro";
+import { SERIES, getTechnicalPosts } from "@utils/content-utils";
+import { getPostUrlBySlug, getSeriesUrl } from "@utils/url-utils";
+
+const posts = await getTechnicalPosts();
+---
+
+<MainGridLayout title="技术" description="技术、量化研究、人物与行业专题。">
+	<header class="card-base mb-4 px-6 py-6 md:px-8">
+		<p class="text-sm font-semibold text-[var(--primary)]">BLOG</p>
+		<h1 class="mt-1 text-2xl font-bold text-90 md:text-3xl">技术与长期专题</h1>
+		<p class="mt-2 text-sm leading-6 text-50">研究过程、方法拆解，以及值得长期保存的人物与行业记录。</p>
+		<nav class="mt-5 flex flex-wrap gap-2" aria-label="技术系列">
+			{SERIES.map((series) => (
+				<a href={getSeriesUrl(series.slug)} class="btn-regular rounded-lg px-3 py-2 text-sm font-medium">
+					{series.name}
+				</a>
+			))}
+		</nav>
+	</header>
+	<div class="flex flex-col gap-4">
+		{posts.map((entry, index) => (
+			<PostCard
+				entry={entry}
+				title={entry.data.title}
+				tags={entry.data.tags}
+				category={entry.data.category}
+				published={entry.data.published}
+				updated={entry.data.updated}
+				url={getPostUrlBySlug(entry.slug)}
+				image={entry.data.image}
+				description={entry.data.description}
+				draft={entry.data.draft}
+				class="onload-animation"
+				style={`animation-delay: calc(var(--content-delay) + ${Math.min(index, 10) * 50}ms)`}
+			/>
+		))}
+	</div>
+</MainGridLayout>

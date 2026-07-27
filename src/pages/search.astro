@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import SearchPage from "@components/SearchPage.svelte";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getBooks } from "@utils/book-utils";
+import { getBriefings } from "@utils/briefing-utils";
+import { getSortedPosts } from "@utils/content-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+const [posts, books, notes, briefings] = await Promise.all([
+	getSortedPosts(),
+	getBooks(),
+	getCollection("bookNotes"),
+	getBriefings(),
+]);
+const bookMap = new Map(books.map((book) => [book.slug, book]));
+
+const records = [
+	...posts.map((post) => ({
+		title: post.data.title,
+		description: post.data.description,
+		url: getPostUrlBySlug(post.slug),
+		type: post.data.category === "名词手册" ? "名词" : "技术",
+		keywords: [post.data.category, post.data.level, ...post.data.tags].filter(Boolean).join(" "),
+	})),
+	...books.map((book) => ({
+		title: book.title,
+		description: book.description,
+		url: `/books/${book.slug}/`,
+		type: "书籍",
+		keywords: `${book.author} ${book.category}`,
+	})),
+	...notes.map((note) => {
+		const book = bookMap.get(note.data.book.id);
+		const chapter = book?.chapters.find((item) => item.number === note.data.chapter);
+		return {
+			title: note.data.title,
+			description: note.data.note,
+			url: chapter?.url || `/books/${note.data.book.id}/`,
+			type: "精读",
+			keywords: `${note.data.bookTitle} ${note.data.author} ${note.data.bookCategory}`,
+		};
+	}),
+	...briefings.map((briefing) => ({
+		title: briefing.title,
+		description: briefing.description,
+		url: briefing.url,
+		type: "晨读",
+		keywords: briefing.date,
+	})),
+];
+---
+
+<MainGridLayout title="搜索" description="搜索全站文章、书籍、章节笔记和晨读。" fullWidth customSidebar>
+	<SearchPage records={records} client:load />
+</MainGridLayout>

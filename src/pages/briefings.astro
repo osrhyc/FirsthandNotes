@@ -1,6 +1,7 @@
 ---
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getBriefings } from "@utils/briefing-utils";
+import { BRIEFING_TOPICS, getBriefings } from "@utils/briefing-utils";
+import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 
 const briefings = await getBriefings();
@@ -34,6 +35,14 @@ function formatDate(value: string) {
 				</div>
 			</div>
 		</header>
+
+		<nav class="flex flex-wrap gap-2 px-1" aria-label="晨读主题">
+			{BRIEFING_TOPICS.map((topic) => (
+				<a href={url(`/briefings/topics/${topic.slug}/`)} class="btn-regular rounded-lg px-3 py-2 text-sm font-medium">
+					{topic.name}
+				</a>
+			))}
+		</nav>
 
 		{latestBriefing && (
 			<section>

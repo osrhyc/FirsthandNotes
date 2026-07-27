@@ -3,6 +3,7 @@ import { getBookNoteUrl } from "@utils/url-utils";
 
 export interface BookChapter {
 	number: number;
+	slug: string;
 	title: string;
 	noteId: string;
 	updatedAt: string;
@@ -37,12 +38,16 @@ export async function getBooks(): Promise<BookRecord[]> {
 
 		for (const note of noteEntries) {
 			const bookId = note.data.book.id;
+			const noteSlug = note.id.startsWith(`${bookId}--`)
+				? note.id.slice(bookId.length + 2)
+				: String(note.data.chapter);
 			const chapter = {
 				number: note.data.chapter,
+				slug: noteSlug,
 				title: note.data.title,
 				noteId: note.id,
 				updatedAt: dateOnly(note.data.updated),
-				url: getBookNoteUrl(bookId, note.data.chapter),
+				url: getBookNoteUrl(bookId, noteSlug),
 			};
 			const chapters = notesByBook.get(bookId) || [];
 			chapters.push(chapter);

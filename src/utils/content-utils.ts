@@ -5,6 +5,13 @@ export type PostEntry = CollectionEntry<"posts"> & {
 	slug: string;
 };
 
+export const SERIES = [
+	{ slug: "quant", name: "量化学堂", description: "从市场规则到研究与回测的系统学习路径。" },
+	{ slug: "people", name: "名人堂", description: "人物、机构和决策背后的行业脉络。" },
+	{ slug: "industry-stories", name: "江湖八卦", description: "区分事实、传闻与推断的行业故事。" },
+	{ slug: "timelines", name: "大事记", description: "沿时间线理解行业和市场的关键转折。" },
+] as const;
+
 let sortedPostsPromise: Promise<PostEntry[]> | undefined;
 
 async function getRawSortedPosts(): Promise<PostEntry[]> {
@@ -39,6 +46,23 @@ export async function getSortedPosts() {
 	}
 
 	return sorted;
+}
+
+export async function getTechnicalPosts() {
+	const now = Date.now();
+	return (await getSortedPosts()).filter(
+		(post) =>
+			post.data.category !== "名词手册" &&
+			post.data.published.getTime() <= now,
+	);
+}
+
+export function getSeriesBySlug(slug: string) {
+	return SERIES.find((series) => series.slug === slug);
+}
+
+export function getSeriesByCategory(category: string | null | undefined) {
+	return SERIES.find((series) => series.name === category);
 }
 
 export type PostForList = {

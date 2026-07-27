@@ -15,25 +15,12 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const sorted = await getSortedPosts();
 const index = sorted.findIndex((candidate) => candidate.id === entry.id);
-const previous =
-	index > 0
-		? {
-				title: sorted[index - 1].data.title,
-				url: getPostUrlBySlug(sorted[index - 1].slug),
-			}
-		: undefined;
-const next =
-	index >= 0 && index < sorted.length - 1
-		? {
-				title: sorted[index + 1].data.title,
-				url: getPostUrlBySlug(sorted[index + 1].slug),
-			}
-		: undefined;
+const previous = index > 0
+	? { title: sorted[index - 1].data.title, url: getPostUrlBySlug(sorted[index - 1].slug) }
+	: undefined;
+const next = index >= 0 && index < sorted.length - 1
+	? { title: sorted[index + 1].data.title, url: getPostUrlBySlug(sorted[index + 1].slug) }
+	: undefined;
 ---
 
-<ArticlePage
-	entry={entry}
-	collectionDir="posts"
-	previous={previous}
-	next={next}
-/>
+<ArticlePage entry={entry} collectionDir="posts" previous={previous} next={next} />

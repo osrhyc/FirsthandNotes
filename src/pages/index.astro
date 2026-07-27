@@ -1,0 +1,196 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getBooks } from "@utils/book-utils";
+import { getBriefings } from "@utils/briefing-utils";
+import { SERIES, getTechnicalPosts } from "@utils/content-utils";
+import {
+	getBookUrl,
+	getPostUrlBySlug,
+	getSeriesUrl,
+	url,
+} from "@utils/url-utils";
+
+const [posts, books, briefings, briefingEntries] = await Promise.all([
+	getTechnicalPosts(),
+	getBooks(),
+	getBriefings(),
+	getCollection("briefings"),
+]);
+
+const latestPosts = posts.slice(0, 5);
+const latestBriefing = briefings[0];
+const latestBriefingEntry = latestBriefing
+	? briefingEntries.find((entry) =>
+			entry.data.published.toISOString().startsWith(latestBriefing.date),
+		)
+	: undefined;
+const briefingHighlights = (latestBriefingEntry?.body || "")
+	.match(/^##\s+(?:\d+\.\s*)?(.+)$/gm)
+	?.map((heading) => heading.replace(/^##\s+(?:\d+\.\s*)?/, "").trim())
+	.filter((heading) => !["速览", "重点详读"].includes(heading))
+	.slice(0, 2) || [];
+
+const recentChapter = books
+	.flatMap((book) => book.chapters.map((chapter) => ({ book, chapter })))
+	.sort(
+		(a, b) =>
+			b.chapter.updatedAt.localeCompare(a.chapter.updatedAt) ||
+			a.book.sequence - b.book.sequence ||
+			b.chapter.number - a.chapter.number,
+	)[0];
+const readingBook = recentChapter?.book;
+const progress = readingBook && recentChapter
+	? Math.round(
+			((readingBook.chapters.findIndex((item) => item.slug === recentChapter.chapter.slug) + 1) /
+				readingBook.chapters.length) *
+				100,
+		)
+	: 0;
+
+function formatDate(value: string) {
+	return new Intl.DateTimeFormat("zh-CN", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		weekday: "short",
+	}).format(new Date(`${value}T00:00:00`));
+}
+---
+
+<MainGridLayout
+	title="首页"
+	description="一手笔记，记录值得长期保存的知识。"
+	fullWidth
+	customSidebar
+>
+	<div class="space-y-4">
+		<section class="card-base overflow-hidden px-6 py-8 md:px-10 md:py-10">
+			<div class="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+				<div class="flex min-w-0 items-center gap-5">
+					<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[#f7f4ed] p-2 md:h-24 md:w-24">
+						<img src={url("/assets/brand/logo.png")} alt="一手笔记 Logo" class="h-full w-full object-contain" />
+					</div>
+					<div class="min-w-0">
+						<p class="text-sm font-semibold text-[var(--primary)]">Firsthand Notes</p>
+						<h1 class="mt-1 text-3xl font-bold text-[var(--brand-navy)] dark:text-white md:text-4xl">一手笔记</h1>
+						<p class="mt-3 text-base text-75">记录值得长期保存的知识</p>
+					</div>
+				</div>
+				<a href={url("/search/")} class="group flex h-12 w-full items-center gap-3 rounded-lg bg-[var(--btn-plain-bg-hover)] px-4 text-50 transition hover:text-[var(--primary)] lg:w-80">
+					<Icon name="material-symbols:search-rounded" class="text-2xl" />
+					<span class="flex-1 text-sm">搜索文章、书籍与晨读</span>
+					<Icon name="material-symbols:arrow-forward-rounded" class="text-xl transition group-hover:translate-x-0.5" />
+				</a>
+			</div>
+		</section>
+
+		<div class="grid gap-4 lg:grid-cols-2">
+			<section class="card-base px-6 py-6 md:px-8">
+				<header class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-sm font-semibold text-[var(--primary)]">今日晨读</p>
+						{latestBriefing && <time class="mt-1 block text-sm text-50">{formatDate(latestBriefing.date)}</time>}
+					</div>
+					<Icon name="material-symbols:wb-sunny-outline-rounded" class="text-2xl text-[var(--primary)]" />
+				</header>
+				{latestBriefing ? (
+					<>
+						<h2 class="mt-5 text-xl font-bold leading-8 text-90">{latestBriefing.title}</h2>
+						<ul class="mt-4 space-y-3">
+							{(briefingHighlights.length ? briefingHighlights : [latestBriefing.description]).map((highlight) => (
+								<li class="flex items-start gap-3 text-sm leading-6 text-75">
+									<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]"></span>
+									<span>{highlight}</span>
+								</li>
+							))}
+						</ul>
+						<a href={latestBriefing.url} class="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-[var(--primary)]">
+							进入完整晨读
+							<Icon name="material-symbols:arrow-forward-rounded" class="text-lg" />
+						</a>
+					</>
+				) : (
+					<p class="mt-5 text-sm text-50">晨读正在整理中</p>
+				)}
+			</section>
+
+			<section class="card-base px-6 py-6 md:px-8">
+				<header class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-sm font-semibold text-[var(--primary)]">正在精读</p>
+						<p class="mt-1 text-sm text-50">当前阅读书籍</p>
+					</div>
+					<Icon name="material-symbols:menu-book-outline-rounded" class="text-2xl text-[var(--primary)]" />
+				</header>
+				{readingBook && recentChapter ? (
+					<>
+						<a href={getBookUrl(readingBook.slug)} class="mt-5 block text-xl font-bold leading-8 text-90 transition hover:text-[var(--primary)]">
+							{readingBook.title}
+						</a>
+						<p class="mt-1 text-sm text-50">{readingBook.author}</p>
+						<div class="mt-5">
+							<div class="flex items-center justify-between text-xs text-50">
+								<span>阅读进度</span>
+								<span>{progress}% · {readingBook.chapters.length} 篇笔记</span>
+							</div>
+							<div class="mt-2 h-2 overflow-hidden rounded-full bg-[var(--btn-plain-bg-hover)]">
+								<div class="h-full rounded-full bg-[var(--primary)]" style={`width: ${progress}%`}></div>
+							</div>
+						</div>
+						<a href={recentChapter.chapter.url} class="group mt-6 flex items-center justify-between gap-4 border-t border-[var(--line-divider)] pt-4">
+							<div class="min-w-0">
+								<p class="text-xs text-30">最近一篇章节笔记</p>
+								<p class="mt-1 truncate text-sm font-semibold text-75 transition group-hover:text-[var(--primary)]">{recentChapter.chapter.title}</p>
+							</div>
+							<Icon name="material-symbols:chevron-right-rounded" class="shrink-0 text-xl text-30" />
+						</a>
+					</>
+				) : (
+					<p class="mt-5 text-sm text-50">书籍正在整理中</p>
+				)}
+			</section>
+		</div>
+
+		<section class="card-base overflow-hidden">
+			<header class="flex items-end justify-between gap-4 border-b border-[var(--line-divider)] px-6 py-5 md:px-8">
+				<div>
+					<p class="text-sm font-semibold text-[var(--primary)]">最新技术文章</p>
+					<h2 class="mt-1 text-xl font-bold text-90">最近更新</h2>
+				</div>
+				<a href={url("/blog/")} class="text-sm font-medium text-[var(--primary)]">全部文章</a>
+			</header>
+			<div class="divide-y divide-[var(--line-divider)]">
+				{latestPosts.map((post) => (
+					<a href={getPostUrlBySlug(post.slug)} class="group grid gap-2 px-6 py-4 transition hover:bg-[var(--btn-plain-bg-hover)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-8">
+						<div class="min-w-0">
+							<h3 class="truncate font-semibold text-75 transition group-hover:text-[var(--primary)]">{post.data.title}</h3>
+							<p class="mt-1 line-clamp-1 text-sm text-50">{post.data.description}</p>
+						</div>
+						<div class="flex items-center gap-3 text-xs text-30">
+							<span>{post.data.category}</span>
+							<span>{post.data.updated?.toISOString().slice(0, 10) || post.data.published.toISOString().slice(0, 10)}</span>
+						</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section>
+			<header class="mb-3 px-1">
+				<p class="text-sm font-semibold text-[var(--primary)]">长期专题</p>
+				<h2 class="mt-1 text-xl font-bold text-90">持续积累的知识线索</h2>
+			</header>
+			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				{SERIES.map((series) => (
+					<a href={getSeriesUrl(series.slug)} class="card-base group min-h-36 px-5 py-5 transition hover:-translate-y-0.5">
+						<h3 class="font-bold text-90 transition group-hover:text-[var(--primary)]">{series.name}</h3>
+						<p class="mt-3 text-sm leading-6 text-50">{series.description}</p>
+						<Icon name="material-symbols:arrow-forward-rounded" class="mt-4 text-xl text-[var(--primary)]" />
+					</a>
+				))}
+			</div>
+		</section>
+	</div>
+</MainGridLayout>

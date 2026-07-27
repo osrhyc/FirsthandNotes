@@ -1,0 +1,74 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getBooks } from "@utils/book-utils";
+import { url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
+
+export async function getStaticPaths() {
+	const books = await getBooks();
+	return books.map((book) => ({
+		params: { book: book.slug },
+		props: { book },
+	}));
+}
+
+const { book } = Astro.props;
+const latestChapter = [...book.chapters].sort(
+	(a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.number - a.number,
+)[0];
+---
+
+<MainGridLayout
+	title={book.title}
+	description={book.description}
+	fullWidth
+	customSidebar
+>
+	<div class="space-y-4">
+		<header class="card-base px-6 py-7 md:px-9 md:py-9">
+			<a href={url("/books/")} class="inline-flex items-center gap-1 text-sm font-medium text-50 transition hover:text-[var(--primary)]">
+				<Icon name="material-symbols:arrow-back-rounded" class="text-lg" />
+				返回书架
+			</a>
+			<div class="mt-6 flex items-start gap-5">
+				<div class="flex h-20 w-16 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-2xl font-bold text-[var(--primary)]">
+					{book.title.slice(0, 1)}
+				</div>
+				<div class="min-w-0">
+					<p class="text-sm font-semibold text-[var(--primary)]">{book.category}</p>
+					<h1 class="mt-1 text-2xl font-bold leading-9 text-90 md:text-3xl">{book.title}</h1>
+					<p class="mt-1 text-sm text-50">{book.author}</p>
+					<p class="mt-4 max-w-3xl text-sm leading-7 text-75">{book.description}</p>
+				</div>
+			</div>
+			{latestChapter && (
+				<div class="mt-6 flex flex-wrap items-center gap-3 border-t border-[var(--line-divider)] pt-5">
+					<a href={latestChapter.url} class="btn-regular flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-medium">
+						继续阅读
+						<Icon name="material-symbols:arrow-forward-rounded" class="text-lg" />
+					</a>
+					<span class="text-sm text-50">最近更新：{latestChapter.title}</span>
+				</div>
+			)}
+		</header>
+
+		<section class="card-base overflow-hidden">
+			<header class="flex items-center justify-between border-b border-[var(--line-divider)] px-6 py-5 md:px-8">
+				<h2 class="text-lg font-bold text-90">章节笔记</h2>
+				<span class="text-sm text-30">{book.chapters.length} 篇</span>
+			</header>
+			<ol class="divide-y divide-[var(--line-divider)]">
+				{book.chapters.map((chapter, index) => (
+					<li>
+						<a href={chapter.url} class="group flex items-center gap-4 px-6 py-4 transition hover:bg-[var(--btn-plain-bg-hover)] md:px-8">
+							<span class="w-8 shrink-0 font-mono text-xs text-30">{String(chapter.number || index + 1).padStart(2, "0")}</span>
+							<span class="min-w-0 flex-1 font-medium text-75 transition group-hover:text-[var(--primary)]">{chapter.title}</span>
+							<time class="hidden shrink-0 text-xs text-30 sm:block">{chapter.updatedAt}</time>
+							<Icon name="material-symbols:chevron-right-rounded" class="shrink-0 text-xl text-30" />
+						</a>
+					</li>
+				))}
+			</ol>
+		</section>
+	</div>
+</MainGridLayout>

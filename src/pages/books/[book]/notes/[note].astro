@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import ArticlePage from "@components/ArticlePage.astro";
+import BookChapterSidebar from "@components/BookChapterSidebar.astro";
+import { getBooks } from "@utils/book-utils";
+
+export async function getStaticPaths() {
+	const notes = await getCollection("bookNotes");
+	return notes.map((entry) => {
+		const book = entry.data.book.id;
+		const note = entry.id.startsWith(`${book}--`)
+			? entry.id.slice(book.length + 2)
+			: String(entry.data.chapter);
+		return {
+			params: { book, note },
+			props: { entry },
+		};
+	});
+}
+
+const { entry } = Astro.props;
+const books = await getBooks();
+const book = books.find((candidate) => candidate.slug === entry.data.book.id);
+if (!book) throw new Error(`Book metadata not found for ${entry.data.book.id}`);
+
+const currentChapterIndex = book.chapters.findIndex(
+	(chapter) => chapter.slug === Astro.params.note,
+);
+const previousChapter = currentChapterIndex > 0 ? book.chapters[currentChapterIndex - 1] : undefined;
+const nextChapter = currentChapterIndex >= 0 && currentChapterIndex < book.chapters.length - 1
+	? book.chapters[currentChapterIndex + 1]
+	: undefined;
+---
+
+<ArticlePage
+	entry={entry}
+	collectionDir="book-notes"
+	schemaType="Article"
+	previous={previousChapter && { title: previousChapter.title, url: previousChapter.url }}
+	next={nextChapter && { title: nextChapter.title, url: nextChapter.url }}
+>
+	<BookChapterSidebar slot="sidebar" book={book} currentChapterIndex={currentChapterIndex} />
+</ArticlePage>

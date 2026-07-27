@@ -1,7 +1,7 @@
 <script lang="ts">
 import Icon from "@iconify/svelte";
 import { onMount } from "svelte";
-import { url } from "../utils/url-utils";
+import { getBookUrl } from "../utils/url-utils";
 
 interface Chapter {
 	number: number;
@@ -65,9 +65,8 @@ $: recentChapters = books
 	)
 	.slice(0, 6);
 
-function firstChapterUrl(book: Book) {
-	const chapter = book.chapters[0];
-	return chapter ? chapter.url : url("/books/");
+function bookUrl(book: Book) {
+	return getBookUrl(book.slug);
 }
 
 function formatDate(value: string) {
@@ -308,7 +307,7 @@ onMount(() => {
 									<div class="min-w-0 flex-1">
 										<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
 											<a
-												href={firstChapterUrl(book)}
+												href={bookUrl(book)}
 												class="transition hover:text-[var(--primary)]"
 											>
 												{book.title}
@@ -325,11 +324,11 @@ onMount(() => {
 								<div class="mt-auto flex items-end justify-between gap-3 pt-5">
 									<div class="text-xs text-30">{book.chapters.length} 篇笔记</div>
 									<a
-										href={firstChapterUrl(book)}
-										aria-label={`开始阅读《${book.title}》`}
+										href={bookUrl(book)}
+										aria-label={`查看《${book.title}》`}
 										class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
 									>
-										<span>开始阅读</span>
+										<span>查看详情</span>
 										<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
 									</a>
 								</div>

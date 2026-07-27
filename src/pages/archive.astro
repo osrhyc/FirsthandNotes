@@ -3,12 +3,51 @@ import ArchivePanel from "@components/ArchivePanel.svelte";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getCollection } from "astro:content";
+import { getBooks } from "@utils/book-utils";
+import { getBriefings } from "@utils/briefing-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
 import { getSortedPostsList } from "../utils/content-utils";
 
-const sortedPostsList = await getSortedPostsList();
+const [posts, notes, books, briefings] = await Promise.all([
+	getSortedPostsList(),
+	getCollection("bookNotes"),
+	getBooks(),
+	getBriefings(),
+]);
+const bookMap = new Map(books.map((book) => [book.slug, book]));
+const sortedPostsList = [
+	...posts.map((post) => ({
+		...post,
+		url: getPostUrlBySlug(post.slug),
+	})),
+	...notes.map((note) => {
+		const book = bookMap.get(note.data.book.id);
+		const chapter = book?.chapters.find((item) => item.number === note.data.chapter);
+		return {
+			slug: note.id,
+			url: chapter?.url || `/books/${note.data.book.id}/`,
+			data: {
+				title: `${note.data.bookTitle}：${note.data.title}`,
+				tags: [note.data.bookTitle, note.data.author],
+				category: "精读笔记",
+				published: note.data.published,
+			},
+		};
+	}),
+	...briefings.map((briefing) => ({
+		slug: briefing.id,
+		url: briefing.url,
+		data: {
+			title: briefing.title,
+			tags: briefing.tags,
+			category: "晨读",
+			published: new Date(`${briefing.date}T00:00:00`),
+		},
+	})),
+].sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>
     <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
 </MainGridLayout>
-

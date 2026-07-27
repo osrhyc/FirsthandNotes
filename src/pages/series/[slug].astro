@@ -1,0 +1,50 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import PostCard from "@components/PostCard.astro";
+import {
+	SERIES,
+	getSeriesBySlug,
+	getTechnicalPosts,
+} from "@utils/content-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
+
+export function getStaticPaths() {
+	return SERIES.map((series) => ({
+		params: { slug: series.slug },
+	}));
+}
+
+const series = getSeriesBySlug(Astro.params.slug || "");
+if (!series) throw new Error(`Unknown series: ${Astro.params.slug}`);
+
+const posts = (await getTechnicalPosts()).filter(
+	(post) => post.data.category === series.name,
+);
+---
+
+<MainGridLayout title={series.name} description={series.description}>
+	<header class="card-base mb-4 px-6 py-6 md:px-8">
+		<p class="text-sm font-semibold text-[var(--primary)]">SERIES</p>
+		<h1 class="mt-1 text-2xl font-bold text-90 md:text-3xl">{series.name}</h1>
+		<p class="mt-2 text-sm leading-6 text-50">{series.description}</p>
+		<p class="mt-3 text-xs text-30">{posts.length} 篇内容</p>
+	</header>
+	<div class="flex flex-col gap-4">
+		{posts.map((entry, index) => (
+			<PostCard
+				entry={entry}
+				title={entry.data.title}
+				tags={entry.data.tags}
+				category={entry.data.category}
+				published={entry.data.published}
+				updated={entry.data.updated}
+				url={getPostUrlBySlug(entry.slug)}
+				image={entry.data.image}
+				description={entry.data.description}
+				draft={entry.data.draft}
+				class="onload-animation"
+				style={`animation-delay: calc(var(--content-delay) + ${index * 50}ms)`}
+			/>
+		))}
+	</div>
+</MainGridLayout>
