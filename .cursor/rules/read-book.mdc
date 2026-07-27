@@ -2,7 +2,8 @@
 description: Real-source book reading workflow for Firsthand Notes
 globs:
   - "src/content/books/**/*.md"
-  - "src/content/glossary/**/*.md"
+  - "src/content/book-notes/**/*.md"
+  - "src/content/posts/glossary-*.md"
   - ".ai/read-book.md"
   - ".claude/commands/read-book.md"
 alwaysApply: true
@@ -22,7 +23,7 @@ Key requirements:
 - Raw book files, extracted text, page images, and `book-workspace/` must never be committed or published.
 - Do not write from book reviews, summaries, search snippets, or model memory.
 - Preserve extraction failures, garbled text, missing chapters, and uncertain readings instead of filling gaps.
-- Save publishable notes under `src/content/books/` with the project book frontmatter (`chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结).
-- Create/update useful glossary entries under `src/content/glossary/` without duplicates.
+- Save publishable notes under `src/content/book-notes/` with the project book frontmatter (`book` references `src/content/books/<slug>.md`; `chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结).
+- Create/update useful glossary entries under `src/content/posts/glossary-*.md` without duplicates.
 - After writing, run `npx tsc --noEmit && npm run build`, refresh the local dev server (auto-port), and provide the local preview URL.
 - Do not commit, push, publish, or deploy until the user explicitly approves after local review.

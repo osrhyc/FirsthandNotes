@@ -1,0 +1,13 @@
+---
+title: "因子方向约定"
+description: "因子研究"
+pubDate: "2026-07-10"
+category: "名词手册"
+tags: ["quant","因子研究"]
+term: "因子方向约定"
+aliases: []
+module: "quant"
+glossaryCategory: "因子研究"
+---
+
+本平台所有因子统一"**得分越高越看多**"。所以"越低越好"的特征（如波动率）在代码里取负。IC 为负的因子不等于没用——乘 −1 就是正向因子，评价强弱看绝对值。

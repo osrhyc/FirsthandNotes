@@ -2,7 +2,7 @@
 
 This is the shared reading workflow for Codex, Cursor, and Claude Code. Use it when the user asks for "真读原书", chapter notes, or book notes based on a provided PDF/EPUB.
 
-Core goal: extract publishable chapter notes from the real book text into `src/content/books/`. Notes must come from extracted text or page images only. Do not write from reviews, summaries, search snippets, or model memory.
+Core goal: extract publishable chapter notes from the real book text into `src/content/book-notes/`. Each book has one metadata entry in `src/content/books/`, and every note links to it through the `book` reference. Notes must come from extracted text or page images only. Do not write from reviews, summaries, search snippets, or model memory.
 
 **There is only one mode: 精读 (full close reading).** Every book is read completely, chapter by chapter. There is no fast-reading / targeted / skim mode. If the user asks a question about a book, answer it from the chapter notes — produce the notes first if they do not exist yet.
 
@@ -15,8 +15,8 @@ Before reading, confirm or infer:
 - Book title, author, slug, category, and target module:
   - `bookModule: 'quant'` for 量化书屋.
   - `bookModule: 'library'` for 书房.
-- Slug collision: check `ls src/content/books/ | grep <slug>`. If the book already exists (e.g. replacing an older version with a true-read version), delete the old `<slug>--*.md` files first and keep the old `seq` so the shelf position is stable.
-- Whether to create/update glossary entries in `src/content/glossary/`.
+- Slug collision: check `src/content/books/<slug>.md` and `src/content/book-notes/<slug>--*.md`. If the book already exists (e.g. replacing an older version with a true-read version), delete the old note files first and keep the metadata `sequence` so the shelf position is stable.
+- Whether to create/update glossary entries in `src/content/posts/glossary-*.md`.
 - Whether the extracted text is readable enough to proceed.
 
 If any required text is missing, garbled, scanned without readable text, or incomplete, report it instead of improvising.
@@ -231,18 +231,33 @@ bookModule: 'quant'
 seq: 100
 chapter: 1
 title: '导读'
+updated: 'YYYY-MM-DD'
 ---
 ```
 
-`seq` controls bookshelf order. Convention: quant books use the historical 0-99 range; 书房 books start from 100. Check existing values with:
+`seq` matches the referenced book metadata's `sequence`. Convention: quant books use the historical 0-99 range; 书房 books start from 100. Check existing values with:
 
 ```bash
-grep -h "seq:" src/content/books/*.md | sort -n
+grep -h "sequence:" src/content/books/*.md | sort -n
+```
+
+Create `src/content/books/<slug>.md` before writing notes:
+
+```yaml
+---
+title: '书名'
+author: '作者'
+description: '真读逐章精读：一句话定位'
+category: '分类'
+sequence: 100
+updated: 'YYYY-MM-DD'
+status: 'finished'
+---
 ```
 
 ## 8. Glossary Generation
 
-When useful, create 3-8 glossary entries per book in `src/content/glossary/`.
+When useful, create 3-8 glossary entries per book in `src/content/posts/glossary-*.md`.
 
 - Use `module: 'quant'` for quant books.
 - Use `module: 'library'` for general library books.

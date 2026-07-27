@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import ArticlePage from "@components/ArticlePage.astro";
+import BriefingSidebar from "@components/BriefingSidebar.astro";
+import { getBriefings } from "@utils/briefing-utils";
+
+export async function getStaticPaths() {
+	const entries = await getCollection("briefings");
+	return entries.map((entry) => ({
+		params: { date: entry.data.published.toISOString().slice(0, 10) },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+const briefings = await getBriefings();
+const date = entry.data.published.toISOString().slice(0, 10);
+const index = briefings.findIndex((briefing) => briefing.date === date);
+const previous = index < briefings.length - 1 ? briefings[index + 1] : undefined;
+const next = index > 0 ? briefings[index - 1] : undefined;
+---
+
+<ArticlePage
+	entry={entry}
+	collectionDir="briefings"
+	schemaType="Article"
+	previous={previous && { title: previous.title, url: previous.url }}
+	next={next && { title: next.title, url: next.url }}
+>
+	<BriefingSidebar
+		slot="sidebar"
+		briefings={briefings}
+		currentDate={date}
+	/>
+</ArticlePage>

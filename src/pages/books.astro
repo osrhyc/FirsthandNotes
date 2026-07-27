@@ -1,7 +1,9 @@
 ---
 import BookLibrary from "@components/BookLibrary.svelte";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import books from "../../.generated/books.json";
+import { getBooks } from "@utils/book-utils";
+
+const books = await getBooks();
 ---
 
 <MainGridLayout

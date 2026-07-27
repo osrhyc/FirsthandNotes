@@ -1,0 +1,165 @@
+---
+import path from "node:path";
+import { render } from "astro:content";
+import License from "@components/misc/License.astro";
+import Markdown from "@components/misc/Markdown.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+import { licenseConfig, profileConfig, siteConfig } from "src/config";
+import ImageWrapper from "./misc/ImageWrapper.astro";
+import PostMetadata from "./PostMeta.astro";
+import { formatDateToYYYYMMDD } from "../utils/date-utils";
+import { getDir } from "../utils/url-utils";
+
+interface AdjacentEntry {
+	title: string;
+	url: string;
+}
+
+interface Props {
+	entry: any;
+	collectionDir: "posts" | "book-notes" | "briefings";
+	previous?: AdjacentEntry;
+	next?: AdjacentEntry;
+	schemaType?: "BlogPosting" | "Article";
+}
+
+const {
+	entry,
+	collectionDir,
+	previous,
+	next,
+	schemaType = "BlogPosting",
+} = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const hasSidebar = Astro.slots.has("sidebar");
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": schemaType,
+	headline: entry.data.title,
+	description: entry.data.description || entry.data.title,
+	keywords: entry.data.tags,
+	author: {
+		"@type": "Person",
+		name: profileConfig.name,
+		url: Astro.site,
+	},
+	datePublished: formatDateToYYYYMMDD(entry.data.published),
+	inLanguage: entry.data.lang
+		? entry.data.lang.replace("_", "-")
+		: siteConfig.lang.replace("_", "-"),
+};
+---
+
+<MainGridLayout
+	banner={entry.data.image}
+	title={entry.data.title}
+	description={entry.data.description}
+	lang={entry.data.lang}
+	setOGTypeArticle={true}
+	headings={headings}
+	customSidebar={hasSidebar}
+>
+	<script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+	<slot name="sidebar" slot="sidebar"></slot>
+
+	<div class="relative mb-4 flex w-full overflow-hidden rounded-[var(--radius-large)]">
+		<div id="post-container" class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9">
+			<div class="onload-animation mb-3 flex gap-5 text-black/30 transition dark:text-white/30">
+				<div class="flex items-center">
+					<div class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50">
+						<Icon name="material-symbols:notes-rounded" />
+					</div>
+					<div class="text-sm">{remarkPluginFrontmatter.words} {" " + i18n(I18nKey.wordsCount)}</div>
+				</div>
+				<div class="flex items-center">
+					<div class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50">
+						<Icon name="material-symbols:schedule-outline-rounded" />
+					</div>
+					<div class="text-sm">
+						{remarkPluginFrontmatter.minutes}{" "}
+						{i18n(
+							remarkPluginFrontmatter.minutes === 1
+								? I18nKey.minuteCount
+								: I18nKey.minutesCount,
+						)}
+					</div>
+				</div>
+			</div>
+
+			<div class="relative onload-animation">
+				<h1
+					data-pagefind-body
+					data-pagefind-weight="10"
+					data-pagefind-meta="title"
+					class="mb-3 block w-full text-3xl font-bold text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-[var(--primary)] dark:text-white/90 md:text-[2.25rem]/[2.75rem] md:before:w-1"
+				>
+					{entry.data.title}
+				</h1>
+			</div>
+
+			<div class="onload-animation">
+				<PostMetadata
+					class="mb-5"
+					published={entry.data.published}
+					updated={entry.data.updated}
+					tags={entry.data.tags}
+					category={entry.data.category}
+				/>
+				{!entry.data.image && <div class="mb-5 border-b border-dashed border-[var(--line-divider)]"></div>}
+			</div>
+
+			{entry.data.image && (
+				<ImageWrapper
+					id="post-cover"
+					src={entry.data.image}
+					basePath={path.join(`content/${collectionDir}/`, getDir(entry.id))}
+					class="banner-container onload-animation mb-8 rounded-xl"
+				/>
+			)}
+
+			<Markdown class="markdown-content onload-animation mb-6">
+				<Content />
+			</Markdown>
+
+			{licenseConfig.enable && (
+				<License
+					title={entry.data.title}
+					slug={entry.id}
+					pubDate={entry.data.published}
+					class="license-container onload-animation mb-6 rounded-xl"
+				/>
+			)}
+		</div>
+	</div>
+
+	<div class="mb-4 flex w-full flex-col justify-between gap-4 overflow-hidden md:flex-row">
+		<div class="w-full">
+			{previous && (
+				<a href={previous.url} class="w-full font-bold active:scale-95">
+					<div class="btn-card flex h-[3.75rem] w-full items-center !justify-start gap-4 rounded-2xl px-4">
+						<Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
+						<div class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75">
+							{previous.title}
+						</div>
+					</div>
+				</a>
+			)}
+		</div>
+		<div class="w-full">
+			{next && (
+				<a href={next.url} class="w-full font-bold active:scale-95">
+					<div class="btn-card flex h-[3.75rem] w-full items-center !justify-end gap-4 rounded-2xl px-4">
+						<div class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75">
+							{next.title}
+						</div>
+						<Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
+					</div>
+				</a>
+			)}
+		</div>
+	</div>
+</MainGridLayout>

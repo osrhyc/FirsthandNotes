@@ -1,22 +1,22 @@
 ---
-import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 
 interface Briefing {
 	title: string;
 	date: string;
 	description: string;
-	postSlug: string;
+	url: string;
 }
 
 interface Props {
 	briefings: Briefing[];
-	currentPostSlug: string;
+	currentDate: string;
 }
 
-const { briefings, currentPostSlug } = Astro.props;
+const { briefings, currentDate } = Astro.props;
 const currentIndex = briefings.findIndex(
-	(briefing) => briefing.postSlug === currentPostSlug,
+	(briefing) => briefing.date === currentDate,
 );
 ---
 
@@ -45,11 +45,11 @@ const currentIndex = briefings.findIndex(
 
 		<ol class="max-h-80 overflow-y-auto border-t border-black/5 py-2 dark:border-white/10 lg:max-h-[calc(100vh-12rem)]">
 			{briefings.map((briefing) => {
-				const isCurrent = briefing.postSlug === currentPostSlug;
+				const isCurrent = briefing.date === currentDate;
 				return (
 					<li>
 						<a
-							href={getPostUrlBySlug(briefing.postSlug)}
+							href={briefing.url}
 							aria-current={isCurrent ? "page" : undefined}
 							class:list={[
 								"group mx-2 flex min-h-12 items-start gap-3 rounded-lg px-3 py-2 text-sm transition",

@@ -1,0 +1,13 @@
+---
+title: "多空组合"
+description: "因子研究"
+pubDate: "2026-07-10"
+category: "名词手册"
+tags: ["quant","因子研究"]
+term: "多空组合"
+aliases: ['Long-Short']
+module: "quant"
+glossaryCategory: "因子研究"
+---
+
+做多最高分组、做空最低分组的模拟组合，近似"纯因子收益"，剔除了大盘涨跌的影响。注意：A 股难以做空个股，多空收益用于评价因子本身，不代表实盘能执行。

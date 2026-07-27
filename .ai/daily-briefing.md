@@ -12,7 +12,7 @@ This is the shared workflow for the Firsthand Notes daily briefing. The schedule
 
 ## Research Workflow
 
-1. Read the latest seven daily briefings in `src/content/blog/`.
+1. Read the latest seven daily briefings in `src/content/briefings/`.
 2. Search broadly in Chinese and English.
 3. Build a candidate pool larger than the final issue.
 4. Prefer primary sources: official announcements, filings, regulators, exchanges, company engineering blogs, research papers, public datasets, and direct interviews.
@@ -45,7 +45,7 @@ Do not turn market movement into investment advice. Distinguish observed prices 
 Write one file:
 
 ```text
-src/content/blog/daily-briefing-YYYY-MM-DD.md
+src/content/briefings/YYYY-MM-DD.md
 ```
 
 Use:

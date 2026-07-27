@@ -1,0 +1,13 @@
+---
+title: "t 统计量"
+description: "因子研究"
+pubDate: "2026-07-10"
+category: "名词手册"
+tags: ["quant","因子研究"]
+term: "t 统计量"
+aliases: ['t 值']
+module: "quant"
+glossaryCategory: "因子研究"
+---
+
+回答"这个 IC 均值是真本事还是运气"。|t| > 2 即统计显著（95% 置信）。注意：如果你试了几十个因子挑出最好的，单个 t>2 也可能是运气，学界因此主张把门槛提高到 t>3（见"多重检验"）。

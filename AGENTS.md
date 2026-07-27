@@ -16,10 +16,14 @@ The GitHub Pages workflow publishes `dist/`.
 
 ## Documentation
 
-Markdown source data lives under `src/content/blog/`, `src/content/books/`, and `src/content/glossary/`.
-`npm run build` first mirrors those sources into the ignored Fuwari cache under `.generated/posts/` via `scripts/sync-fuwari-content.mjs`, then writes static output to `dist/`.
+Markdown source data is split across four Astro Content Collections:
 
-Use `astro.config.mjs`, `src/config.ts`, `src/content.config.ts`, `src/styles/`, `src/components/`, `src/layouts/`, and the sync script for site/theme changes.
+- `src/content/posts/`: regular articles and glossary posts.
+- `src/content/books/`: one metadata file per book.
+- `src/content/book-notes/`: chapter notes linked to books with `reference("books")`.
+- `src/content/briefings/`: daily briefings.
+
+Use `astro.config.mjs`, `src/config.ts`, `src/content.config.ts`, `src/styles/`, `src/components/`, and `src/layouts/` for site/theme changes.
 
 The current product and architecture baseline is documented in `docs/product-design.md`. When an older proposal conflicts with that file or the current code, follow the current baseline and implementation.
 
@@ -45,7 +49,7 @@ Core requirements:
 - Research before drafting when web/current/source-backed information matters.
 - Filter sources by quality and clearly separate facts, opinions, rumors, and inference.
 - Cite source-backed claims with Markdown links.
-- Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo. The Fuwari posts copy is generated; do not edit generated files under `.generated/posts/` as the source of truth.
+- Save publishable posts under `src/content/posts/` with frontmatter when asked to create an article in this repo.
 - After every writing change, build the project, run the local dev server with `npm run dev -- --port 4321`, and give the user the preview URL.
 - Do not publish, push, deploy, or send article changes to GitHub until the user has reviewed locally and explicitly approves publishing.
 
@@ -60,21 +64,23 @@ For the scheduled 每日简报, follow `.ai/daily-briefing.md`.
 
 ## Glossary Workflow (名词手册)
 
-When the user asks what a term means (e.g. "换手率是什么"), after answering in chat, also save the explanation to `src/content/glossary/<pinyin-slug>.md` with this frontmatter:
+When the user asks what a term means (e.g. "换手率是什么"), after answering in chat, also save the explanation to `src/content/posts/glossary-<pinyin-slug>.md` with this frontmatter:
 
 ```yaml
 ---
-term: '换手率'            # 术语本名
-aliases: ['turnover rate'] # 别名/相关说法（正文中出现也会变成可点击）
-module: 'quant'            # 归属一级模块：quant / poker
+title: '换手率'
+description: '术语的一句话定义'
 pubDate: 'YYYY-MM-DD'
+category: '名词手册'
+tags: ['quant']
+term: '换手率'
+aliases: ['turnover rate']
+module: 'quant'
+glossaryCategory: '入门通识'
 ---
 ```
 
-The body is a concise Markdown explanation (definition first, then examples / tables / practical notes). Terms are automatically:
-
-- listed in that module's 名词手册 second-level menu, and
-- turned into clickable `.term-link` elements wherever they appear in article bodies (a side card shows the explanation).
+The body is a concise Markdown explanation (definition first, then examples / tables / practical notes). Terms are part of the `posts` Collection and receive normal static pages and Pagefind indexing.
 
 Keep explanations self-contained and beginner-friendly. Do not duplicate an existing term file — update it instead.
 
@@ -94,5 +100,5 @@ Key rules:
 - Notes must be derived from the extracted chapter text only — no reviews, no summaries from memory. If text is missing/garbled (scanned PDF), report instead of improvising.
 - Note format: per real chapter, `> TL;DR：` (3~5 句) + `## 详读` (短章 800~1200 字 / 常规 1200~2000 字 / 厚章 2000~3000 字，论证脉络+案例+要点) + 案例档案 + 延伸案例（编者补）+ 怎么用 + 要点清单.
 - Copyright guardrails: paraphrase-first; direct quotes ≤2 per chapter, ≤25 chars each, with page numbers.
-- Output chapters to `src/content/books/<slug>--NN.md` using the existing schema (book/bookTitle/author/note/bookCategory/bookModule/seq/chapter/title). `chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结.
+- Output chapters to `src/content/book-notes/<slug>--NN.md` using the existing schema (book/bookTitle/author/note/bookCategory/bookModule/seq/chapter/title/updated). `book` must reference an existing `src/content/books/<slug>.md` entry. `chapter` is a running sequence number: 1 = 导读, then one per real chapter, last = 总结.
 - Publishing still requires explicit user approval.

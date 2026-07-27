@@ -16,6 +16,14 @@ export function getPostUrlBySlug(slug: string): string {
 	return url(`/posts/${slug}/`);
 }
 
+export function getBookNoteUrl(book: string, chapter: number | string): string {
+	return url(`/books/${book}/${chapter}/`);
+}
+
+export function getBriefingUrl(date: string): string {
+	return url(`/briefings/${date}/`);
+}
+
 export function getTagUrl(tag: string): string {
 	if (!tag) return url("/archive/");
 	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);

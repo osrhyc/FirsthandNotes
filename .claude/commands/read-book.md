@@ -8,7 +8,7 @@ Usage:
 /read-book <PDF/EPUB 文件路径> [分类] [--slug xxx]
 ```
 
-Read the source book first, extract real chapter text or page-image evidence, then produce publishable chapter notes under `src/content/books/`. Do not use reviews, summaries, search snippets, or model memory as substitutes for the book.
+Read the source book first, extract real chapter text or page-image evidence, then produce publishable chapter notes under `src/content/book-notes/`. Create the corresponding metadata entry under `src/content/books/` first. Do not use reviews, summaries, search snippets, or model memory as substitutes for the book.
 
 Non-negotiable:
 

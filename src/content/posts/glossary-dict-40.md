@@ -1,0 +1,13 @@
+---
+title: "小市值效应"
+description: "经典异象"
+pubDate: "2026-07-10"
+category: "名词手册"
+tags: ["quant","经典异象"]
+term: "小市值效应"
+aliases: []
+module: "quant"
+glossaryCategory: "经典异象"
+---
+
+小市值股票长期跑赢的现象。A 股历史上曾非常强，但 2017 年剧烈反转（最小市值板块跌约 45%、上证50 涨 25%）——**历史有效 ≠ 未来有效**的经典案例。

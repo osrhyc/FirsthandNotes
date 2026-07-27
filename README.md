@@ -17,7 +17,7 @@ npm run preview  # 本地预览构建结果
 
 ## 写文章
 
-在 `src/content/blog/` 下新建 Markdown 文件：
+在 `src/content/posts/` 下新建 Markdown 文件：
 
 ```yaml
 ---
@@ -28,7 +28,7 @@ tags: ['标签'] # 可选
 ---
 ```
 
-构建时会先运行 `scripts/sync-fuwari-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步到忽略的 `.generated/posts/` 缓存，然后由 Astro 输出静态站点。缓存放在 `src/content/` 外，避免开发服务器同时扫描原稿和生成副本。
+Astro 直接读取四个 Content Collection，构建过程不复制 Markdown，也不生成中间内容缓存。
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
@@ -52,14 +52,13 @@ tags: ['标签'] # 可选
 
 ```
 src/
-├── content/blog/      # 文章源数据
-├── content/books/     # 读书笔记源数据
-├── content/glossary/  # 名词手册源数据
-├── content.config.ts  # Astro 内容集合
-├── config.ts          # Fuwari 站点配置
-└── styles/            # Fuwari 样式
-
-.generated/            # 构建期生成的文章与模块索引（不提交）
+├── content/posts/       # 普通文章与名词手册
+├── content/books/       # 书籍元数据
+├── content/book-notes/  # 逐章精读笔记
+├── content/briefings/   # 每日简报
+├── content.config.ts    # 四个 Astro Content Collection
+├── config.ts            # Fuwari 站点配置
+└── styles/              # Fuwari 样式
 ```
 
 界面基于 [Fuwari](https://github.com/saicaca/fuwari) 迁移，遵循其 MIT 许可证。

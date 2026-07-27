@@ -1,8 +1,6 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import { getCategoryUrl } from "@utils/url-utils.ts";
-import postSummary from "../../.generated/post-summary.json";
 
-// // Retrieve posts and sort them by publication date
 export type PostEntry = CollectionEntry<"posts"> & {
 	slug: string;
 };
@@ -18,11 +16,11 @@ async function getRawSortedPosts(): Promise<PostEntry[]> {
 				...post,
 				slug: post.id.replace(/\.(md|mdx)$/i, ""),
 			}))
-			.sort((a, b) => {
-				const dateA = new Date(a.data.published);
-				const dateB = new Date(b.data.published);
-				return dateA > dateB ? -1 : 1;
-			}),
+			.sort(
+				(a, b) =>
+					b.data.published.getTime() - a.data.published.getTime() ||
+					a.data.title.localeCompare(b.data.title, "zh-CN"),
+			),
 	);
 
 	return sortedPostsPromise;
@@ -42,35 +40,32 @@ export async function getSortedPosts() {
 
 	return sorted;
 }
+
 export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
 };
+
 export async function getSortedPostsList(): Promise<PostForList[]> {
-	const sortedFullPosts = await getRawSortedPosts();
-
-	// delete post.body
-	const sortedPostsList = sortedFullPosts.map((post) => ({
-		slug: post.slug,
-		data: post.data,
-	}));
-
-	return sortedPostsList;
+	const sorted = await getRawSortedPosts();
+	return sorted.map((post) => ({ slug: post.slug, data: post.data }));
 }
+
 export type Tag = {
 	name: string;
 	count: number;
 };
 
 export async function getTagList(): Promise<Tag[]> {
-	const keys = Object.keys(postSummary.tags).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
-	});
-
-	return keys.map((key) => ({
-		name: key,
-		count: postSummary.tags[key as keyof typeof postSummary.tags],
-	}));
+	const counts = new Map<string, number>();
+	for (const post of await getRawSortedPosts()) {
+		for (const tag of post.data.tags) {
+			counts.set(tag, (counts.get(tag) || 0) + 1);
+		}
+	}
+	return [...counts.entries()]
+		.sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map(([name, count]) => ({ name, count }));
 }
 
 export type Category = {
@@ -80,20 +75,16 @@ export type Category = {
 };
 
 export async function getCategoryList(): Promise<Category[]> {
-	const lst = Object.keys(postSummary.categories).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
-	});
-
-	const ret: Category[] = [];
-	for (const c of lst) {
-		ret.push({
-			name: c,
-			count:
-				postSummary.categories[
-					c as keyof typeof postSummary.categories
-				],
-			url: getCategoryUrl(c),
-		});
+	const counts = new Map<string, number>();
+	for (const post of await getRawSortedPosts()) {
+		const category = post.data.category || "";
+		if (category) counts.set(category, (counts.get(category) || 0) + 1);
 	}
-	return ret;
+	return [...counts.entries()]
+		.sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map(([name, count]) => ({
+			name,
+			count,
+			url: getCategoryUrl(name),
+		}));
 }

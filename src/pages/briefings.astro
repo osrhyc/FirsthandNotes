@@ -1,9 +1,9 @@
 ---
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getPostUrlBySlug } from "@utils/url-utils";
+import { getBriefings } from "@utils/briefing-utils";
 import { Icon } from "astro-icon/components";
-import briefings from "../../.generated/briefings.json";
 
+const briefings = await getBriefings();
 const [latestBriefing, ...pastBriefings] = briefings;
 
 function formatDate(value: string) {
@@ -41,7 +41,7 @@ function formatDate(value: string) {
 					<h2 class="text-lg font-bold text-90">最新一期</h2>
 				</div>
 				<a
-					href={getPostUrlBySlug(latestBriefing.postSlug)}
+					href={latestBriefing.url}
 					class="card-base group block px-6 py-6 transition hover:-translate-y-0.5 md:px-8"
 				>
 					<div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -80,7 +80,7 @@ function formatDate(value: string) {
 						{pastBriefings.map((briefing) => (
 							<li>
 								<a
-									href={getPostUrlBySlug(briefing.postSlug)}
+									href={briefing.url}
 									class="group flex min-h-20 items-center gap-4 px-6 py-4 transition hover:bg-[var(--btn-plain-bg-hover)] md:px-8"
 								>
 									<time class="w-24 shrink-0 text-sm text-30" datetime={briefing.date}>

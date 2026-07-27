@@ -51,42 +51,44 @@
 ### 3.1 内容源
 
 ```text
-src/content/blog/       普通文章与每日简报
-src/content/books/      逐章书籍笔记
-src/content/glossary/   名词解释
-src/content/spec/       站点说明类内容
+src/content/posts/       普通文章与名词手册
+src/content/books/       一书一份元数据
+src/content/book-notes/  逐章精读笔记
+src/content/briefings/   每日简报
 ```
 
-这些目录是内容的唯一长期数据源。构建前，`scripts/sync-fuwari-content.mjs` 将不同内容统一投影到忽略提交的 `.generated/`：
+四个目录分别对应四个 Astro Content Collection：
 
 ```text
-.generated/posts/              Fuwari 文章集合
-.generated/books.json          书籍与章节索引
-.generated/briefings.json      简报日期索引
-.generated/post-summary.json   普通文章分类与标签统计
+posts       普通文章和名词解释
+books       书籍元数据
+bookNotes   章节笔记
+briefings   每日简报
 ```
 
-Astro 当前只需要读取生成后的 `posts` Collection。书籍和简报的独立体验由生成索引及专用页面实现，不为追求形式上的“模块独立”拆成四个 Content Collection。
+`bookNotes.book` 使用 Astro `reference("books")` 引用真实书籍条目。引用不存在、字段类型错误或必填字段缺失时，构建直接失败。页面所需的书籍目录、分类统计和简报归档均在构建时从 Collection 查询，不保留 `.generated/` 内容投影层。
 
 ### 3.2 当前路由
 
 ```text
 /                         普通文章首页
-/posts/[slug]/            普通文章、书籍章节和简报正文
+/posts/[slug]/            普通文章与名词解释
 /books/                   书籍首页
+/books/[book]/[chapter]/  书籍章节
 /briefings/               每日简报首页
+/briefings/[date]/        每日简报正文
 /archive/                 归档
 /about/                   关于
 /rss.xml                  RSS
 ```
 
-保留统一的 `/posts/[slug]/` 正文路由可以复用 Fuwari 的 Markdown、代码块、目录、搜索和 SEO 能力。只有出现明确的 SEO 或信息架构收益时，才迁移到更深的模块路由。
+三个正文路由共享 `ArticlePage.astro`，继续复用 Fuwari 的 Markdown、代码块、目录、搜索和 SEO 能力，同时让 URL 与内容模块一致。
 
 ### 3.3 构建与发布
 
 ```text
 Markdown 源文件
-  -> 内容同步与索引生成
+  -> 四个 Collection 的 Schema 与引用校验
   -> Astro 静态构建
   -> Pagefind 搜索索引
   -> dist/
@@ -130,7 +132,7 @@ npm run dev -- --port 4321
 ChatGPT 定时任务
   -> 搜索过去 24 小时及持续发酵的重要信息
   -> 来源分级、交叉验证、与近期简报去重
-  -> 生成 src/content/blog/daily-briefing-YYYY-MM-DD.md
+  -> 生成 src/content/briefings/YYYY-MM-DD.md
   -> 内容检查与构建
   -> 提交并推送 GitHub
   -> GitHub Actions 发布
@@ -156,21 +158,21 @@ ChatGPT 定时任务
 
 ## 8. 与旧方案的差异
 
-以下内容不再作为当前实施目标：
+已经从旧方案中修正：
 
 - 不使用 n8n，定时工作由 ChatGPT 任务承担。
 - 简报发布时间不是 11:00，而是每天 10:00。
-- 不建立 `posts / books / bookNotes / briefings` 四个独立 Collection。
+- 已建立 `posts / books / bookNotes / briefings` 四个独立 Collection，并删除旧同步脚本和 `.generated/` 投影。
 - 不将首页改造成包含所有模块的仪表盘。
 - 不新增书籍详情中间页，书籍首页直接进入章节阅读。
-- 不要求 `/blog/`、`/books/[book]/notes/[note]/`、日期型简报路由；当前统一文章路由已满足使用需求。
+- 普通文章、书籍章节和每日简报使用各自的语义化路由。
 - 不引入 Ant Design、React SPA、数据库或传统 CMS。
 - 不先建设 PRD、ADR、Task、Log 的完整文档体系；只在复杂决策确有维护价值时增加。
 
 ## 9. 后续更新优先级
 
-1. 完善内容校验：重复 slug、重复简报日期、失效内部链接和缺失来源。
+1. 完善内容校验：重复简报日期、失效内部链接和缺失来源。
 2. 为 Pagefind 搜索结果增加模块标识或过滤能力。
 3. 按需增加分模块 RSS。
 4. 为文章和简报补充更准确的结构化数据与分享图。
-5. 当现有统一正文路由造成实际问题时，再评估模块化 URL 迁移。
+5. 按实际需要扩充书籍状态、封面、阅读进度和评分字段。

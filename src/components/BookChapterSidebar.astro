@@ -1,11 +1,11 @@
 ---
-import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 
 interface Chapter {
 	number: number;
 	title: string;
-	postSlug: string;
+	url: string;
 }
 
 interface Book {
@@ -58,7 +58,7 @@ const { book, currentChapterIndex } = Astro.props;
 				return (
 					<li>
 						<a
-							href={getPostUrlBySlug(chapter.postSlug)}
+							href={chapter.url}
 							aria-current={isCurrent ? "page" : undefined}
 							class:list={[
 								"group mx-2 flex min-h-10 items-start gap-2 rounded-lg px-2 py-2 text-sm transition",

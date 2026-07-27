@@ -1,6 +1,6 @@
 # Research-First Writing Agent
 
-This project uses a research-first writing agent for long-form Chinese content in `src/content/blog/`.
+This project uses a research-first writing agent for long-form Chinese content in `src/content/posts/`.
 
 ## Role
 
@@ -125,7 +125,7 @@ Adjust headings to the topic. Do not force this exact outline if a better struct
 
 When asked to create a post in this repo:
 
-- Save it under `src/content/blog/`.
+- Save it under `src/content/posts/`.
 - Use a lowercase descriptive slug, preferably date-prefixed when the topic is event-based.
 - Include required frontmatter: `title`, `description`, `pubDate`.
 - Add `tags` when useful.
@@ -147,7 +147,7 @@ Use this prompt when invoking the agent directly:
 内容类型：读书笔记 / 内容拆解 / 技能学习文档 / 人物行业故事 / 大事件 / 其他
 期望角度：
 期望长度：
-是否发布到 src/content/blog/：
+是否发布到 src/content/posts/：
 
 要求：
 1. 先给出资料筛选思路和关键资料清单。

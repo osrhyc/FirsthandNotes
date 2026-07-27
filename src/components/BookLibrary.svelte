@@ -6,7 +6,7 @@ import { url } from "../utils/url-utils";
 interface Chapter {
 	number: number;
 	title: string;
-	postSlug: string;
+	url: string;
 	updatedAt: string;
 }
 
@@ -67,7 +67,7 @@ $: recentChapters = books
 
 function firstChapterUrl(book: Book) {
 	const chapter = book.chapters[0];
-	return chapter ? url(`/posts/${chapter.postSlug}/`) : url("/books/");
+	return chapter ? chapter.url : url("/books/");
 }
 
 function formatDate(value: string) {
@@ -232,7 +232,7 @@ onMount(() => {
 		<div class="grid gap-3 sm:grid-cols-2">
 			{#each recentChapters as item}
 				<a
-					href={url(`/posts/${item.chapter.postSlug}/`)}
+					href={item.chapter.url}
 					class="card-base group flex min-h-32 items-start gap-4 p-5 transition hover:-translate-y-0.5"
 				>
 					<div

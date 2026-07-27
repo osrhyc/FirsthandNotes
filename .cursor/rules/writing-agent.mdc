@@ -1,8 +1,8 @@
 ---
 description: Research-first writing workflow for Firsthand Notes articles
 globs:
-  - "src/content/blog/**/*.md"
-  - "src/content/blog/**/*.mdx"
+  - "src/content/posts/**/*.md"
+  - "src/content/posts/**/*.mdx"
   - "*.md"
 alwaysApply: true
 ---
@@ -17,7 +17,7 @@ Key requirements:
 - Prefer primary and reputable sources.
 - Separate verified facts, analysis, opinion, rumors, and inference.
 - Use Markdown links for source-backed claims.
-- Save publishable posts under `src/content/blog/` with frontmatter.
+- Save publishable posts under `src/content/posts/` with frontmatter.
 - Follow `.ai/daily-briefing.md` for the scheduled daily briefing.
 - Follow `.ai/read-book.md` instead when reading a user-provided PDF/EPUB; web summaries cannot substitute for the original book.
 - After every writing change, build the project and run the local dev server with `npm run dev -- --port 4321`.
