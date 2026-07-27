@@ -43,6 +43,13 @@ $: filteredBooks = books.filter((book) => {
 		`${book.title} ${book.author} ${book.description}`.toLocaleLowerCase();
 	return matchesCategory && (!normalizedQuery || haystack.includes(normalizedQuery));
 });
+$: visibleCategoryGroups = categories
+	.filter((category) => category !== "全部")
+	.map((category) => ({
+		category,
+		books: filteredBooks.filter((book) => book.category === category),
+	}))
+	.filter((group) => group.books.length > 0);
 $: recentBooks = [...books]
 	.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 	.slice(0, 4);
@@ -276,50 +283,62 @@ onMount(() => {
 	</div>
 
 	{#if filteredBooks.length > 0}
-		<div class="grid gap-4 md:grid-cols-2">
-			{#each filteredBooks as book}
-				<article class="card-base group flex min-h-52 flex-col p-5 md:p-6">
-					<div class="flex items-start gap-4">
-						<div
-							class="flex h-14 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-xl font-bold text-[var(--primary)]"
-							aria-hidden="true"
+		<div class="space-y-7">
+			{#each visibleCategoryGroups as group}
+				<section aria-labelledby={`book-category-${group.category}`}>
+					<header class="mb-3 flex items-center gap-3 px-1">
+						<span class="h-5 w-1 rounded-full bg-[var(--primary)]"></span>
+						<h3
+							id={`book-category-${group.category}`}
+							class="text-base font-bold text-90"
 						>
-							{book.title.slice(0, 1)}
-						</div>
-						<div class="min-w-0 flex-1">
-							<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
-								<a
-									href={firstChapterUrl(book)}
-									class="transition hover:text-[var(--primary)]"
-								>
-									{book.title}
-								</a>
-							</h2>
-							<p class="mt-1 truncate text-sm text-50">{book.author}</p>
-						</div>
-					</div>
+							{group.category}
+						</h3>
+						<span class="text-xs text-30">{group.books.length} 本</span>
+					</header>
 
-					<p class="mt-4 line-clamp-2 text-sm leading-6 text-50">
-						{book.description || "逐章精读笔记"}
-					</p>
+					<div class="grid gap-4 md:grid-cols-2">
+						{#each group.books as book}
+							<article class="card-base group flex min-h-52 flex-col p-5 md:p-6">
+								<div class="flex items-start gap-4">
+									<div
+										class="flex h-14 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-xl font-bold text-[var(--primary)]"
+										aria-hidden="true"
+									>
+										{book.title.slice(0, 1)}
+									</div>
+									<div class="min-w-0 flex-1">
+										<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
+											<a
+												href={firstChapterUrl(book)}
+												class="transition hover:text-[var(--primary)]"
+											>
+												{book.title}
+											</a>
+										</h2>
+										<p class="mt-1 truncate text-sm text-50">{book.author}</p>
+									</div>
+								</div>
 
-					<div class="mt-auto flex items-end justify-between gap-3 pt-5">
-						<div class="min-w-0">
-							<div class="truncate text-xs font-medium text-[var(--primary)]">
-								{book.category}
-							</div>
-							<div class="mt-1 text-xs text-30">{book.chapters.length} 篇笔记</div>
-						</div>
-						<a
-							href={firstChapterUrl(book)}
-							aria-label={`开始阅读《${book.title}》`}
-							class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
-						>
-							<span>开始阅读</span>
-							<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
-						</a>
+								<p class="mt-4 line-clamp-2 text-sm leading-6 text-50">
+									{book.description || "逐章精读笔记"}
+								</p>
+
+								<div class="mt-auto flex items-end justify-between gap-3 pt-5">
+									<div class="text-xs text-30">{book.chapters.length} 篇笔记</div>
+									<a
+										href={firstChapterUrl(book)}
+										aria-label={`开始阅读《${book.title}》`}
+										class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
+									>
+										<span>开始阅读</span>
+										<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
+									</a>
+								</div>
+							</article>
+						{/each}
 					</div>
-				</article>
+				</section>
 			{/each}
 		</div>
 	{:else}
