@@ -1,0 +1,118 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
+import books from "../../../.generated/books.json";
+
+interface Chapter {
+	number: number;
+	title: string;
+	postSlug: string;
+}
+
+interface Book {
+	slug: string;
+	title: string;
+	author: string;
+	description: string;
+	category: string;
+	sequence: number;
+	chapters: Chapter[];
+}
+
+export function getStaticPaths() {
+	return (books as Book[]).map((book) => ({
+		params: { slug: book.slug },
+		props: { book },
+	}));
+}
+
+const { book } = Astro.props as { book: Book };
+const firstChapter = book.chapters[0];
+---
+
+<MainGridLayout
+	title={book.title}
+	description={book.description || `${book.title}逐章精读笔记`}
+>
+	<div class="space-y-4">
+		<section class="card-base px-6 py-6 md:px-8 md:py-8">
+			<a
+				href={url("/books/")}
+				class="mb-6 inline-flex items-center gap-1 text-sm font-medium text-50 transition hover:text-[var(--primary)]"
+			>
+				<Icon name="material-symbols:arrow-back-rounded" class="text-lg" />
+				<span>返回书籍</span>
+			</a>
+
+			<div class="flex flex-col gap-5 sm:flex-row sm:items-start">
+				<div
+					class="flex h-20 w-16 shrink-0 items-center justify-center rounded-xl bg-[var(--btn-regular-bg)] text-2xl font-bold text-[var(--primary)]"
+					aria-hidden="true"
+				>
+					{book.title.slice(0, 1)}
+				</div>
+
+				<div class="min-w-0 flex-1">
+					<div class="mb-2 flex flex-wrap items-center gap-2 text-xs">
+						<span class="rounded-md bg-[var(--btn-regular-bg)] px-2 py-1 font-medium text-[var(--primary)]">
+							{book.category}
+						</span>
+						<span class="text-30">{book.chapters.length} 篇笔记</span>
+					</div>
+					<h1 class="text-2xl font-bold leading-tight text-90 md:text-3xl">
+						{book.title}
+					</h1>
+					<p class="mt-2 text-sm text-50">{book.author}</p>
+					<p class="mt-4 max-w-2xl text-sm leading-6 text-50">
+						{book.description || "逐章精读笔记"}
+					</p>
+
+					{firstChapter && (
+						<a
+							href={getPostUrlBySlug(firstChapter.postSlug)}
+							class="btn-regular mt-5 inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-medium active:scale-95"
+						>
+							<Icon name="material-symbols:menu-book-outline-rounded" class="text-xl" />
+							<span>开始阅读</span>
+						</a>
+					)}
+				</div>
+			</div>
+		</section>
+
+		<section class="card-base overflow-hidden">
+			<header class="border-b border-black/5 px-6 py-5 dark:border-white/10 md:px-8">
+				<div class="flex items-center justify-between gap-4">
+					<div>
+						<h2 class="text-lg font-bold text-90">章节目录</h2>
+						<p class="mt-1 text-sm text-50">按原书顺序逐章阅读</p>
+					</div>
+					<span class="shrink-0 text-sm text-30">{book.chapters.length} 章</span>
+				</div>
+			</header>
+
+			<ol class="divide-y divide-black/5 dark:divide-white/10">
+				{book.chapters.map((chapter, index) => (
+					<li>
+						<a
+							href={getPostUrlBySlug(chapter.postSlug)}
+							class="group flex min-h-16 items-center gap-4 px-6 py-3 transition hover:bg-[var(--btn-plain-bg-hover)] md:px-8"
+						>
+							<span class="w-8 shrink-0 font-mono text-sm text-30">
+								{String(chapter.number || index + 1).padStart(2, "0")}
+							</span>
+							<span class="min-w-0 flex-1 text-sm font-medium leading-6 text-75 transition group-hover:text-[var(--primary)] md:text-base">
+								{chapter.title}
+							</span>
+							<Icon
+								name="material-symbols:chevron-right-rounded"
+								class="shrink-0 text-xl text-30 transition group-hover:translate-x-0.5 group-hover:text-[var(--primary)]"
+							/>
+						</a>
+					</li>
+				))}
+			</ol>
+		</section>
+	</div>
+</MainGridLayout>

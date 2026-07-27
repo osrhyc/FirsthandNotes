@@ -1,6 +1,6 @@
 <script lang="ts">
 import Icon from "@iconify/svelte";
-import { getPostUrlBySlug } from "../utils/url-utils";
+import { url } from "../utils/url-utils";
 
 interface Chapter {
 	number: number;
@@ -39,9 +39,8 @@ $: filteredBooks = books.filter((book) => {
 	return matchesCategory && (!normalizedQuery || haystack.includes(normalizedQuery));
 });
 
-function firstChapterUrl(book: Book) {
-	const firstChapter = book.chapters[0];
-	return firstChapter ? getPostUrlBySlug(firstChapter.postSlug) : "/books/";
+function bookDetailUrl(book: Book) {
+	return url(`/books/${book.slug}/`);
 }
 </script>
 
@@ -132,7 +131,12 @@ function firstChapterUrl(book: Book) {
 						</div>
 						<div class="min-w-0 flex-1">
 							<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
-								{book.title}
+								<a
+									href={bookDetailUrl(book)}
+									class="transition hover:text-[var(--primary)]"
+								>
+									{book.title}
+								</a>
 							</h2>
 							<p class="mt-1 truncate text-sm text-50">{book.author}</p>
 						</div>
@@ -150,11 +154,11 @@ function firstChapterUrl(book: Book) {
 							<div class="mt-1 text-xs text-30">{book.chapters.length} 篇笔记</div>
 						</div>
 						<a
-							href={firstChapterUrl(book)}
-							aria-label={`开始阅读《${book.title}》`}
+							href={bookDetailUrl(book)}
+							aria-label={`查看《${book.title}》章节目录`}
 							class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
 						>
-							<span>开始阅读</span>
+							<span>查看目录</span>
 							<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
 						</a>
 					</div>
