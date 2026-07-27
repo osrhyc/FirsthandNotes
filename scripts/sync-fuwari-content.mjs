@@ -12,6 +12,7 @@ const postSummary = {
 	categories: {},
 	tags: {},
 };
+const bookMap = new Map();
 
 function ensureDir(dir) {
 	fs.mkdirSync(dir, { recursive: true });
@@ -133,6 +134,29 @@ function syncBooks() {
 		const { data, body } = readMarkdown(path.join(source, file));
 		const title = data.title || data.note || file.replace(/\.md$/, "");
 		const bookTitle = data.bookTitle || data.book || "读书笔记";
+		const bookSlug = data.book || file.replace(/--.*$/, "").replace(/\.md$/, "");
+		const postSlug = `book-${file.replace(/\.md$/, "")}`;
+		const chapterNumber = Number.parseInt(data.chapter, 10) || 0;
+		const sequence = Number.parseInt(data.seq, 10) || Number.MAX_SAFE_INTEGER;
+
+		if (!bookMap.has(bookSlug)) {
+			bookMap.set(bookSlug, {
+				slug: bookSlug,
+				title: bookTitle,
+				author: data.author || "佚名",
+				description: data.note || "",
+				category: data.bookCategory || "读书笔记",
+				sequence,
+				chapters: [],
+			});
+		}
+
+		bookMap.get(bookSlug).chapters.push({
+			number: chapterNumber,
+			title,
+			postSlug,
+		});
+
 		writePost(`book-${file}`, {
 			title: `${bookTitle}｜${title}`,
 			published: DEFAULT_DATE,
@@ -189,6 +213,22 @@ syncGlossary();
 fs.writeFileSync(
 	path.join(generatedDir, "post-summary.json"),
 	`${JSON.stringify(postSummary, null, 2)}\n`,
+);
+const books = [...bookMap.values()]
+	.map((book) => ({
+		...book,
+		chapters: book.chapters.sort(
+			(a, b) => a.number - b.number || a.title.localeCompare(b.title),
+		),
+	}))
+	.sort(
+		(a, b) =>
+			a.sequence - b.sequence ||
+			a.title.localeCompare(b.title, "zh-CN"),
+	);
+fs.writeFileSync(
+	path.join(generatedDir, "books.json"),
+	`${JSON.stringify(books, null, 2)}\n`,
 );
 
 console.log("Synced Fuwari posts content.");
