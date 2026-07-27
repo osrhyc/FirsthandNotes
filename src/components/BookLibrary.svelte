@@ -1,5 +1,6 @@
 <script lang="ts">
 import Icon from "@iconify/svelte";
+import { onMount } from "svelte";
 import { url } from "../utils/url-utils";
 
 interface Chapter {
@@ -24,6 +25,8 @@ export let books: Book[] = [];
 
 let query = "";
 let selectedCategory = "全部";
+let isCategoryMenuOpen = false;
+let categoryMenu: HTMLDivElement;
 
 $: categories = [
 	"全部",
@@ -68,6 +71,41 @@ function formatDate(value: string) {
 		day: "2-digit",
 	}).format(new Date(`${value}T00:00:00`));
 }
+
+function categoryCount(category: string) {
+	return category === "全部"
+		? books.length
+		: books.filter((book) => book.category === category).length;
+}
+
+function selectCategory(category: string) {
+	selectedCategory = category;
+	isCategoryMenuOpen = false;
+}
+
+onMount(() => {
+	function handlePointerDown(event: PointerEvent) {
+		if (
+			isCategoryMenuOpen &&
+			categoryMenu &&
+			!categoryMenu.contains(event.target as Node)
+		) {
+			isCategoryMenuOpen = false;
+		}
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === "Escape") isCategoryMenuOpen = false;
+	}
+
+	document.addEventListener("pointerdown", handlePointerDown);
+	document.addEventListener("keydown", handleKeyDown);
+
+	return () => {
+		document.removeEventListener("pointerdown", handlePointerDown);
+		document.removeEventListener("keydown", handleKeyDown);
+	};
+});
 </script>
 
 <section class="space-y-4">
@@ -108,22 +146,72 @@ function formatDate(value: string) {
 					/>
 				</label>
 
-				<label class="relative block">
-					<span class="sr-only">按分类筛选</span>
-					<select
-						bind:value={selectedCategory}
-						class="h-11 w-full appearance-none rounded-xl border border-black/10 bg-[var(--page-bg)] px-4 pr-10 text-sm text-75 outline-none transition focus:border-[var(--primary)] dark:border-white/10"
+				<div class="relative" bind:this={categoryMenu}>
+					<button
+						type="button"
+						aria-haspopup="listbox"
+						aria-expanded={isCategoryMenuOpen}
+						aria-controls="book-category-menu"
+						on:click={() => (isCategoryMenuOpen = !isCategoryMenuOpen)}
+						class={`flex h-11 w-full items-center gap-3 rounded-xl border bg-[var(--page-bg)] px-4 text-left text-sm outline-none transition ${
+							isCategoryMenuOpen
+								? "border-[var(--primary)] text-90"
+								: "border-black/10 text-75 hover:border-black/20 dark:border-white/10 dark:hover:border-white/20"
+						}`}
 					>
-						{#each categories as category}
-							<option value={category}>{category}</option>
-						{/each}
-					</select>
-					<Icon
-						icon="material-symbols:expand-more-rounded"
-						width="22"
-						class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-50"
-					/>
-				</label>
+						<Icon
+							icon="material-symbols:filter-list-rounded"
+							width="20"
+							class="shrink-0 text-[var(--primary)]"
+						/>
+						<span class="min-w-0 flex-1 truncate">{selectedCategory}</span>
+						<Icon
+							icon="material-symbols:expand-more-rounded"
+							width="22"
+							class={`shrink-0 text-50 transition-transform ${
+								isCategoryMenuOpen ? "rotate-180" : ""
+							}`}
+						/>
+					</button>
+
+					{#if isCategoryMenuOpen}
+						<div
+							id="book-category-menu"
+							role="listbox"
+							aria-label="按分类筛选书籍"
+							class="absolute right-0 top-[calc(100%+0.5rem)] z-40 w-full min-w-56 overflow-hidden rounded-lg border border-black/10 bg-[var(--card-bg)] p-2 shadow-xl dark:border-white/10"
+						>
+							<div class="px-2 pb-2 pt-1 text-xs font-semibold text-30">选择分类</div>
+							<div class="max-h-72 overflow-y-auto">
+								{#each categories as category}
+									<button
+										type="button"
+										role="option"
+										aria-selected={selectedCategory === category}
+										on:click={() => selectCategory(category)}
+										class={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition ${
+											selectedCategory === category
+												? "bg-[var(--btn-regular-bg)] font-semibold text-[var(--primary)]"
+												: "text-75 hover:bg-[var(--btn-plain-bg-hover)]"
+										}`}
+									>
+										<span class="min-w-0 flex-1 truncate">{category}</span>
+										<span class="shrink-0 text-xs text-30">{categoryCount(category)}</span>
+										{#if selectedCategory === category}
+											<Icon
+												icon="material-symbols:check-rounded"
+												width="19"
+												class="shrink-0 text-[var(--primary)]"
+											/>
+										{:else}
+											<span class="w-[19px] shrink-0"></span>
+										{/if}
+									</button>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</header>
