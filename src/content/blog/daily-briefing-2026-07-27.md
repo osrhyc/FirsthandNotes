@@ -1,99 +1,80 @@
 ---
 title: '每日简报｜2026-07-27'
-description: '提醒 GitHub Models 与 Copilot Gemini 模型迁移，并补充前端、AI 安全和产品机会。'
+description: '今天的重点从 AI 工具迁移扩展到创业增长、支付风控、工业利润、公募基金和 QDII ETF 溢价风险。'
 pubDate: '2026-07-27'
 category: '每日简报'
-level: 'AI · 开发 · 商业科技'
-tags: ['每日简报', 'GitHub', 'Copilot', 'AI安全', '前端性能']
+level: 'AI · 开发 · 创业 · 金融'
+tags: ['每日简报', 'AI', 'Agent', '创业增长', '基金', '股市']
 ---
 
-> 同步自 ChatGPT Project「每日晨读」历史归档。
+今天的主线是：**AI 工具进入“能做完整工作”的阶段，但真正的行动优先级不只在新模型；本周更值得处理的是迁移截止日期、支付和增长流程、宏观利润修复、公募基金结构变化，以及海外 ETF 溢价风险。**
 
-过去 24 小时高价值官方发布不多，今天重点提醒两项本周到期的 GitHub 迁移，并补充几项近期但值得立即落地的前端、AI 安全和产品机会。
+## 1. GitHub Models 7 月 30 日下线：先排查代码和环境变量
 
-## 1. GitHub Models 将在 7 月 30 日彻底停止服务
+GitHub Models 的模型目录、Playground、推理 API 和 BYOK 接口将在 **7 月 30 日全部关闭**。GitHub 建议迁移至 Microsoft Foundry，或使用 GitHub Copilot 处理 GitHub 内的 AI 工作流。[GitHub 官方公告](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/)
 
-GitHub Models 的模型目录、Playground、推理 API 和 BYOK 接口将在 **7 月 30 日全部关闭**，包括仍在使用服务的老用户。GitHub 建议迁移至 Microsoft Foundry，或使用 GitHub Copilot 完成 GitHub 内的 AI 工作流。[GitHub 官方公告](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/)
+**为什么重要：** 这是明确截止日期，不是普通产品新闻。如果仓库、脚本、CI 或服务端环境变量里还写着 `models.inference.ai.azure.com` 或 GitHub Models 相关 SDK，几天后可能直接请求失败。
 
-**为什么重要：** 如果项目使用 `models.inference.ai.azure.com`、GitHub Models SDK 或相关环境变量，三天后可能直接请求失败。
+**建议：** 今天全局搜索 `models.inference.ai.azure.com`、`github models`、相关 API key 名称和模型名。迁移时不要只替换 URL，还要核对认证方式、流式返回格式、工具调用字段、限流和错误码。
 
-**建议：** 今天检查代码、CI 和服务器配置：
+## 2. Copilot 两款 Gemini 模型 7 月 31 日下线：团队配置不要等界面自动切
 
-迁移时不要只替换 URL；还要对照新供应商的模型名、认证方式、流式格式、限流和工具调用字段。
+GitHub Copilot 将在 **7 月 31 日**停止支持 Gemini 2.5 Pro 和 Gemini 3 Flash，并建议分别迁移到 Gemini 3.1 Pro 和 Gemini 3.5 Flash；影响范围包括 Copilot Chat、代码补全、内联编辑、Ask 和 Agent 模式。[GitHub 官方迁移说明](https://github.blog/changelog/2026-07-02-upcoming-deprecation-of-gemini-2-5-pro-and-gemini-3-flash/)
 
-## 2. Copilot 将于 7 月 31 日下线两款 Gemini 模型
+**为什么重要：** 如果你或团队把模型名写进 IDE 配置、Agent 配置、内部 SOP 或自动化脚本，可能出现“界面能用、脚本不能用”的割裂。
 
-GitHub Copilot 将在 **7 月 31 日**停止支持：
+**建议：** 迁移前拿一个真实任务做 A/B：同一仓库、同一提示词，对比新旧模型的改动范围、测试通过率、中文指令遵循和返工时间。不要只看 benchmark。
 
-- Gemini 2.5 Pro，建议迁移至 Gemini 3.1 Pro。
-- Gemini 3 Flash，建议迁移至 Gemini 3.5 Flash。
+## 3. GPT-5.6 和 Vercel AI Gateway：Agent 成本开始进入“路由管理”阶段
 
-此次变化覆盖 Copilot Chat、代码补全、内联编辑、Ask 和 Agent 模式。企业管理员可能还需要在模型策略中手动启用替代模型。[GitHub 官方迁移说明](https://github.blog/changelog/2026-07-02-upcoming-deprecation-of-gemini-2-5-pro-and-gemini-3-flash/)
+OpenAI 的 GPT-5.6 正式发布页强调了前端设计、长任务、文档/表格/演示生成和 Programmatic Tool Calling 等能力；部分客户案例称，在法律、金融研究和前端任务里出现了 token 或步骤数下降，但这些属于厂商案例和合作伙伴评测，需要用自己的任务验证。[OpenAI GPT-5.6 发布说明](https://openai.com/index/gpt-5-6/)
 
-**实际影响：** 保存过模型名的 Agent 配置、团队开发规范和自动化脚本可能失效，不能只依赖界面自动切换。
+Vercel 也在 AI Gateway 中上线 Laguna S 2.1，提供 256K 上下文的免费版本和 1M 上下文的付费版本，定位是 agentic coding 和长任务，并通过 Gateway 提供用量、成本、重试、路由和 BYOK 能力。[Vercel Changelog](https://vercel.com/changelog/laguna-s-2-1-is-now-available-on-ai-gateway)
 
-**建议：** 迁移前分别跑一次现有真实任务，比较新旧模型的代码修改范围、测试通过率和中文指令遵循，避免上线当天才发现输出风格变化。
+**为什么重要：** AI 开发不再是“选一个最强模型”。更合理的结构是：低成本模型处理摘要、分类、预处理；中档模型做常规代码；高端模型处理跨文件重构、复杂故障和金融/法律长文档。
 
-## 3. Vercel 开放生产模型排行榜数据
+**建议：** 给你的写作 Agent 和开发 Agent 增加“任务类型 -> 模型档位 -> 最大预算 -> 验收标准”的表。先记录每类任务完成一次的总成本，而不是只看每百万 token 单价。
 
-Vercel 已将 AI Gateway 排行榜数据通过 API 和 CSV 开放，数据按日聚合，覆盖模型请求量、Token、消费金额、图片和视频生成量，并允许商业使用，但需要遵守 CC BY 4.0 署名要求。[Vercel 官方说明](https://vercel.com/changelog/open-data-and-shareable-charts-for-ai-gateway-leaderboards)
+## 4. Stripe 数据显示 AI 支出加速：独立开发机会在“工作流付费”而不是聊天入口
 
-**为什么重要：** 这类数据反映真实生产调用，而不只是社交媒体热度或 Benchmark。
+Stripe 分析 Link 用户支付数据后称，高 AI 支出用户的月度 AI 产品支出从 2025 年 12 月的 183 美元增长到 2026 年 3 月的 359 美元；其中 AI app-builder 平台支出增长更明显，高支出群体相比 2025 年 1 月增长约 5 倍。[Stripe 分析](https://stripe.com/blog/what-link-data-tells-us-about-ai-spending)
 
-**产品机会：** 这个模式可以直接借鉴到你的 ExtensionHacker：
+**为什么重要：** 这说明用户不是只为“聊天”付费，而是在为能产出应用、自动化和工作成果的平台付费。对独立开发者来说，机会更像“帮某类人完成某个闭环工作流”，而不是再做一个通用聊天壳。
 
-> 官方公开数据 -> 每日采集 -> 增长率计算 -> 异常变化识别 -> AI 生成商业解读
+**建议：** 选题可以从三个方向找：一是把已有内容转成可发布资产，二是把日志/数据转成决策报告，三是把交易、客服、营销和风控流程自动化。收费也应围绕节省时间、追回收入或降低风险。
 
-**建议：** 先做一个“AI 模型采用趋势”小栏目，跟踪 7 日增速、新模型首周采用率、请求量与消费金额背离。它也可以作为 Chrome 插件情报产品的数据处理原型。
+## 5. 创业营销：早期增长负责人不一定来自传统营销
 
-## 4. CodeQL 开始检查“用户输入污染系统提示词”
+a16z 在硬件创业招聘文章里提到，早期增长/营销关键岗位未必需要传统营销背景；高斜率、懂产品和业务现场的人，反而更容易把公司使命转成真实、有辨识度的叙事。[a16z 文章](https://a16z.com/the-7-hires-a-hardware-startup-needs-to-get-right/)
 
-CodeQL 2.26.0 新增 JavaScript/TypeScript 查询 `js/system-prompt-injection`，可检测不可信的用户输入直接流入 System Prompt 的情况，覆盖部分 OpenAI、Anthropic 和 Google GenAI SDK。[GitHub CodeQL 更新](https://github.blog/changelog/2026-07-10-codeql-2-26-0-adds-kotlin-2-4-0-support-and-ai-prompt-injection-detection/)
+**为什么重要：** AI 让内容生产成本下降后，营销的稀缺点不再是“能不能写”，而是有没有清晰观点、可信场景和可重复分发节奏。没有身份感和差异化的内容会被 AI 噪音淹没。
 
-**为什么重要：** Prompt Injection 正从“AI 使用技巧”变成可以通过静态分析发现的正式代码安全问题。
+**建议：** 你的内容项目可以把“每日简报”继续升级成选题池：每条新闻后面追加一个“我能做什么内容/产品/实验”。营销不是单独写软文，而是把真实项目、真实问题和真实复盘持续公开。
 
-**建议：**
+## 6. Stripe Smart Disputes：AI 在支付风控里开始直接追回收入
 
-- System Prompt 保持静态，不拼接用户输入。
-- 用户材料放在单独的数据字段或明确标签中。
-- 工具权限由服务端策略决定，不能由 Prompt 文本决定。
-- 在 AI 项目 CI 中加入 CodeQL，并重点检查系统指令、工具参数和外部 URL 之间的数据流。
+Stripe 的争议处理分析提到，Smart Disputes 会为符合条件的银行卡争议自动组装证据包，帮助商家节省人工处理时间并提高追回收入的机会。[Stripe 文章](https://stripe.com/blog/analyzing-the-evidence-that-helps-businesses-win-product-not-received-disputes)
 
-## 5. Copilot Vision 已向所有订阅档位开放
+**为什么重要：** 这是 AI 商业落地的一个好方向：不只“提升效率”，而是直接作用于收入留存和损失减少。对小程序、电商、工具类产品来说，售后、退款、争议、异常订单、发货凭证整理都可以变成自动化场景。
 
-GitHub Copilot 现在支持直接附加 JPEG、PNG、GIF、WebP 和 PDF，让模型结合图片或文档理解代码；功能覆盖 VS Code、github.com 和 Copilot CLI，所有 Copilot 档位均可使用。[GitHub 官方公告](https://github.blog/changelog/2026-07-01-copilot-vision-is-generally-available/)
+**建议：** 如果你后续做商业工具，优先找这类指标明确的场景：每月多少争议、人工处理多久、追回多少钱、误判多少单。能量化 ROI 的 AI 功能更容易卖。
 
-**为什么重要：** 前端需求不必先把设计图完全翻译成文字，可以直接交付截图、原型和错误页面。
+## 7. 国家统计局：上半年工业企业利润同比增长 18.7%
 
-**对你的实际价值：**
+国家统计局 7 月 27 日发布数据称，2026 年 1-6 月全国规模以上工业企业实现利润总额 39479.9 亿元，同比增长 18.7%；统计局解读称，工业企业营业收入同比增长 6.5%，电力、热力、燃气利润增长也有改善。[国家统计局数据](https://www.stats.gov.cn/sj/zxfb/202607/t20260727_1964194.html) / [统计局解读](https://www.stats.gov.cn/sj/sjjd/202607/t20260727_1964193.html)
 
-- 上传小程序卡死页面截图并关联组件代码。
-- 用设计稿检查 React/uni-app 页面还原。
-- 上传报错截图，让 Agent 定位相关日志和代码。
-- 将 PDF 需求与仓库实现一起审查。
+**为什么重要：** 对股市和基金观察来说，利润修复比单纯指数涨跌更有信息量。它会影响顺周期、制造业、上游资源、公用事业和高股息板块的叙事，但不能简单等同于买入信号。
 
-**建议：** 截图旁仍要补充设备、系统版本、操作步骤、预期与实际结果；视觉输入不能代替可复现条件。
+**建议：** 做研究时把“利润增速 -> 行业分布 -> 现金流质量 -> 估值位置 -> 基金持仓拥挤度”连起来看。本文只做信息解读，不构成投资建议。
 
-## 6. Chrome 151 增加 SPA 软导航性能指标
+## 8. 公募基金规模与 QDII ETF 溢价：海外资产热度要和交易价格分开看
 
-Chrome 151 Beta 为 Performance API 增加 `soft-navigation` 和 `interaction-contentful-paint` 时间线条目，用于衡量 SPA 在点击后切换路由、渲染新内容的真实体验。[Chrome 151 Beta 说明](https://developer.chrome.com/blog/chrome-151-beta)
+中国证券投资基金业协会发布的 2026 年 6 月公募基金市场数据显示，截至 6 月底，境内公募基金管理机构 165 家，公募基金资产净值合计 39.67 万亿元；其中 QDII 基金 342 只，净值 10694.51 亿元。[基金业协会数据](https://www.amac.org.cn/sjtj/tjbg/gmjj/202607/P020260723642575271747.pdf)
 
-**为什么重要：** React、Vue 等 SPA 过去主要依赖首次加载指标，用户点击后页面卡顿或内容迟迟不出现，很难被传统 LCP 准确捕捉。
+同时，近期多只纳斯达克 100 等 QDII ETF 出现溢价风险提示。例如易方达纳斯达克 100 ETF 公告提醒，如果 7 月 27 日二级市场交易价格溢价幅度未有效回落，基金可申请盘中临时停牌、延长停牌或连续停牌等措施。[风险提示公告](https://fund.eastmoney.com/gonggao/159696%2CAN202607261827355753.html)
 
-**建议：** 在你的 Web 管理系统中开始区分：
+**为什么重要：** 海外科技资产受追捧，不等于场内 ETF 交易价格就合理。QDII 产品会受到额度、申赎状态、汇率、境外市场休市和流动性的影响，二级市场价格可能明显偏离净值。
 
-> 首次页面加载耗时、路由切换耗时、用户点击到主要内容显示耗时
+**建议：** 学习 ETF 时，把“看好资产”和“用什么价格买入产品”分开。关注 IOPV、溢价率、申赎状态、成交额和风险提示公告。本文不构成基金推荐或买卖建议。
 
-先做渐进式采集并保留浏览器版本，暂时不要将实验性指标直接设成硬性告警。
-
-## 7. Chrome 测试无需验证码的邮箱验证协议
-
-Chrome 正在进行 Email Verification Protocol Origin Trial：用户从浏览器自动填充中选择邮箱后，浏览器可与邮箱提供商完成签名验证，网站无需再发送验证码或验证链接。不支持时仍可回退至传统邮件验证。[Chrome 官方介绍](https://developer.chrome.com/blog/email-verification-protocol-origin-trial)
-
-**为什么重要：** 注册时离开页面查看邮箱，是 SaaS 和工具产品常见的转化流失点。浏览器级验证可能减少步骤，同时降低一次性邮箱和输错地址问题。
-
-**产品影响：** 目前仍是实验功能，不能作为唯一登录或找回方式，但值得在独立产品中预留渐进增强结构。
-
-**建议：** 邮箱注册逻辑继续保留验证码兜底；如果参与试验，分别统计传统验证与浏览器验证的成功率、耗时和注册完成率。
-
-**今日优先行动：** 先全局搜索是否使用 GitHub Models；然后检查 Copilot 配置中是否固定了即将下线的 Gemini 型号。这两项都有明确截止日期，比测试新工具更紧急。
+**今日优先行动：** 先处理 GitHub Models 和 Copilot Gemini 两个明确截止日期；然后把每日简报的主题池扩成“AI/开发、创业增长、金融基金”三栏，后续每条消息都标注“可执行动作”和“风险边界”。
