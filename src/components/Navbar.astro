@@ -30,7 +30,14 @@ let links: NavBarLink[] = navBarConfig.links.map(
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f7f4ed] p-1">
                     <img src={url('/assets/brand/logo.png')} alt="" class="h-full w-full object-contain" />
                 </span>
-                <span class="ml-2.5 text-base text-[var(--brand-navy)] dark:text-white">{siteConfig.title}</span>
+                <span class="ml-2.5 flex min-w-0 flex-col items-start">
+                    <span class="text-base leading-5 text-[var(--brand-navy)] dark:text-white">
+                        {siteConfig.title}
+                    </span>
+                    <span class="mt-0.5 hidden whitespace-nowrap text-[0.6875rem] font-medium leading-4 text-30 sm:block">
+                        {siteConfig.subtitle}
+                    </span>
+                </span>
             </div>
         </a>
         <div class="hidden md:flex">
