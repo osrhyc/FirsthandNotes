@@ -30,6 +30,11 @@ export const MODULES = [
 		],
 	},
 	{
+		key: 'daily',
+		label: '每日简报',
+		children: [{ key: 'daily-briefing', label: '晨读简报' }],
+	},
+	{
 		key: 'poker',
 		label: '德州扑克',
 		children: [
@@ -74,6 +79,8 @@ const CATEGORY_ALIASES: Record<string, string> = {
 	江湖八卦: 'quant-gossip',
 	扑克学堂: 'poker-school',
 	德州扑克: 'poker-school',
+	每日简报: 'daily-briefing',
+	晨读简报: 'daily-briefing',
 };
 
 export function sectionOf(article: Article) {

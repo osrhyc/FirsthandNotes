@@ -4,6 +4,7 @@ import {
 	CoffeeOutlined,
 	CrownOutlined,
 	DesktopOutlined,
+	FileTextOutlined,
 	HistoryOutlined,
 	LeftOutlined,
 	MenuFoldOutlined,
@@ -50,6 +51,7 @@ const { Sider, Content, Header } = Layout;
 const MODULE_ICONS: Record<string, ReactNode> = {
 	quant: <StockOutlined />,
 	library: <BookOutlined />,
+	daily: <FileTextOutlined />,
 	poker: <CrownOutlined />,
 };
 
@@ -60,6 +62,7 @@ const SECTION_ICONS: Record<string, ReactNode> = {
 	'quant-events': <HistoryOutlined />,
 	'quant-gossip': <CoffeeOutlined />,
 	'library-books': <ReadOutlined />,
+	'daily-briefing': <FileTextOutlined />,
 	'poker-school': <ReadOutlined />,
 };
 
