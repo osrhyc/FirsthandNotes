@@ -39,6 +39,10 @@ export const navBarConfig: NavBarConfig = {
 			name: "书籍",
 			url: "/books/",
 		},
+		{
+			name: "简报",
+			url: "/briefings/",
+		},
 		LinkPreset.Archive,
 		LinkPreset.About,
 	],

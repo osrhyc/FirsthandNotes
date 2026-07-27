@@ -1,0 +1,73 @@
+---
+import { getPostUrlBySlug, url } from "@utils/url-utils";
+import { Icon } from "astro-icon/components";
+
+interface Briefing {
+	title: string;
+	date: string;
+	description: string;
+	postSlug: string;
+}
+
+interface Props {
+	briefings: Briefing[];
+	currentPostSlug: string;
+}
+
+const { briefings, currentPostSlug } = Astro.props;
+const currentIndex = briefings.findIndex(
+	(briefing) => briefing.postSlug === currentPostSlug,
+);
+---
+
+<aside
+	id="briefing-sidebar"
+	class="col-span-2 row-end-3 mb-4 w-full lg:col-span-1 lg:row-end-2 lg:row-start-1 lg:max-w-[17.5rem]"
+>
+	<div class="card-base overflow-hidden lg:sticky lg:top-4">
+		<header class="border-b border-black/5 px-4 py-4 dark:border-white/10">
+			<a href={url("/briefings/")} class="group flex items-center gap-3" title="返回简报首页">
+				<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-[var(--primary)]">
+					<Icon name="material-symbols:newspaper-rounded" class="text-xl" />
+				</div>
+				<div class="min-w-0 flex-1">
+					<h2 class="font-bold text-90 transition group-hover:text-[var(--primary)]">每日简报</h2>
+					<p class="mt-1 text-xs text-50">{briefings.length} 期归档</p>
+				</div>
+				<Icon name="material-symbols:arrow-back-rounded" class="shrink-0 text-lg text-30" />
+			</a>
+		</header>
+
+		<div class="flex items-center justify-between px-4 py-3 text-xs">
+			<span class="font-semibold text-75">历史记录</span>
+			<span class="text-30">{currentIndex + 1} / {briefings.length}</span>
+		</div>
+
+		<ol class="max-h-80 overflow-y-auto border-t border-black/5 py-2 dark:border-white/10 lg:max-h-[calc(100vh-12rem)]">
+			{briefings.map((briefing) => {
+				const isCurrent = briefing.postSlug === currentPostSlug;
+				return (
+					<li>
+						<a
+							href={getPostUrlBySlug(briefing.postSlug)}
+							aria-current={isCurrent ? "page" : undefined}
+							class:list={[
+								"group mx-2 flex min-h-12 items-start gap-3 rounded-lg px-3 py-2 text-sm transition",
+								isCurrent
+									? "bg-[var(--btn-regular-bg)] font-semibold text-[var(--primary)]"
+									: "text-50 hover:bg-[var(--btn-plain-bg-hover)] hover:text-75",
+							]}
+						>
+							<time class="shrink-0 pt-0.5 font-mono text-xs opacity-60" datetime={briefing.date}>
+								{briefing.date.slice(5)}
+							</time>
+							<span class="min-w-0 flex-1 line-clamp-2 leading-5">
+								{briefing.title.replace(/^每日简报(?:｜|\|)\s*/, "")}
+							</span>
+						</a>
+					</li>
+				);
+			})}
+		</ol>
+	</div>
+</aside>

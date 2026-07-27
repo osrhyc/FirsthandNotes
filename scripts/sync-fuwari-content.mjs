@@ -14,6 +14,7 @@ const postSummary = {
 	tags: {},
 };
 const bookMap = new Map();
+const briefings = [];
 const bookFileUpdatedAt = getBookFileUpdatedAt();
 
 function getBookFileUpdatedAt() {
@@ -159,12 +160,24 @@ function syncBlog() {
 	for (const file of listMarkdown(source)) {
 		const { data, body } = readMarkdown(path.join(source, file));
 		const slug = file.replace(/\.md$/, "");
+		const isBriefing = slug.startsWith("daily-briefing");
+
+		if (isBriefing) {
+			briefings.push({
+				title: data.title || slug,
+				date: validDate(data.pubDate),
+				description: data.description || "",
+				postSlug: slug,
+			});
+		}
+
 		writePost(file, {
 			title: data.title || slug,
 			published: data.pubDate || DEFAULT_DATE,
 			description: data.description || data.level || data.category || "",
 			tags: Array.isArray(data.tags) ? data.tags : [],
 			category: data.category || categoryFromSlug(slug),
+			includeInSummary: !isBriefing,
 		}, body);
 	}
 }
@@ -287,6 +300,14 @@ const books = [...bookMap.values()]
 fs.writeFileSync(
 	path.join(generatedDir, "books.json"),
 	`${JSON.stringify(books, null, 2)}\n`,
+);
+fs.writeFileSync(
+	path.join(generatedDir, "briefings.json"),
+	`${JSON.stringify(
+		briefings.sort((a, b) => b.date.localeCompare(a.date)),
+		null,
+		2,
+	)}\n`,
 );
 
 console.log("Synced Fuwari posts content.");

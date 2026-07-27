@@ -10,7 +10,8 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const allBlogPosts = (await getSortedPosts()).filter(
 		(post) =>
 			!post.slug.startsWith("book-") &&
-			!post.slug.startsWith("glossary-"),
+			!post.slug.startsWith("glossary-") &&
+			!post.slug.startsWith("daily-briefing"),
 	);
 	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
 }) satisfies GetStaticPaths;
