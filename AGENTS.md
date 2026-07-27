@@ -21,6 +21,17 @@ Markdown source data lives under `src/content/blog/`, `src/content/books/`, and 
 
 Use `astro.config.mjs`, `src/config.ts`, `src/content.config.ts`, `src/styles/`, `src/components/`, `src/layouts/`, and the sync script for site/theme changes.
 
+## Brand
+
+- Chinese name: `一手笔记`
+- English name: `Firsthand Notes`
+- Slogan: `记录值得长期保存的知识`
+- Primary logo: `public/assets/brand/logo.png`
+- Brand reference: `public/assets/brand/brand-guide.png`
+- Core palette: deep navy `#111d2d`, gold `#d99a20`, and warm white `#f5f4f1`
+
+Keep the logo proportions and colors intact. Do not replace the mark with a generic book or home icon, and keep new UI consistent with the restrained navy-and-gold reading theme.
+
 ## Research-First Writing Agent
 
 For article-writing tasks, follow the shared workflow in `.ai/writing-agent.md`.

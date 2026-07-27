@@ -32,6 +32,13 @@ tags: ['标签'] # 可选
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
+## 品牌资源
+
+- Logo：`public/assets/brand/logo.png`
+- 品牌展示：`public/assets/brand/brand-guide.png`
+- Slogan：记录值得长期保存的知识
+- 主色：藏青 `#111d2d`、金色 `#d99a20`、暖白 `#f5f4f1`
+
 ## 项目结构
 
 ```
