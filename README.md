@@ -2,9 +2,11 @@
 
 > 记录值得长期保存的知识
 
-基于 Astro + Starlight 的静态知识库，托管在 GitHub Pages：<https://blog.dizhuig.com/>
+基于 Astro + Fuwari 的静态知识库，托管在 GitHub Pages：<https://blog.dizhuig.com/>
 
 ## 本地开发
+
+需要 Node.js `>=18.20.8`。
 
 ```bash
 npm install
@@ -26,7 +28,7 @@ tags: ['标签'] # 可选
 ---
 ```
 
-构建时会先运行 `scripts/sync-starlight-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步为 Starlight 的 `src/content/docs/` 页面，然后由 Astro 输出静态站点。
+构建时会先运行 `scripts/sync-fuwari-content.mjs`，把 `src/content/blog/`、`src/content/books/`、`src/content/glossary/` 同步为 Fuwari 的 `src/content/posts/` 页面，然后由 Astro 输出静态站点。
 
 推送到 `main` 分支后，GitHub Actions（`.github/workflows/deploy.yml`）会自动运行 `npm run build` 并发布 `dist/` 到 GitHub Pages。
 
@@ -37,7 +39,10 @@ src/
 ├── content/blog/      # 文章源数据
 ├── content/books/     # 读书笔记源数据
 ├── content/glossary/  # 名词手册源数据
-├── content/docs/      # Starlight 生成页面
-├── content.config.ts  # Starlight 内容集合
-└── styles/            # Starlight 样式覆盖
+├── content/posts/     # Fuwari 生成页面
+├── content.config.ts  # Astro 内容集合
+├── config.ts          # Fuwari 站点配置
+└── styles/            # Fuwari 样式
 ```
+
+界面基于 [Fuwari](https://github.com/saicaca/fuwari) 迁移，遵循其 MIT 许可证。

@@ -1,6 +1,6 @@
 ## Development
 
-This project uses Astro + Starlight for a static, documentation-style knowledge base.
+This project uses Astro + Fuwari for a static article and reading-note site.
 
 ```
 npm run dev -- --port 4321
@@ -17,9 +17,9 @@ The GitHub Pages workflow publishes `dist/`.
 ## Documentation
 
 Markdown source data lives under `src/content/blog/`, `src/content/books/`, and `src/content/glossary/`.
-`npm run build` first mirrors those sources into Starlight pages under `src/content/docs/` via `scripts/sync-starlight-content.mjs`, then writes static output to `dist/`.
+`npm run build` first mirrors those sources into Fuwari posts under `src/content/posts/` via `scripts/sync-fuwari-content.mjs`, then writes static output to `dist/`.
 
-Use `astro.config.mjs`, `src/content.config.ts`, `src/styles/starlight.css`, and the sync script for site/theme changes.
+Use `astro.config.mjs`, `src/config.ts`, `src/content.config.ts`, `src/styles/`, `src/components/`, `src/layouts/`, and the sync script for site/theme changes.
 
 ## Research-First Writing Agent
 
@@ -32,7 +32,7 @@ Core requirements:
 - Research before drafting when web/current/source-backed information matters.
 - Filter sources by quality and clearly separate facts, opinions, rumors, and inference.
 - Cite source-backed claims with Markdown links.
-- Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo. The Starlight docs copy is generated; do not edit generated files under `src/content/docs/` as the source of truth.
+- Save publishable posts under `src/content/blog/` with frontmatter when asked to create an article in this repo. The Fuwari posts copy is generated; do not edit generated files under `src/content/posts/` as the source of truth.
 - After every writing change, build the project, run the local dev server with `npm run dev -- --port 4321`, and give the user the preview URL.
 - Do not publish, push, deploy, or send article changes to GitHub until the user has reviewed locally and explicitly approves publishing.
 
