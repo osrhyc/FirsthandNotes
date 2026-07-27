@@ -44,13 +44,9 @@ $: recentBooks = [...books]
 	.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 	.slice(0, 4);
 
-function bookDetailUrl(book: Book) {
-	return url(`/books/${book.slug}/`);
-}
-
 function firstChapterUrl(book: Book) {
 	const chapter = book.chapters[0];
-	return chapter ? url(`/posts/${chapter.postSlug}/`) : bookDetailUrl(book);
+	return chapter ? url(`/posts/${chapter.postSlug}/`) : url("/books/");
 }
 
 function latestChapter(book: Book) {
@@ -62,7 +58,7 @@ function latestChapter(book: Book) {
 
 function latestChapterUrl(book: Book) {
 	const chapter = latestChapter(book);
-	return chapter ? url(`/posts/${chapter.postSlug}/`) : bookDetailUrl(book);
+	return chapter ? url(`/posts/${chapter.postSlug}/`) : url("/books/");
 }
 
 function formatDate(value: string) {

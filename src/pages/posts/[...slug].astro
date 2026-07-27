@@ -1,7 +1,6 @@
 ---
 import path from "node:path";
 import { render } from "astro:content";
-import BookChapterNav from "@components/BookChapterNav.astro";
 import BookChapterSidebar from "@components/BookChapterSidebar.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
@@ -61,9 +60,6 @@ const jsonLd = {
             book={book}
             currentChapterIndex={currentChapterIndex}
         />
-    )}
-    {book && currentChapterIndex >= 0 && (
-        <BookChapterNav book={book} currentChapterIndex={currentChapterIndex} />
     )}
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",

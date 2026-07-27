@@ -30,9 +30,9 @@ const { book, currentChapterIndex } = Astro.props;
 	<div class="card-base overflow-hidden lg:sticky lg:top-4">
 		<header class="border-b border-black/5 px-4 py-4 dark:border-white/10">
 			<a
-				href={url(`/books/${book.slug}/`)}
+				href={url("/books/")}
 				class="group flex items-start gap-3"
-				title={`查看《${book.title}》书籍首页`}
+				title="返回书籍"
 			>
 				<div class="flex h-10 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--btn-regular-bg)] font-bold text-[var(--primary)]">
 					{book.title.slice(0, 1)}
@@ -43,7 +43,7 @@ const { book, currentChapterIndex } = Astro.props;
 					</h2>
 					<p class="mt-1 truncate text-xs text-50">{book.author}</p>
 				</div>
-				<Icon name="material-symbols:chevron-right-rounded" class="mt-2 shrink-0 text-lg text-30" />
+				<Icon name="material-symbols:arrow-back-rounded" class="mt-2 shrink-0 text-lg text-30" />
 			</a>
 		</header>
 
