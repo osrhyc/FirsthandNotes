@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 
 const root = process.cwd();
 const contentDir = path.join(root, "src/content");
@@ -13,6 +14,44 @@ const postSummary = {
 	tags: {},
 };
 const bookMap = new Map();
+const bookFileUpdatedAt = getBookFileUpdatedAt();
+
+function getBookFileUpdatedAt() {
+	const updatedAt = new Map();
+	let currentDate = "";
+
+	try {
+		const output = execFileSync(
+			"git",
+			[
+				"log",
+				"--format=@@%cI",
+				"--name-only",
+				"--",
+				"src/content/books",
+			],
+			{ cwd: root, encoding: "utf8" },
+		);
+
+		for (const line of output.split("\n")) {
+			if (line.startsWith("@@")) {
+				currentDate = line.slice(2, 12);
+				continue;
+			}
+			if (
+				currentDate &&
+				line.startsWith("src/content/books/") &&
+				!updatedAt.has(line)
+			) {
+				updatedAt.set(line, currentDate);
+			}
+		}
+	} catch {
+		// Source archives without git history fall back to frontmatter/default dates.
+	}
+
+	return updatedAt;
+}
 
 function ensureDir(dir) {
 	fs.mkdirSync(dir, { recursive: true });
@@ -132,12 +171,16 @@ function syncBooks() {
 	const source = path.join(contentDir, "books");
 	for (const file of listMarkdown(source)) {
 		const { data, body } = readMarkdown(path.join(source, file));
+		const sourcePath = path.posix.join("src/content/books", file);
 		const title = data.title || data.note || file.replace(/\.md$/, "");
 		const bookTitle = data.bookTitle || data.book || "读书笔记";
 		const bookSlug = data.book || file.replace(/--.*$/, "").replace(/\.md$/, "");
 		const postSlug = `book-${file.replace(/\.md$/, "")}`;
 		const chapterNumber = Number.parseInt(data.chapter, 10) || 0;
 		const sequence = Number.parseInt(data.seq, 10) || Number.MAX_SAFE_INTEGER;
+		const updatedAt = validDate(
+			data.updated || data.pubDate || bookFileUpdatedAt.get(sourcePath),
+		);
 
 		if (!bookMap.has(bookSlug)) {
 			bookMap.set(bookSlug, {
@@ -147,14 +190,18 @@ function syncBooks() {
 				description: data.note || "",
 				category: data.bookCategory || "读书笔记",
 				sequence,
+				updatedAt,
 				chapters: [],
 			});
 		}
 
+		const book = bookMap.get(bookSlug);
+		if (updatedAt > book.updatedAt) book.updatedAt = updatedAt;
 		bookMap.get(bookSlug).chapters.push({
 			number: chapterNumber,
 			title,
 			postSlug,
+			updatedAt,
 		});
 
 		writePost(`book-${file}`, {

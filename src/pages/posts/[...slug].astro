@@ -2,6 +2,7 @@
 import path from "node:path";
 import { render } from "astro:content";
 import BookChapterNav from "@components/BookChapterNav.astro";
+import BookChapterSidebar from "@components/BookChapterSidebar.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
@@ -52,8 +53,15 @@ const jsonLd = {
 	// TODO include cover image here
 };
 ---
-<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
+<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings} customSidebar={!!book}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    {book && currentChapterIndex >= 0 && (
+        <BookChapterSidebar
+            slot="sidebar"
+            book={book}
+            currentChapterIndex={currentChapterIndex}
+        />
+    )}
     {book && currentChapterIndex >= 0 && (
         <BookChapterNav book={book} currentChapterIndex={currentChapterIndex} />
     )}

@@ -6,6 +6,7 @@ interface Chapter {
 	number: number;
 	title: string;
 	postSlug: string;
+	updatedAt: string;
 }
 
 interface Book {
@@ -15,6 +16,7 @@ interface Book {
 	description: string;
 	category: string;
 	sequence: number;
+	updatedAt: string;
 	chapters: Chapter[];
 }
 
@@ -38,9 +40,37 @@ $: filteredBooks = books.filter((book) => {
 		`${book.title} ${book.author} ${book.description}`.toLocaleLowerCase();
 	return matchesCategory && (!normalizedQuery || haystack.includes(normalizedQuery));
 });
+$: recentBooks = [...books]
+	.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+	.slice(0, 4);
 
 function bookDetailUrl(book: Book) {
 	return url(`/books/${book.slug}/`);
+}
+
+function firstChapterUrl(book: Book) {
+	const chapter = book.chapters[0];
+	return chapter ? url(`/posts/${chapter.postSlug}/`) : bookDetailUrl(book);
+}
+
+function latestChapter(book: Book) {
+	return [...book.chapters].sort(
+		(a, b) =>
+			b.updatedAt.localeCompare(a.updatedAt) || b.number - a.number,
+	)[0];
+}
+
+function latestChapterUrl(book: Book) {
+	const chapter = latestChapter(book);
+	return chapter ? url(`/posts/${chapter.postSlug}/`) : bookDetailUrl(book);
+}
+
+function formatDate(value: string) {
+	return new Intl.DateTimeFormat("zh-CN", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+	}).format(new Date(`${value}T00:00:00`));
 }
 </script>
 
@@ -102,6 +132,49 @@ function bookDetailUrl(book: Book) {
 		</div>
 	</header>
 
+	<section>
+		<div class="mb-3 flex items-end justify-between gap-4 px-1">
+			<div>
+				<h2 class="text-lg font-bold text-90">最近更新</h2>
+				<p class="mt-1 text-sm text-50">继续阅读最近补充的章节</p>
+			</div>
+		</div>
+		<div class="grid gap-3 sm:grid-cols-2">
+			{#each recentBooks as book}
+				<a
+					href={latestChapterUrl(book)}
+					class="card-base group flex min-h-32 items-start gap-4 p-5 transition hover:-translate-y-0.5"
+				>
+					<div
+						class="flex h-12 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-lg font-bold text-[var(--primary)]"
+						aria-hidden="true"
+					>
+						{book.title.slice(0, 1)}
+					</div>
+					<div class="min-w-0 flex-1">
+						<div class="flex items-start justify-between gap-3">
+							<h3 class="line-clamp-1 font-bold text-90 transition group-hover:text-[var(--primary)]">
+								{book.title}
+							</h3>
+							<span class="shrink-0 text-xs text-30">{formatDate(book.updatedAt)}</span>
+						</div>
+						<p class="mt-1 truncate text-xs text-50">{book.author}</p>
+						<p class="mt-3 line-clamp-1 text-sm text-75">
+							{latestChapter(book)?.title || "查看章节目录"}
+						</p>
+					</div>
+				</a>
+			{/each}
+		</div>
+	</section>
+
+	<div class="flex items-end justify-between gap-4 px-1 pt-3">
+		<div>
+			<h2 class="text-lg font-bold text-90">全部书籍</h2>
+			<p class="mt-1 text-sm text-50">按分类或关键词查找</p>
+		</div>
+	</div>
+
 	<div class="flex items-center justify-between px-1 text-sm text-50">
 		<span>找到 {filteredBooks.length} 本</span>
 		{#if query || selectedCategory !== "全部"}
@@ -132,7 +205,7 @@ function bookDetailUrl(book: Book) {
 						<div class="min-w-0 flex-1">
 							<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
 								<a
-									href={bookDetailUrl(book)}
+									href={firstChapterUrl(book)}
 									class="transition hover:text-[var(--primary)]"
 								>
 									{book.title}
@@ -154,11 +227,11 @@ function bookDetailUrl(book: Book) {
 							<div class="mt-1 text-xs text-30">{book.chapters.length} 篇笔记</div>
 						</div>
 						<a
-							href={bookDetailUrl(book)}
-							aria-label={`查看《${book.title}》章节目录`}
+							href={firstChapterUrl(book)}
+							aria-label={`开始阅读《${book.title}》`}
 							class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
 						>
-							<span>查看目录</span>
+							<span>开始阅读</span>
 							<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
 						</a>
 					</div>
