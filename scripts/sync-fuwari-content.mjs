@@ -142,6 +142,8 @@ function writePost(file, meta, body) {
 	].join("\n");
 	fs.writeFileSync(target, `${frontmatter}${body.trim()}\n`);
 
+	if (meta.includeInSummary === false) return;
+
 	if (meta.category) {
 		postSummary.categories[meta.category] =
 			(postSummary.categories[meta.category] || 0) + 1;
@@ -210,6 +212,7 @@ function syncBooks() {
 			description: data.note || data.author || bookTitle,
 			tags: [bookTitle, data.author].filter(Boolean),
 			category: data.bookCategory || "读书笔记",
+			includeInSummary: false,
 		}, body);
 	}
 }
