@@ -1,25 +1,121 @@
 ---
 
-import { getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
+import { Icon } from "astro-icon/components";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { url } from "../utils/url-utils";
 
-const aboutPost = await getEntry("spec", "about");
+const contentPillars = [
+	{
+		icon: "material-symbols:menu-book-outline-rounded",
+		title: "真读精读",
+		description: "一本书按真实章节拆解，保留论证脉络、关键案例和可复用的方法。",
+	},
+	{
+		icon: "material-symbols:query-stats-rounded",
+		title: "量化学习",
+		description: "从市场规则、数据处理、回测风控到策略生命周期，建立可验证的知识框架。",
+	},
+	{
+		icon: "material-symbols:timeline-rounded",
+		title: "人物事件",
+		description: "记录行业人物、重大事件和市场传闻，区分事实、观点、传言与推断。",
+	},
+	{
+		icon: "material-symbols:dictionary-rounded",
+		title: "名词手册",
+		description: "把高频概念写成自包含解释，让读者在阅读正文时能随手补齐背景。",
+	},
+];
 
-if (!aboutPost) {
-	throw new Error("About page content not found");
-}
-
-const { Content } = await render(aboutPost);
+const principles = [
+	"优先看一手材料，再写二手判断。",
+	"引用有出处，推断有边界，传闻有标记。",
+	"短期新闻只保留长期仍有价值的部分。",
+	"把复杂问题写到初学者也能继续追问。",
+];
 ---
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
-        </div>
-    </div>
+<MainGridLayout title={i18n(I18nKey.about)} description="关于一手笔记 Firsthand Notes">
+	<section class="card-base overflow-hidden">
+		<div class="grid gap-0 lg:grid-cols-[minmax(0,1fr)_18rem]">
+			<div class="px-6 py-8 md:px-9 md:py-10">
+				<div class="mb-6 flex items-center gap-4">
+					<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[#f5f4f1] p-2 shadow-sm md:h-24 md:w-24">
+						<img src={url("/assets/brand/logo.png")} alt="一手笔记 Logo" class="h-full w-full object-contain" />
+					</div>
+					<div class="min-w-0">
+						<p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#d99a20]">Firsthand Notes</p>
+						<h1 class="mt-1 text-3xl font-bold leading-tight text-[#111d2d] dark:text-white md:text-4xl">
+							一手笔记
+						</h1>
+					</div>
+				</div>
+
+				<p class="max-w-2xl text-xl font-semibold leading-relaxed text-90 md:text-2xl">
+					记录值得长期保存的知识。
+				</p>
+				<p class="mt-4 max-w-2xl text-base leading-8 text-75">
+					一手笔记用于保存完整阅读、量化学习、每日简报、人物事件和名词解释。我们关心的不是信息经过多少次转述，而是它是否来自可靠来源，是否经得起长期回看。
+				</p>
+
+				<div class="mt-7 flex flex-wrap gap-3">
+					<a href={url("/books/")} class="btn-regular h-10 rounded-lg px-4 text-sm font-medium">
+						<Icon name="material-symbols:menu-book-outline-rounded" class="mr-2 text-lg" />
+						精读书库
+					</a>
+					<a href={url("/archive/")} class="btn-plain h-10 rounded-lg px-4 text-sm font-medium">
+						<Icon name="material-symbols:archive-outline-rounded" class="mr-2 text-lg" />
+						全部笔记
+					</a>
+				</div>
+			</div>
+
+			<aside class="border-t border-[var(--line-divider)] bg-[#111d2d] px-6 py-7 text-white lg:border-l lg:border-t-0 md:px-8">
+				<p class="text-sm font-medium text-white/60">品牌标识</p>
+				<div class="mt-5 rounded-lg bg-[#f5f4f1] p-4">
+					<img src={url("/assets/brand/brand-guide.png")} alt="一手笔记品牌规范" class="w-full rounded-md" />
+				</div>
+				<p class="mt-5 text-sm leading-7 text-white/75">
+					书本承载阅读与学习，笔尖代表记录与思考，金色书签标记值得沉淀的内容。
+				</p>
+			</aside>
+		</div>
+	</section>
+
+	<section class="mt-4 grid gap-4 md:grid-cols-2">
+		{contentPillars.map((pillar) => (
+			<article class="card-base px-6 py-6 md:px-7">
+				<div class="flex items-start gap-4">
+					<div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#f5f4f1] text-[#d99a20] dark:bg-white/10">
+						<Icon name={pillar.icon} class="text-2xl" />
+					</div>
+					<div>
+						<h2 class="text-lg font-bold text-[#111d2d] dark:text-white">{pillar.title}</h2>
+						<p class="mt-2 text-sm leading-7 text-75">{pillar.description}</p>
+					</div>
+				</div>
+			</article>
+		))}
+	</section>
+
+	<section class="card-base mt-4 px-6 py-7 md:px-8">
+		<div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+			<div class="max-w-xl">
+				<p class="text-sm font-semibold text-[#d99a20]">写作原则</p>
+				<h2 class="mt-2 text-2xl font-bold text-[#111d2d] dark:text-white">少一点转述，多一点核对</h2>
+				<p class="mt-3 text-sm leading-7 text-75">
+					这个站点不是新闻流，也不是观点仓库。每篇内容都尽量留下出处、上下文和适用边界，让以后回看时仍能判断它为什么值得保存。
+				</p>
+			</div>
+			<ul class="grid w-full max-w-md gap-3">
+				{principles.map((principle) => (
+					<li class="flex items-start gap-3 text-sm leading-6 text-75">
+						<Icon name="material-symbols:check-circle-rounded" class="mt-0.5 shrink-0 text-xl text-[#d99a20]" />
+						<span>{principle}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
 </MainGridLayout>
