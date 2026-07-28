@@ -26,9 +26,9 @@ const { book, currentChapterIndex } = Astro.props;
 
 <aside
 	id="book-sidebar"
-	class="w-full lg:col-start-1 lg:row-start-1 lg:max-w-[17.5rem]"
+	class="custom-article-sidebar w-full"
 >
-	<div class="card-base overflow-hidden lg:sticky lg:top-4">
+	<div class="card-base overflow-hidden">
 		<header class="border-b border-black/5 px-4 py-4 dark:border-white/10">
 			<a
 				href={getBookUrl(book.slug)}
