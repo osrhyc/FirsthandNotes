@@ -42,7 +42,7 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 const isTechnicalModule =
 	Astro.url.pathname.startsWith("/blog/") ||
 	Astro.url.pathname.startsWith("/series/");
-const hasCustomSidebar = Astro.slots.has("sidebar");
+const hasCustomSidebar = customSidebar || Astro.slots.has("sidebar");
 const useDefaultSidebar = !customSidebar && isTechnicalModule;
 const layoutFullWidth =
 	fullWidth || (!useDefaultSidebar && !hasCustomSidebar);
@@ -75,8 +75,8 @@ const mainPanelTop = siteConfig.banner.enable
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class:list={[
-            "transition duration-700 w-full left-0 right-0 grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto] mx-auto gap-4 px-0 md:px-4",
-            layoutFullWidth ? "grid-cols-1" : "grid-cols-[17.5rem_auto]",
+            "transition duration-700 w-full left-0 right-0 grid grid-cols-1 items-start mx-auto gap-4 px-0 md:px-4",
+            !layoutFullWidth && "lg:grid-cols-[17.5rem_minmax(0,1fr)]",
         ]}
         >
             <!-- Banner image credit -->
@@ -95,14 +95,14 @@ const mainPanelTop = siteConfig.banner.enable
 
             <div id="sidebar-container" class="contents">
                 {useDefaultSidebar && (
-                    <SideBar class="hidden mb-4 row-start-2 row-end-3 col-span-2 lg:block lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+                    <SideBar class="hidden w-full lg:col-start-1 lg:row-start-1 lg:block lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
                 )}
                 <slot name="sidebar"></slot>
             </div>
 
             <main id="swup-container" class:list={[
-                "transition-swup-fade overflow-hidden",
-                layoutFullWidth ? "col-span-1" : "col-span-2 lg:col-span-1",
+                "transition-swup-fade min-w-0 overflow-hidden",
+                !layoutFullWidth && "lg:col-start-2 lg:row-start-1",
             ]}>
                 <div id="content-wrapper" class="onload-animation">
                     <!-- the overflow-hidden here prevent long text break the layout-->
@@ -114,7 +114,10 @@ const mainPanelTop = siteConfig.banner.enable
                 </div>
             </main>
 
-            <div class="footer col-span-2 onload-animation block lg:hidden">
+            <div class:list={[
+                "footer onload-animation block lg:hidden",
+                !layoutFullWidth && "lg:col-span-2",
+            ]}>
                 <Footer></Footer>
             </div>
         </div>
