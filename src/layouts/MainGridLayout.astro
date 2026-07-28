@@ -42,10 +42,7 @@ const hasBannerLink = !!siteConfig.banner.credit.url;
 const isTechnicalModule =
 	Astro.url.pathname.startsWith("/blog/") ||
 	Astro.url.pathname.startsWith("/series/");
-const hasCustomSidebar = customSidebar || Astro.slots.has("sidebar");
-const useDefaultSidebar = !customSidebar && isTechnicalModule;
-const layoutFullWidth =
-	fullWidth || (!useDefaultSidebar && !hasCustomSidebar);
+const useDefaultSidebar = !fullWidth && !customSidebar && isTechnicalModule;
 
 const mainPanelTop = siteConfig.banner.enable
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
@@ -76,8 +73,6 @@ const mainPanelTop = siteConfig.banner.enable
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class:list={[
             "transition duration-700 w-full left-0 right-0 grid grid-cols-1 items-start mx-auto gap-4 px-0 md:px-4",
-            hasCustomSidebar && "custom-sidebar-layout",
-            useDefaultSidebar && "lg:grid-cols-[17.5rem_minmax(0,1fr)]",
         ]}
         >
             <!-- Banner image credit -->
@@ -103,7 +98,6 @@ const mainPanelTop = siteConfig.banner.enable
 
             <main id="swup-container" class:list={[
                 "transition-swup-fade min-w-0 overflow-hidden",
-                useDefaultSidebar && "lg:col-start-2 lg:row-start-1",
             ]}>
                 <div id="content-wrapper" class="onload-animation">
                     <!-- the overflow-hidden here prevent long text break the layout-->
@@ -115,10 +109,7 @@ const mainPanelTop = siteConfig.banner.enable
                 </div>
             </main>
 
-            <div class:list={[
-                "footer onload-animation block lg:hidden",
-                !layoutFullWidth && "lg:col-span-2",
-            ]}>
+            <div class="footer onload-animation block lg:hidden">
                 <Footer></Footer>
             </div>
         </div>
@@ -151,34 +142,40 @@ const mainPanelTop = siteConfig.banner.enable
 
 <style is:global>
 	@media (min-width: 34rem) {
-		#main-grid.custom-sidebar-layout {
+		#main-grid:has(.custom-article-sidebar) {
 			grid-template-columns: 14rem minmax(0, 1fr);
 		}
 
-		#main-grid.custom-sidebar-layout .custom-article-sidebar {
+		#main-grid .custom-article-sidebar {
 			grid-column: 1;
 			grid-row: 1;
 			max-width: 14rem;
 		}
 
-		#main-grid.custom-sidebar-layout .custom-article-sidebar > .card-base {
+		#main-grid .custom-article-sidebar > .card-base {
 			position: sticky;
 			top: 1rem;
 		}
 
-		#main-grid.custom-sidebar-layout > #swup-container {
+		#main-grid:has(.custom-article-sidebar) > #swup-container {
 			grid-column: 2;
 			grid-row: 1;
 		}
 	}
 
 	@media (min-width: 64rem) {
-		#main-grid.custom-sidebar-layout {
+		#main-grid:has(.custom-article-sidebar),
+		#main-grid:has(#sidebar) {
 			grid-template-columns: 17.5rem minmax(0, 1fr);
 		}
 
-		#main-grid.custom-sidebar-layout .custom-article-sidebar {
+		#main-grid .custom-article-sidebar {
 			max-width: 17.5rem;
+		}
+
+		#main-grid:has(#sidebar) > #swup-container {
+			grid-column: 2;
+			grid-row: 1;
 		}
 	}
 </style>
