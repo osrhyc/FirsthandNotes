@@ -1,7 +1,7 @@
 ---
 title: "样本外检验"
 description: "研究陷阱"
-pubDate: "2026-07-10"
+pubDate: '2026-05-08'
 category: "名词手册"
 tags: ["quant","研究陷阱"]
 term: "样本外检验"

@@ -1,7 +1,7 @@
 ---
 title: "小市值效应"
 description: "经典异象"
-pubDate: "2026-07-10"
+pubDate: '2026-05-11'
 category: "名词手册"
 tags: ["quant","经典异象"]
 term: "小市值效应"

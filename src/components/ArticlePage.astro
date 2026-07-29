@@ -1,6 +1,7 @@
 ---
 import path from "node:path";
 import { render } from "astro:content";
+import GlossaryEnhancer from "@components/GlossaryEnhancer.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
@@ -11,6 +12,7 @@ import { licenseConfig, profileConfig, siteConfig } from "src/config";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 import { formatDateToYYYYMMDD } from "../utils/date-utils";
+import { getGlossaryTerms } from "../utils/glossary-utils";
 import { getDir } from "../utils/url-utils";
 
 interface AdjacentEntry {
@@ -35,6 +37,8 @@ const {
 } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 const hasSidebar = Astro.slots.has("sidebar");
+const glossaryTerms =
+	entry.data.category === "名词手册" ? [] : await getGlossaryTerms();
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -124,6 +128,7 @@ const jsonLd = {
 			<Markdown class="markdown-content onload-animation mb-6">
 				<Content />
 			</Markdown>
+			<GlossaryEnhancer terms={glossaryTerms} />
 
 			{licenseConfig.enable && (
 				<License

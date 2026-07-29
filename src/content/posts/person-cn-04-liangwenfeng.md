@@ -1,7 +1,7 @@
 ---
 title: '梁文锋：从幻方量化到 DeepSeek'
 description: '幻方量化（High-Flyer）创始人，后创立 DeepSeek 震动全球 AI 界。A 股量化史上最富传奇色彩的人物——量化赚的钱，最终变成了…'
-pubDate: '2026-04-11'
+pubDate: '2026-04-05'
 category: '名人堂'
 level: '中国量化'
 tags: ['名人堂']

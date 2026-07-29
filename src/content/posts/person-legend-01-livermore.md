@@ -1,7 +1,7 @@
 ---
 title: '杰西·利弗莫尔：投机之王'
 description: 'Jesse Livermore（1877–1940），人类历史上最著名的投机客。四次大起大落，1929 年大崩盘中做空赚到约 1 亿美元（相当于…'
-pubDate: '2026-04-25'
+pubDate: '2026-04-19'
 category: '名人堂'
 level: '江湖传奇'
 tags: ['名人堂']

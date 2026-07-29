@@ -1,7 +1,7 @@
 ---
 title: '因子研究框架：IC、RankIC 与分层回测'
 description: '建立因子研究的标准检验框架：IC、RankIC 与分层回测。'
-pubDate: '2026-07-21'
+pubDate: '2026-07-10'
 category: '量化学堂'
 level: '进阶'
 tags: ['因子研究', 'IC', '分层回测']

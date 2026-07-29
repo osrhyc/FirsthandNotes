@@ -1,7 +1,7 @@
 ---
 title: '威廉·夏普：给风险定价的人'
 description: 'William Sharpe（1934–），1990 年诺贝尔经济学奖得主（与马科维茨同届）。CAPM 的主要提出者，你每天都在用的"夏普比率"…'
-pubDate: '2026-04-02'
+pubDate: '2026-03-16'
 category: '名人堂'
 level: '国际先驱'
 tags: ['名人堂']

@@ -1,0 +1,308 @@
+---
+import type { GlossaryTermRecord } from "@utils/glossary-utils";
+
+interface Props {
+	terms: GlossaryTermRecord[];
+}
+
+const terms = Astro.props.terms;
+const payloadId = `glossary-terms-${Math.random().toString(36).slice(2)}`;
+---
+
+{terms.length > 0 && (
+	<>
+		<script id={payloadId} type="application/json" set:html={JSON.stringify(terms)}></script>
+		<script is:inline define:vars={{ payloadId }}>
+			(() => {
+				const payload = document.getElementById(payloadId);
+				let content = payload?.previousElementSibling;
+				while (content && !content.classList.contains("markdown-content")) {
+					content = content.previousElementSibling;
+				}
+				if (!payload || !content || !content.classList.contains("markdown-content")) return;
+
+				const terms = JSON.parse(payload.textContent || "[]");
+				const records = new Map();
+				const labels = [];
+
+				for (const term of terms) {
+					const variants = [term.term, ...(term.aliases || [])]
+						.map((label) => String(label || "").trim())
+						.filter(Boolean);
+
+					for (const label of variants) {
+						if (!records.has(label)) {
+							records.set(label, term);
+							labels.push(label);
+						}
+					}
+				}
+
+				labels.sort((a, b) => b.length - a.length || a.localeCompare(b));
+
+				const usedTerms = new Set();
+				const skipTags = new Set([
+					"A",
+					"BUTTON",
+					"CODE",
+					"PRE",
+					"SCRIPT",
+					"STYLE",
+					"TEXTAREA",
+					"INPUT",
+					"KBD",
+					"SAMP",
+				]);
+
+				function isAsciiToken(label) {
+					return /^[A-Za-z0-9_+\-.#><=]+$/.test(label);
+				}
+
+				function hasBoundary(text, index, label) {
+					if (!isAsciiToken(label)) return true;
+					const before = text[index - 1] || "";
+					const after = text[index + label.length] || "";
+					return !/[A-Za-z0-9_]/.test(before) && !/[A-Za-z0-9_]/.test(after);
+				}
+
+				function findMatch(text) {
+					let best = null;
+					for (const label of labels) {
+						const record = records.get(label);
+						if (!record || usedTerms.has(record.term)) continue;
+
+						let index = text.indexOf(label);
+						while (index >= 0 && !hasBoundary(text, index, label)) {
+							index = text.indexOf(label, index + label.length);
+						}
+						if (index < 0) continue;
+
+						if (
+							!best ||
+							index < best.index ||
+							(index === best.index && label.length > best.label.length)
+						) {
+							best = { index, label, record };
+						}
+					}
+					return best;
+				}
+
+				function shouldSkip(node) {
+					const parent = node.parentElement;
+					if (!parent) return true;
+					if (parent.closest(".term-link")) return true;
+					return Boolean(parent.closest([...skipTags].join(",")));
+				}
+
+				const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, {
+					acceptNode(node) {
+						if (!node.nodeValue?.trim() || shouldSkip(node)) return NodeFilter.FILTER_REJECT;
+						return NodeFilter.FILTER_ACCEPT;
+					},
+				});
+
+				const textNodes = [];
+				while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+				const matchedRecords = [];
+				for (const node of textNodes) {
+					const text = node.nodeValue || "";
+					const match = findMatch(text);
+					if (!match) continue;
+
+					const before = document.createTextNode(text.slice(0, match.index));
+					const after = document.createTextNode(text.slice(match.index + match.label.length));
+					const button = document.createElement("button");
+					button.type = "button";
+					button.className = "term-link";
+					button.textContent = match.label;
+					button.dataset.term = match.record.term;
+					button.glossaryRecord = match.record;
+					button.setAttribute("aria-haspopup", "dialog");
+
+					const fragment = document.createDocumentFragment();
+					fragment.append(before, button, after);
+					node.parentNode?.replaceChild(fragment, node);
+					usedTerms.add(match.record.term);
+					matchedRecords.push(match.record);
+				}
+
+				if (usedTerms.size === 0) return;
+
+				const popover = document.createElement("div");
+				popover.className = "term-popover";
+				popover.hidden = true;
+				popover.setAttribute("role", "dialog");
+				popover.setAttribute("aria-label", "名词解释");
+				document.body.appendChild(popover);
+
+				let activeButton = null;
+				const margin = 16;
+
+				function hidePopover() {
+					popover.hidden = true;
+					activeButton?.setAttribute("aria-expanded", "false");
+					activeButton = null;
+				}
+
+				function positionPopover(button) {
+					const rect = button.getBoundingClientRect();
+					const width = Math.min(460, window.innerWidth - margin * 2);
+					popover.style.width = `${width}px`;
+					popover.style.maxHeight = `${Math.max(220, window.innerHeight - margin * 2)}px`;
+
+					const popoverHeight = popover.offsetHeight;
+					const hasSpaceBelow = rect.bottom + 10 + popoverHeight <= window.innerHeight - margin;
+					const top = hasSpaceBelow
+						? rect.bottom + 10
+						: Math.max(margin, rect.top - popoverHeight - 10);
+					const left = Math.min(
+						Math.max(margin, rect.left + rect.width / 2 - width / 2),
+						window.innerWidth - width - margin,
+					);
+
+					popover.style.left = `${left}px`;
+					popover.style.top = `${top}px`;
+				}
+
+				function attachRecord(button, record) {
+					button.type = "button";
+					button.dataset.term = record.term;
+					button.glossaryRecord = record;
+					button.setAttribute("aria-haspopup", "dialog");
+				}
+
+				function showPopover(button) {
+					const record = button.glossaryRecord || {};
+					const title = record.term || button.dataset.term || button.textContent || "";
+					const category = record.category || "名词手册";
+					const contentHtml = record.contentHtml || "";
+					const description = record.content || record.description || "";
+					const url = record.url || "#";
+
+					popover.replaceChildren();
+
+					const eyebrow = document.createElement("div");
+					eyebrow.className = "term-popover__eyebrow";
+					eyebrow.textContent = category;
+
+					const heading = document.createElement("div");
+					heading.className = "term-popover__title";
+					heading.textContent = title;
+
+					const body = document.createElement("div");
+					body.className = "term-popover__content";
+					if (contentHtml) {
+						body.innerHTML = contentHtml;
+					} else {
+						body.textContent = description;
+					}
+
+					const link = document.createElement("a");
+					link.className = "term-popover__link";
+					link.href = url;
+					link.target = "_blank";
+					link.rel = "noopener noreferrer";
+					link.textContent = "查看完整词条";
+
+					popover.append(eyebrow, heading, body, link);
+
+					popover.hidden = false;
+					activeButton?.setAttribute("aria-expanded", "false");
+					activeButton = button;
+					activeButton.setAttribute("aria-expanded", "true");
+
+					positionPopover(button);
+				}
+
+				function renderTocTerms() {
+					const toc = document.getElementById("toc");
+					if (!toc || matchedRecords.length === 0) return;
+
+					toc.querySelector(".glossary-toc")?.remove();
+
+					const section = document.createElement("section");
+					section.className = "glossary-toc";
+					section.setAttribute("aria-label", "本文词条");
+
+					const title = document.createElement("div");
+					title.className = "glossary-toc__title";
+					title.textContent = "本文词条";
+
+					const list = document.createElement("div");
+					list.className = "glossary-toc__list";
+
+					for (const record of matchedRecords) {
+						const button = document.createElement("button");
+						button.className = "glossary-toc__button";
+						button.textContent = record.term;
+						attachRecord(button, record);
+						list.append(button);
+					}
+
+					section.append(title, list);
+					const lastSpacer = toc.lastElementChild;
+					if (lastSpacer) {
+						toc.insertBefore(section, lastSpacer);
+					} else {
+						toc.append(section);
+					}
+				}
+
+				content.addEventListener("click", (event) => {
+					const button = event.target.closest(".term-link");
+					if (!button) return;
+					event.preventDefault();
+					if (button === activeButton && !popover.hidden) {
+						hidePopover();
+					} else {
+						showPopover(button);
+					}
+				});
+
+				document.addEventListener("click", (event) => {
+					const button = event.target.closest(".glossary-toc__button");
+					if (!button) return;
+					event.preventDefault();
+					if (button === activeButton && !popover.hidden) {
+						hidePopover();
+					} else {
+						showPopover(button);
+					}
+				});
+
+				document.addEventListener("click", (event) => {
+					const target = event.target;
+					if (
+						target.closest(".term-link") ||
+						target.closest(".glossary-toc__button") ||
+						target.closest(".term-popover")
+					) return;
+					hidePopover();
+				});
+
+				document.addEventListener("keydown", (event) => {
+					if (event.key === "Escape") hidePopover();
+				});
+
+				window.addEventListener("resize", () => {
+					if (activeButton && !popover.hidden) positionPopover(activeButton);
+				});
+				window.addEventListener(
+					"scroll",
+					() => {
+						if (activeButton && !popover.hidden) positionPopover(activeButton);
+					},
+					{ passive: true },
+				);
+
+				if (document.readyState === "loading") {
+					document.addEventListener("DOMContentLoaded", renderTocTerms, { once: true });
+				} else {
+					renderTocTerms();
+				}
+			})();
+		</script>
+	</>
+)}

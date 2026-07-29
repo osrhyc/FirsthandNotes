@@ -3,9 +3,12 @@ import { getCollection } from "astro:content";
 import ArticlePage from "@components/ArticlePage.astro";
 import BriefingSidebar from "@components/BriefingSidebar.astro";
 import { getBriefings } from "@utils/briefing-utils";
+import { isPublishedContentDate } from "@utils/content-utils";
 
 export async function getStaticPaths() {
-	const entries = await getCollection("briefings");
+	const entries = await getCollection("briefings", ({ data }) =>
+		import.meta.env.PROD ? isPublishedContentDate(data.published) : true,
+	);
 	return entries.map((entry) => {
 		const [year, month, day] = entry.data.published.toISOString().slice(0, 10).split("-");
 		return { params: { year, month, day }, props: { entry } };

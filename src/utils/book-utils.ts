@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { isPublishedContentDate } from "@utils/content-utils";
 import { getBookNoteUrl } from "@utils/url-utils";
 
 export interface BookChapter {
@@ -37,6 +38,8 @@ export async function getBooks(): Promise<BookRecord[]> {
 		const notesByBook = new Map<string, BookChapter[]>();
 
 		for (const note of noteEntries) {
+			if (!isPublishedContentDate(note.data.published)) continue;
+
 			const bookId = note.data.book.id;
 			const noteSlug = note.id.startsWith(`${bookId}--`)
 				? note.id.slice(bookId.length + 2)

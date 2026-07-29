@@ -1,7 +1,7 @@
 ---
 title: "不对称业绩"
 description: "《周期》"
-pubDate: "2026-07-15"
+pubDate: '2026-07-03'
 category: "名词手册"
 tags: ["quant","《周期》"]
 term: "不对称业绩"

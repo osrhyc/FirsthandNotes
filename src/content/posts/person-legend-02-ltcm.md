@@ -1,7 +1,7 @@
 ---
 title: '梅里韦瑟与 LTCM：诺奖天团的陨落'
 description: 'John Meriwether（1947–）与长期资本管理公司（LTCM，1994–1998）。两位诺贝尔奖得主坐镇、平均智商可能是金融史之最的…'
-pubDate: '2026-04-26'
+pubDate: '2026-04-20'
 category: '名人堂'
 level: '江湖传奇'
 tags: ['名人堂']

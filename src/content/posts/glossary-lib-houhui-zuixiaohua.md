@@ -1,7 +1,7 @@
 ---
 title: "后悔最小化模型"
 description: "《一网打尽》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-25'
 category: "名词手册"
 tags: ["library","《一网打尽》"]
 term: "后悔最小化模型"

@@ -1,7 +1,7 @@
 ---
 title: "复权因子"
 description: "市场制度与数据"
-pubDate: "2026-07-10"
+pubDate: '2026-05-27'
 category: "名词手册"
 tags: ["quant","市场制度与数据"]
 term: "复权因子"

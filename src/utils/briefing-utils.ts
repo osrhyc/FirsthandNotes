@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { isPublishedContentDate } from "@utils/content-utils";
 import { getBriefingUrl } from "@utils/url-utils";
 
 export interface BriefingRecord {
@@ -24,6 +25,7 @@ export async function getBriefings(): Promise<BriefingRecord[]> {
 		import.meta.env.PROD ? data.draft !== true : true,
 	).then((entries) =>
 		entries
+			.filter((entry) => isPublishedContentDate(entry.data.published))
 			.map((entry) => {
 				const date = entry.data.published.toISOString().slice(0, 10);
 				return {

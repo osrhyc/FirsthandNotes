@@ -1,7 +1,7 @@
 ---
 title: '量化数据工程：Point-in-Time、数据管线与质量监控'
 description: '从 PIT 原则到增量管线与质量检查，搭建可信的个人量化数据库。'
-pubDate: '2026-07-30'
+pubDate: '2026-07-19'
 category: '量化学堂'
 level: '进阶'
 tags: ['数据工程', 'Point-in-Time', '数据质量']

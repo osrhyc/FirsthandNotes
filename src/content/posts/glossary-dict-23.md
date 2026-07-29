@@ -1,7 +1,7 @@
 ---
 title: "总收益 / 年化收益"
 description: "回测与评价"
-pubDate: "2026-07-10"
+pubDate: '2026-05-04'
 category: "名词手册"
 tags: ["quant","回测与评价"]
 term: "总收益 / 年化收益"

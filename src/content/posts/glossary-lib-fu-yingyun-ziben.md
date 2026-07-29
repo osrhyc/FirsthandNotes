@@ -1,7 +1,7 @@
 ---
 title: "负营运资本"
 description: "《一网打尽》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-26'
 category: "名词手册"
 tags: ["library","《一网打尽》"]
 term: "负营运资本"

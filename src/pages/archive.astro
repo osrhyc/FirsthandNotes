@@ -7,7 +7,10 @@ import { getCollection } from "astro:content";
 import { getBooks } from "@utils/book-utils";
 import { getBriefings } from "@utils/briefing-utils";
 import { getPostUrlBySlug } from "@utils/url-utils";
-import { getSortedPostsList } from "../utils/content-utils";
+import {
+	getSortedPostsList,
+	isPublishedContentDate,
+} from "../utils/content-utils";
 
 const [posts, notes, books, briefings] = await Promise.all([
 	getSortedPostsList(),
@@ -21,30 +24,34 @@ const sortedPostsList = [
 		...post,
 		url: getPostUrlBySlug(post.slug),
 	})),
-	...notes.map((note) => {
-		const book = bookMap.get(note.data.book.id);
-		const chapter = book?.chapters.find((item) => item.number === note.data.chapter);
-		return {
-			slug: note.id,
-			url: chapter?.url || `/books/${note.data.book.id}/`,
+	...notes
+		.filter((note) => isPublishedContentDate(note.data.published))
+		.map((note) => {
+			const book = bookMap.get(note.data.book.id);
+			const chapter = book?.chapters.find((item) => item.number === note.data.chapter);
+			return {
+				slug: note.id,
+				url: chapter?.url || `/books/${note.data.book.id}/`,
+				data: {
+					title: `${note.data.bookTitle}：${note.data.title}`,
+					tags: [note.data.bookTitle, note.data.author],
+					category: "精读笔记",
+					published: note.data.published,
+				},
+			};
+		}),
+	...briefings
+		.map((briefing) => ({
+			slug: briefing.id,
+			url: briefing.url,
 			data: {
-				title: `${note.data.bookTitle}：${note.data.title}`,
-				tags: [note.data.bookTitle, note.data.author],
-				category: "精读笔记",
-				published: note.data.published,
+				title: briefing.title,
+				tags: briefing.tags,
+				category: "晨读",
+				published: new Date(`${briefing.date}T00:00:00`),
 			},
-		};
-	}),
-	...briefings.map((briefing) => ({
-		slug: briefing.id,
-		url: briefing.url,
-		data: {
-			title: briefing.title,
-			tags: briefing.tags,
-			category: "晨读",
-			published: new Date(`${briefing.date}T00:00:00`),
-		},
-	})),
+		}))
+		.filter((briefing) => isPublishedContentDate(briefing.data.published)),
 ].sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 ---
 

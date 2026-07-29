@@ -1,7 +1,7 @@
 ---
 title: '指数与 ETF：新手为什么先做宽基'
 description: '理解指数与 ETF 的机制，明白宽基为何是量化练手的首选。'
-pubDate: '2026-07-18'
+pubDate: '2026-07-07'
 category: '量化学堂'
 level: '入门'
 tags: ['ETF', '指数', '资产选择']

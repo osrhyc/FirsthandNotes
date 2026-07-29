@@ -1,7 +1,7 @@
 ---
 title: "边际交付时间"
 description: "《底层逻辑》"
-pubDate: "2026-07-15"
+pubDate: '2026-07-04'
 category: "名词手册"
 tags: ["library","《底层逻辑》"]
 term: "边际交付时间"

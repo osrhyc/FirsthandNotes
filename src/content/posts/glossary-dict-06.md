@@ -1,7 +1,7 @@
 ---
 title: "因子"
 description: "入门通识"
-pubDate: "2026-07-10"
+pubDate: '2026-05-07'
 category: "名词手册"
 tags: ["quant","入门通识"]
 term: "因子"

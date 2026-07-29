@@ -1,7 +1,7 @@
 ---
 title: "多重检验问题"
 description: "研究陷阱"
-pubDate: "2026-07-10"
+pubDate: '2026-05-31'
 category: "名词手册"
 tags: ["quant","研究陷阱"]
 term: "多重检验问题"

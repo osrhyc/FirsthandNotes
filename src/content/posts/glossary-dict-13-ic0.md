@@ -1,7 +1,7 @@
 ---
 title: "IC>0 占比"
 description: "因子研究"
-pubDate: "2026-07-10"
+pubDate: '2026-04-29'
 category: "名词手册"
 tags: ["quant","因子研究"]
 term: "IC>0 占比"

@@ -1,7 +1,7 @@
 ---
 title: '克里夫·阿斯内斯：把因子投资卖给全世界的人'
 description: 'Cliff Asness（1966–），AQR 资本创始人，法马的博士生。学术因子研究和万亿资管产业之间的那座桥，很大程度是他修的。'
-pubDate: '2026-04-06'
+pubDate: '2026-03-28'
 category: '名人堂'
 level: '国际先驱'
 tags: ['名人堂']

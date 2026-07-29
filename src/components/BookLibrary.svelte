@@ -187,7 +187,8 @@ onMount(() => {
 					</button>
 				</div>
 			</div>
-		</header>
+		</div>
+	</header>
 
 		{#if isCategoryMenuOpen}
 			<div use:portal class="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -251,28 +252,23 @@ onMount(() => {
 				<p class="mt-1 text-sm text-50">最近补充和修订的章节</p>
 			</div>
 		</div>
-		<div class="grid gap-3 sm:grid-cols-2">
+		<div class="card-base divide-y divide-[var(--line-divider)] overflow-hidden">
 			{#each recentChapters as item}
 				<a
 					href={item.chapter.url}
-					class="card-base group flex min-h-32 items-start gap-4 p-5 transition hover:-translate-y-0.5"
+					class="group grid gap-2 px-5 py-3.5 transition hover:bg-[var(--btn-plain-bg-hover)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:px-6"
 				>
-					<div
-						class="flex h-12 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-lg font-bold text-[var(--primary)]"
-						aria-hidden="true"
-					>
-						{item.book.title.slice(0, 1)}
-					</div>
-					<div class="min-w-0 flex-1">
-						<div class="flex items-start justify-between gap-3">
-							<h3 class="line-clamp-2 font-bold leading-6 text-90 transition group-hover:text-[var(--primary)]">
-								{item.chapter.title}
-							</h3>
-							<span class="shrink-0 text-xs text-30">{formatDate(item.chapter.updatedAt)}</span>
-						</div>
-						<p class="mt-2 line-clamp-1 text-sm text-50">
+					<div class="min-w-0">
+						<h3 class="truncate font-semibold text-75 transition group-hover:text-[var(--primary)]">
+							{item.chapter.title}
+						</h3>
+						<p class="mt-1 truncate text-sm text-50">
 							《{item.book.title}》 · {item.book.author}
 						</p>
+					</div>
+					<div class="flex items-center gap-3 text-xs text-30 md:justify-end">
+						<span>第 {item.chapter.number} 章</span>
+						<time>{formatDate(item.chapter.updatedAt)}</time>
 					</div>
 				</a>
 			{/each}
@@ -317,18 +313,18 @@ onMount(() => {
 						<span class="text-xs text-30">{group.books.length} 本</span>
 					</header>
 
-					<div class="grid gap-4 md:grid-cols-2">
+					<div class="grid gap-3 md:grid-cols-2">
 						{#each group.books as book}
-							<article class="card-base group flex min-h-52 flex-col p-5 md:p-6">
-								<div class="flex items-start gap-4">
+							<article class="card-base group p-4 md:p-5">
+								<div class="flex items-start gap-3">
 									<div
-										class="flex h-14 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-xl font-bold text-[var(--primary)]"
+										class="flex h-11 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-base font-bold text-[var(--primary)]"
 										aria-hidden="true"
 									>
 										{book.title.slice(0, 1)}
 									</div>
 									<div class="min-w-0 flex-1">
-										<h2 class="line-clamp-2 text-lg font-bold leading-7 text-90">
+										<h2 class="truncate text-base font-bold leading-6 text-90">
 											<a
 												href={bookUrl(book)}
 												class="transition hover:text-[var(--primary)]"
@@ -340,19 +336,19 @@ onMount(() => {
 									</div>
 								</div>
 
-								<p class="mt-4 line-clamp-2 text-sm leading-6 text-50">
+								<p class="mt-3 line-clamp-1 text-sm leading-6 text-50">
 									{book.description || "逐章精读笔记"}
 								</p>
 
-								<div class="mt-auto flex items-end justify-between gap-3 pt-5">
+								<div class="mt-3 flex items-center justify-between gap-3">
 									<div class="text-xs text-30">{book.chapters.length} 篇笔记</div>
 									<a
 										href={bookUrl(book)}
 										aria-label={`查看《${book.title}》`}
-										class="btn-regular flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium active:scale-95"
+										class="btn-plain flex h-8 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-medium active:scale-95"
 									>
-										<span>查看详情</span>
-										<Icon icon="material-symbols:arrow-forward-rounded" width="19" />
+										<span>进入</span>
+										<Icon icon="material-symbols:arrow-forward-rounded" width="17" />
 									</a>
 								</div>
 							</article>

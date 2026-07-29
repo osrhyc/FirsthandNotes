@@ -1,7 +1,7 @@
 ---
 title: '哈里·马科维茨：现代组合理论之父'
 description: 'Harry Markowitz（1927–2023），1990 年诺贝尔经济学奖得主。一篇 1952 年的博士论文《Portfolio Sele…'
-pubDate: '2026-04-01'
+pubDate: '2026-03-14'
 category: '名人堂'
 level: '国际先驱'
 tags: ['名人堂']

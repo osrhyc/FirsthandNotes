@@ -1,7 +1,7 @@
 ---
 title: '格里诺德与卡恩：主动管理的立法者'
 description: 'Richard Grinold 与 Ronald Kahn，先后执掌 BARRA 研究部门和 BGI（巴克莱全球投资者，iShares 的前身东…'
-pubDate: '2026-04-07'
+pubDate: '2026-03-31'
 category: '名人堂'
 level: '国际先驱'
 tags: ['名人堂']

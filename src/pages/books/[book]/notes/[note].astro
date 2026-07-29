@@ -3,9 +3,12 @@ import { getCollection } from "astro:content";
 import ArticlePage from "@components/ArticlePage.astro";
 import BookChapterSidebar from "@components/BookChapterSidebar.astro";
 import { getBooks } from "@utils/book-utils";
+import { isPublishedContentDate } from "@utils/content-utils";
 
 export async function getStaticPaths() {
-	const notes = await getCollection("bookNotes");
+	const notes = await getCollection("bookNotes", ({ data }) =>
+		import.meta.env.PROD ? isPublishedContentDate(data.published) : true,
+	);
 	return notes.map((entry) => {
 		const book = entry.data.book.id;
 		const note = entry.id.startsWith(`${book}--`)

@@ -1,7 +1,7 @@
 ---
 title: '王琛与姚齐聪：WorldQuant 系的九坤投资'
 description: '九坤投资（Ubiquant）两位联合创始人，均出身全球最大的因子挖掘工厂 WorldQuant。九坤是"本土培养 + 工程化因子生产"路线的代表…'
-pubDate: '2026-04-10'
+pubDate: '2026-04-04'
 category: '名人堂'
 level: '中国量化'
 tags: ['名人堂']

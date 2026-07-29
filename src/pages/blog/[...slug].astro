@@ -2,10 +2,12 @@
 import { getCollection } from "astro:content";
 import ArticlePage from "@components/ArticlePage.astro";
 import { getPostUrlBySlug } from "@utils/url-utils";
-import { getSortedPosts } from "@utils/content-utils";
+import { getPublishedPosts, isPublishedContentDate } from "@utils/content-utils";
 
 export async function getStaticPaths() {
-	const entries = await getCollection("posts");
+	const entries = await getCollection("posts", ({ data }) =>
+		import.meta.env.PROD ? isPublishedContentDate(data.published) : true,
+	);
 	return entries.map((entry) => ({
 		params: { slug: entry.id },
 		props: { entry },
@@ -13,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const sorted = await getSortedPosts();
+const sorted = await getPublishedPosts();
 const index = sorted.findIndex((candidate) => candidate.id === entry.id);
 const previous = index > 0
 	? { title: sorted[index - 1].data.title, url: getPostUrlBySlug(sorted[index - 1].slug) }

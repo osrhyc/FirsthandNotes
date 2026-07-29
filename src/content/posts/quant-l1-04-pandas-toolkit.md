@@ -1,7 +1,7 @@
 ---
 title: '量化人的 pandas 最小技能包'
 description: '掌握做量化研究够用的 pandas 核心操作与矢量化思维。'
-pubDate: '2026-07-14'
+pubDate: '2026-06-12'
 category: '量化学堂'
 level: '入门'
 tags: ['pandas', '工具']

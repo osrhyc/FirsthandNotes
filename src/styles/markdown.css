@@ -34,6 +34,18 @@
         }
     }
 
+    .term-link {
+        @apply inline rounded-md border-0 bg-transparent px-1 py-0 font-medium text-[#111d2d] underline decoration-[#d99a20]/60 decoration-dotted decoration-2 underline-offset-4 transition dark:text-white;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+
+        &:hover,
+        &:focus-visible,
+        &[aria-expanded="true"] {
+            @apply bg-[#f5f4f1] text-[#111d2d] outline-none dark:bg-white/10 dark:text-white;
+        }
+    }
+
     code {
         @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;
 
@@ -118,4 +130,150 @@
         margin: 1em 0;
     }
     
+}
+
+.term-popover {
+    @apply fixed z-[120] rounded-xl border border-black/10 bg-[var(--card-bg)] p-4 text-left shadow-2xl transition dark:border-white/10;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.term-popover[hidden] {
+    display: none;
+}
+
+.term-popover__eyebrow {
+    @apply text-xs font-semibold text-[#d99a20];
+}
+
+.term-popover__title {
+    @apply mt-1 text-base font-bold text-[#111d2d] dark:text-white;
+}
+
+.term-popover__content {
+    @apply mt-3 text-sm leading-6 text-black/75 dark:text-white/75;
+}
+
+.term-popover__content > *:first-child {
+    margin-top: 0;
+}
+
+.term-popover__content > *:last-child {
+    margin-bottom: 0;
+}
+
+.term-popover__content p {
+    @apply my-2;
+}
+
+.term-popover__content strong {
+    @apply font-semibold text-[#111d2d] dark:text-white;
+    background: linear-gradient(transparent 58%, rgba(217, 154, 32, 0.28) 0);
+}
+
+.term-popover__content em {
+    @apply text-black/80 dark:text-white/80;
+}
+
+.term-popover__content ul,
+.term-popover__content ol {
+    @apply my-2 pl-5;
+}
+
+.term-popover__content ul {
+    list-style: disc;
+}
+
+.term-popover__content ol {
+    list-style: decimal;
+}
+
+.term-popover__content li {
+    @apply my-1;
+}
+
+.term-popover__content code {
+    @apply rounded-md bg-black/5 px-1 py-0.5 text-[0.85em] text-[#111d2d] dark:bg-white/10 dark:text-white;
+    font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+}
+
+.term-popover__content blockquote {
+    @apply my-3 border-l-2 border-[#d99a20] bg-[#f5f4f1] py-2 pl-3 pr-2 text-black/70 dark:bg-white/5 dark:text-white/70;
+}
+
+.term-popover__content h2,
+.term-popover__content h3,
+.term-popover__content h4 {
+    @apply mb-2 mt-4 font-bold text-[#111d2d] dark:text-white;
+}
+
+.term-popover__content h2 {
+    @apply text-base;
+}
+
+.term-popover__content h3,
+.term-popover__content h4 {
+    @apply text-sm;
+}
+
+.term-popover__content table {
+    @apply my-3 w-full border-collapse overflow-hidden rounded-lg text-sm;
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.term-popover__content thead {
+    @apply bg-[#111d2d] text-[#f5f4f1];
+}
+
+.term-popover__content tbody tr {
+    @apply border-b border-black/10 dark:border-white/10;
+}
+
+.term-popover__content tbody tr:nth-child(even) {
+    @apply bg-[#f5f4f1] dark:bg-white/5;
+}
+
+.term-popover__content th,
+.term-popover__content td {
+    @apply min-w-24 px-3 py-2 text-left align-top;
+}
+
+.term-popover__content th {
+    @apply font-semibold;
+}
+
+.term-popover__content td {
+    @apply text-black/75 dark:text-white/75;
+}
+
+.term-popover__content td:first-child {
+    @apply font-medium text-[#111d2d] dark:text-white;
+}
+
+.term-popover__link {
+    @apply mt-3 inline-flex rounded-lg px-0 text-sm font-semibold text-[var(--primary)] transition hover:text-[#d99a20];
+}
+
+.glossary-toc {
+    @apply mt-3 border-t border-dashed border-black/10 px-2 pt-4 dark:border-white/10;
+}
+
+.glossary-toc__title {
+    @apply mb-2 px-2 text-xs font-semibold tracking-wide text-black/40 dark:text-white/40;
+}
+
+.glossary-toc__list {
+    @apply flex flex-col gap-1;
+}
+
+.glossary-toc__button {
+    @apply w-full rounded-lg border-0 bg-transparent px-2 py-1.5 text-left text-sm leading-5 text-black/55 transition dark:text-white/55;
+}
+
+.glossary-toc__button:hover,
+.glossary-toc__button:focus-visible,
+.glossary-toc__button[aria-expanded="true"] {
+    @apply bg-[var(--toc-btn-hover)] text-[#111d2d] outline-none dark:text-white;
 }

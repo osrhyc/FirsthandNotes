@@ -1,7 +1,7 @@
 ---
 title: "控制杆"
 description: "《系统思考》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-22'
 category: "名词手册"
 tags: ["library","《系统思考》"]
 term: "控制杆"

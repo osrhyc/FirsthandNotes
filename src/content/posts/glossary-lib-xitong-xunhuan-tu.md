@@ -1,7 +1,7 @@
 ---
 title: "系统循环图"
 description: "《系统思考》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-16'
 category: "名词手册"
 tags: ["library","《系统思考》"]
 term: "系统循环图"

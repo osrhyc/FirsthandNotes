@@ -1,7 +1,7 @@
 ---
 title: "基准"
 description: "入门通识"
-pubDate: "2026-07-10"
+pubDate: '2026-05-23'
 category: "名词手册"
 tags: ["quant","入门通识"]
 term: "基准"

@@ -1,7 +1,7 @@
 ---
 title: "分层回测"
 description: "因子研究"
-pubDate: "2026-07-10"
+pubDate: '2026-05-29'
 category: "名词手册"
 tags: ["quant","因子研究"]
 term: "分层回测"

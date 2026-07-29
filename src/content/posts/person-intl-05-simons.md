@@ -1,7 +1,7 @@
 ---
 title: '吉姆·西蒙斯：量化之王'
 description: 'Jim Simons（1938–2024），世界级几何学家转行创立文艺复兴科技（Renaissance Technologies），旗下大奖章基…'
-pubDate: '2026-04-05'
+pubDate: '2026-03-24'
 category: '名人堂'
 level: '国际先驱'
 tags: ['名人堂']

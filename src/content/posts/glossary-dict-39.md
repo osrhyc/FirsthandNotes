@@ -1,7 +1,7 @@
 ---
 title: "低波动异象"
 description: "经典异象"
-pubDate: "2026-07-10"
+pubDate: '2026-06-04'
 category: "名词手册"
 tags: ["quant","经典异象"]
 term: "低波动异象"

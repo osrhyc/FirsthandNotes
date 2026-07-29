@@ -1,7 +1,7 @@
 ---
 title: "服从性测试"
 description: "《底层逻辑》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-27'
 category: "名词手册"
 tags: ["library","《底层逻辑》"]
 term: "服从性测试"

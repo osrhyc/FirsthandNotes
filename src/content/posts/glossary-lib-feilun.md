@@ -1,7 +1,7 @@
 ---
 title: "飞轮"
 description: "《一网打尽》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-29'
 category: "名词手册"
 tags: ["library","《一网打尽》"]
 term: "飞轮"

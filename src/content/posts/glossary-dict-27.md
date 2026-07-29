@@ -1,7 +1,7 @@
 ---
 title: "卡玛比率"
 description: "回测与评价"
-pubDate: "2026-07-10"
+pubDate: '2026-05-18'
 category: "名词手册"
 tags: ["quant","回测与评价"]
 term: "卡玛比率"

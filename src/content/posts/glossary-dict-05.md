@@ -1,7 +1,7 @@
 ---
 title: "超额收益"
 description: "入门通识"
-pubDate: "2026-07-10"
+pubDate: '2026-06-08'
 category: "名词手册"
 tags: ["quant","入门通识"]
 term: "超额收益"

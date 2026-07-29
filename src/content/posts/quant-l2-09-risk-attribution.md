@@ -1,7 +1,7 @@
 ---
 title: '风险模型与业绩归因：Barra 思想入门'
 description: '用 Barra 式多因子框架分解组合风险与收益，识别收益的真实来源。'
-pubDate: '2026-07-29'
+pubDate: '2026-07-18'
 category: '量化学堂'
 level: '进阶'
 tags: ['风险模型', '业绩归因', '多因子']

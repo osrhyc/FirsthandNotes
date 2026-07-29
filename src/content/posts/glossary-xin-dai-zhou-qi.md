@@ -1,7 +1,7 @@
 ---
 title: "信贷周期"
 description: "《周期》"
-pubDate: "2026-07-15"
+pubDate: '2026-06-15'
 category: "名词手册"
 tags: ["quant","《周期》"]
 term: "信贷周期"

@@ -1,7 +1,7 @@
 ---
 title: "等权"
 description: "回测与评价"
-pubDate: "2026-07-10"
+pubDate: '2026-06-05'
 category: "名词手册"
 tags: ["quant","回测与评价"]
 term: "等权"

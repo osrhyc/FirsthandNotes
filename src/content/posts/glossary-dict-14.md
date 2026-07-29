@@ -1,7 +1,7 @@
 ---
 title: "前向周期"
 description: "因子研究"
-pubDate: "2026-07-10"
+pubDate: '2026-05-15'
 category: "名词手册"
 tags: ["quant","因子研究"]
 term: "前向周期"

@@ -14,6 +14,44 @@ export const SERIES = [
 
 let sortedPostsPromise: Promise<PostEntry[]> | undefined;
 
+function getShanghaiDateKey(date = new Date()) {
+	const parts = new Intl.DateTimeFormat("en-CA", {
+		timeZone: "Asia/Shanghai",
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+	}).formatToParts(date);
+	const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+	return `${values.year}-${values.month}-${values.day}`;
+}
+
+function getContentDateKey(date: Date) {
+	return date.toISOString().slice(0, 10);
+}
+
+export function isPublishedContentDate(date: Date, today = getShanghaiDateKey()) {
+	return getContentDateKey(date) <= today;
+}
+
+function applyAdjacentPosts(posts: PostEntry[]) {
+	for (const post of posts) {
+		post.data.prevSlug = "";
+		post.data.prevTitle = "";
+		post.data.nextSlug = "";
+		post.data.nextTitle = "";
+	}
+	for (let i = 1; i < posts.length; i++) {
+		posts[i].data.nextSlug = posts[i - 1].slug;
+		posts[i].data.nextTitle = posts[i - 1].data.title;
+	}
+	for (let i = 0; i < posts.length - 1; i++) {
+		posts[i].data.prevSlug = posts[i + 1].slug;
+		posts[i].data.prevTitle = posts[i + 1].data.title;
+	}
+
+	return posts;
+}
+
 async function getRawSortedPosts(): Promise<PostEntry[]> {
 	sortedPostsPromise ??= getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
@@ -34,26 +72,28 @@ async function getRawSortedPosts(): Promise<PostEntry[]> {
 }
 
 export async function getSortedPosts() {
-	const sorted = await getRawSortedPosts();
+	const sorted = (await getRawSortedPosts()).map((post) => ({
+		...post,
+		data: { ...post.data },
+	}));
+	return applyAdjacentPosts(sorted);
+}
 
-	for (let i = 1; i < sorted.length; i++) {
-		sorted[i].data.nextSlug = sorted[i - 1].slug;
-		sorted[i].data.nextTitle = sorted[i - 1].data.title;
-	}
-	for (let i = 0; i < sorted.length - 1; i++) {
-		sorted[i].data.prevSlug = sorted[i + 1].slug;
-		sorted[i].data.prevTitle = sorted[i + 1].data.title;
-	}
+export async function getPublishedPosts() {
+	const today = getShanghaiDateKey();
+	const sorted = (await getRawSortedPosts())
+		.filter((post) => isPublishedContentDate(post.data.published, today))
+		.map((post) => ({
+			...post,
+			data: { ...post.data },
+		}));
 
-	return sorted;
+	return applyAdjacentPosts(sorted);
 }
 
 export async function getTechnicalPosts() {
-	const now = Date.now();
-	return (await getSortedPosts()).filter(
-		(post) =>
-			post.data.category !== "名词手册" &&
-			post.data.published.getTime() <= now,
+	return (await getPublishedPosts()).filter(
+		(post) => post.data.category !== "名词手册",
 	);
 }
 
@@ -71,7 +111,7 @@ export type PostForList = {
 };
 
 export async function getSortedPostsList(): Promise<PostForList[]> {
-	const sorted = await getRawSortedPosts();
+	const sorted = await getPublishedPosts();
 	return sorted.map((post) => ({ slug: post.slug, data: post.data }));
 }
 
