@@ -1,203 +1,210 @@
 ---
 title: '每日简报｜2026-07-30'
-description: '技术、商机和热点今天同时指向一个主题：AI 从功能竞赛转向成本、治理、评测和可成交场景。'
+description: '今天的重点不只是 AI：零售创新、工业利润、平台规则、暑期文旅、消费品成本和金融市场都在提示新的机会与风险。'
 pubDate: '2026-07-30'
 category: '每日简报'
 level: 'AI · 开发 · 创业 · 金融'
-tags: ['每日简报', 'AI', 'Agent', '开发工具', 'GitHub', '商机', '自建站', '电商', '金融市场']
-sourceCount: 20
+tags: ['每日简报', 'AI', '开发工具', 'GitHub', '零售', '电商', '本地生活', '自建站', '消费品', '金融市场']
+sourceCount: 24
 status: 'published'
 ---
 
-今天的主线是：**AI 继续热，但钱和注意力正在从“谁模型更强”转向“谁能把模型变成可控、可评估、可收费、可复用的工作流”**。OpenAI 把 GPT-5.6 的重点放在每 token 效率、推理栈优化和 Agent harness，GitHub 把 Copilot code review 的技能和 MCP 推到 GA，Vercel、Cloudflare 则在身份、环境和安全层补齐 Agent 运行条件。商机侧，Product Hunt 昨日榜单几乎被 Agent 评测、语音 Agent、自建站 AI、Agent 支付和数据授权工具占据，说明小团队机会不只在“做一个聊天壳”，而在评测、权限、支付、网站生成、垂直获客和电商经营提效。市场侧，美联储按兵不动但有 3 票要求加息，微软和 Meta 财报把 AI capex 的回报压力摆到台面，短期更适合做风险识别和方向复盘，不适合把技术叙事直接当交易结论。
+今天的主线是：**AI 仍然重要，但今天更值得纠偏的是传统生意和平台规则正在给小团队提供更贴近现金流的线索**。技术侧，GitHub Models 在 7 月 30 日正式退场，Copilot code review skills/MCP GA，说明开发工具正在从“模型入口”收缩到“工作流和治理”；安全侧，CodeQL 与 Cloudflare WAF 更新仍然影响自建站和后台系统。非 AI 侧，商务部零售创新政策、国家统计局工业利润、抖音/京东平台规则、暑期文旅消费、P&G 财报共同指向一个更现实的判断：有钱的机会不只在模型壳，而在渠道迁移、线下体验、本地服务、供应链效率、品类运营和成本管控。金融市场方面，美联储按兵不动但分歧扩大，大厂财报开始要求 AI 之外的现金流纪律，本期只做研究线索，不构成投资建议。
 
 ## 速览
 
-- OpenAI 发布 GPT-5.6 效率文章，称 Codex 中的 GPT-5.6 Sol 参与推理栈、kernel、speculative decoding 和 Agent harness 优化。
-- OpenAI 面向 10 万名科学家、数学家和工程师开放 ChatGPT for Academic Researchers，科研软件、数据分析和论文工作流继续成为 AI 渗透场景。
-- GitHub Copilot code review 的 Agent skills 和 MCP 支持 GA，可在代码审查里读取团队技能、标准和第三方上下文。
-- GitHub 将在 8 月 26 日启用 Copilot Business/Enterprise 新模型默认可用策略，管理员需要提前检查模型治理。
-- CodeQL 2.26.1 强化 Go、Java/Kotlin、JS/TS 和 Rust 检测，Angular `message` 事件、Spring WebFlux SSRF、Fastjson/Nuxt 类风险都值得复查。
-- Vercel 支持 “Sign in with ChatGPT”，同时允许 Pro/Enterprise 团队自助购买额外 custom environments，Agent 与部署平台绑定更深。
-- Cloudflare WAF 7 月 29 日规则更新覆盖 Nuxt Server Islands RCE、Fastjson 反序列化、云元数据 SSRF 和混淆命令注入。
-- Product Hunt 昨日榜前列包括 Prefactor、Cekura、Framer AI Agents、MCP-Billing 等，热点集中在 Agent 评测、语音 Agent、自建站和 Agent 商业化基础设施。
-- 国内内容电商线索显示，小红书更偏高客单“先查口碑再决策”，京东/淘天/抖音则把 AI 用到客服、投放、数字人和选品运营。
-- 美联储维持 3.5%-3.75% 利率区间，但 3 名委员支持加息；微软云和 Copilot 数据强，Meta AI 投入继续压缩自由现金流。
+- GitHub Models 今天正式退休，playground、model catalog、inference API 和 BYOK endpoints 将不再可用，依赖它的项目需要立刻迁移。
+- GitHub Copilot code review 的 Agent skills 和 MCP GA，团队规范、文档、issue tracker 开始进入代码审查流程。
+- CodeQL 2.26.1 增强 Angular message handler、Spring WebFlux SSRF、Go `slog`、Apache POI 等分析，适合今天做一次安全搜索。
+- 商务部零售创新发布会提到仓储会员店、无人值守商店 1-5 月零售额均增长超 20%，传统零售机会在供应链和体验升级。
+- 国家统计局称上半年规模以上工业企业利润增长 18.7%，原材料、有色、化工、电子链条利润改善，但也提示需求不足和资金周转压力。
+- 抖音电商近几天密集公示大促、商品卡免佣、类目错放、异常发品等规则，做平台小生意要先读规则再选品。
+- 京东宙斯开发者中心 8 月 30 日前关闭并迁移到京东商家开放平台，商家 API 服务商有迁移窗口。
+- 暑期文旅消费季持续到 8 月底，官方称将举办超 3 万场活动、发放超 4.5 亿元补贴，本地内容和旅行服务还有窗口。
+- P&G FY2026 收入增长 3%，但 FY2027 面临约 10 亿美元税后成本压力，消费品小品牌要重视原料、能源和物流成本。
+- 美联储维持 3.5%-3.75% 利率区间，但 3 名委员支持加息；风险资产仍要看通胀和现金流，不要只看热点叙事。
 
 ## 重点详读
 
-## 1. OpenAI：GPT-5.6 的重点从“更聪明”转向“每美元完成更多工作”
+## 1. GitHub Models 今天退场：所有项目都要检查是否误依赖旧入口
 
-**发生了什么：** OpenAI 7 月 29 日发布 GPT-5.6 效率文章，称 GPT-5.6 通过模型、推理和 Agent harness 三层提升“每 token 智能”。官方说 GPT-5.6 Sol in Codex 参与了生产流量分析、负载均衡策略、kernel 优化、speculative decoding 训练和场景化配置优化；其中 kernel 与相关优化让端到端服务成本降低 20%，speculator 改进让 token 生成效率提升超过 15%。[OpenAI 工程文章](https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/)
+**发生了什么：** GitHub 早在 7 月 1 日公告，GitHub Models 将在 2026 年 7 月 30 日完全退休；退休后 playground、model catalog、inference API、BYOK endpoints 和相关 UI 都不再对任何客户可用，包含仍有活跃使用的老客户。[GitHub Changelog](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/)
 
-**背景：** 过去模型发布常被理解为 benchmark 竞赛，但真正影响独立开发者和 SaaS 成本的是“同样预算能完成多少任务”。OpenAI 这篇文章把注意力放在推理成本、上下文膨胀、重复工具调用、缓存、负载均衡和 kernel 正确性验证上。
+**背景：** 这不是一个普通功能下线，而是 GitHub 把“模型聚合入口”从 GitHub Models 转向 Microsoft Foundry 和 Copilot 工作流。对开发者来说，模型能力没有消失，但入口、鉴权、账单、SDK、fallback 和权限边界会变。
 
-**为什么重要：** 如果大厂已经开始用 Agent 优化自己的推理基础设施，小团队也应该停止用“模型单价”粗略估算 AI 成本。真实成本来自任务成功率、重试次数、上下文长度、工具调用、缓存命中、是否返工。
+**为什么重要：** 今天是截止日。凡是 demo、脚手架、课程代码、MCP server、内部工具里写死 GitHub Models endpoint 的，都会变成运行时错误。对独立开发者尤其要紧，因为很多小工具没有监控，用户报错时才发现。
 
-**实际影响：** 未来 AI 产品定价更可能按任务结果、席位、工作流或用量组合计费。做 Agent 产品时，成本表至少要记录：输入/输出 token、工具调用次数、平均重试、失败类型、人工接管、最终是否完成。
+**实际影响：** 需要马上搜索仓库中的 `github models`、`models.inference.ai.azure.com`、BYOK、model catalog 等关键词，确认是否依赖旧 API。迁移时不要只换 URL，还要重看 token 权限、限额、模型名、日志和成本归属。
 
-**建议/行动：** 给自己的 Codex/Claude Code/Cursor 使用记录加一列“完成一个任务的总成本”，不要只记模型名。风险边界是：20% 和 15% 是 OpenAI 自身系统里的厂商数据，不能直接外推到你的项目，但方向很有参考价值。
+**建议/行动：** 今天把 GitHub Models 作为最高优先级检查项；如果没有依赖，也可以写一篇“AI API 下线检查清单”。风险边界是：GitHub 推荐迁移到 Foundry 或 Copilot，但具体成本、可用模型和企业合规要以自己的账户配置为准。
 
-## 2. OpenAI 科研计划：科研和工程债，是 Agent 真正容易收费的场景
+## 2. Copilot code review skills/MCP GA：开发规范开始变成可复用资产
 
-**发生了什么：** OpenAI 7 月 29 日宣布 ChatGPT for Academic Researchers，计划免费向 100,000 名科学家、数学家和工程师提供 frontier models and tools，并配套 training and research support。[OpenAI 公告](https://openai.com/index/chatgpt-for-academic-researchers/)
+**发生了什么：** GitHub 7 月 29 日宣布 Copilot code review 的 Agent skills 和 MCP server 支持 GA，覆盖 Copilot Pro、Pro+、Business、Enterprise。团队可以在 `.github/skills` 下用 `SKILL.md` 注入内部工具、编码标准和仓库规则；MCP 可把 issue tracker、文档系统、服务目录等只读上下文带进代码审查。[GitHub Changelog](https://github.blog/changelog/2026-07-29-copilot-code-review-agent-skills-and-mcp-now-generally-available/)
 
-**背景：** 前一天 OpenAI 刚发布 scientific computing 的 Agent 现场报告，强调 Codex/Claude Code 在科研软件维护、性能优化、迁移和 GPU 重设计中的作用。两条连在一起看，OpenAI 正在把“科研工作流”当成 Agent 的重要落地入口，而不是只做通用聊天。
+**背景：** 以前代码审查依赖 reviewer 记忆和团队口头约定。现在规范可以落成文件，并被 Agent 在审查时执行。GitHub 还说明 MCP tool calls 在 code review 中只读，评论会显示技能/MCP attribution，这意味着治理、可解释性和权限边界正在产品化。
 
-**为什么重要：** 科研软件、量化 notebook、数据 pipeline、旧 Python 包、实验记录和文档整理都有共同特征：任务复杂、人工时间贵、可用测试/数据验证、长期维护痛。这个组合比“通用聊天机器人”更容易证明价值。
+**为什么重要：** 对你这种长期维护内容站、工具链和自动化的人，最有价值的不是“让 AI 随便看代码”，而是把项目规则沉淀成模板。比如 Astro 内容 schema、构建命令、不能自动发布的范围、金融内容风险边界，都可以写进 skill。
 
-**实际影响：** 对你来说，量化学习、读书笔记、数据工程、研究日志都可以转成工具机会：Notebook 转生产 pipeline、实验复现检查、论文/代码配套阅读、数据集清洗、指标表生成。
+**实际影响：** 这会催生一批小产品：仓库规范模板、行业审查 skill、MCP 配置生成器、CI 审查规则市场、代码审查培训内容。传统企业、支付、电商、医疗、政企项目尤其有定制需求。
 
-**建议/行动：** 本周选一个旧 notebook，先补测试和输入输出样例，再让 Codex 做“变成可复现脚本”的小实验。风险边界是：OpenAI 的免费计划是生态投入，不代表科研 Agent 商业化已经成熟；真正收费仍取决于能否降低专家时间和复现成本。
+**建议/行动：** 给 FirsthandNotes 先写一个 `.github/skills/review/SKILL.md` 草稿，约束内容发布、引用、构建和 Git 操作。风险边界是：Agent review 只能提高覆盖率，不能替代测试、人工判断和真实安全审计。
 
-## 3. GitHub Copilot code review：技能和 MCP 进入代码审查，团队标准开始产品化
+## 3. CodeQL 与 Cloudflare WAF：小站也要把“输入到服务端”的路径查一遍
 
-**发生了什么：** GitHub 7 月 29 日宣布 Copilot code review 的 Agent skills 和 MCP server 支持 GA，覆盖 Copilot Pro、Pro+、Business 和 Enterprise。团队可以在 `.github/skills` 下放 `SKILL.md`，让 Copilot code review 调用内部工具、编码标准和仓库上下文；MCP 连接可以把 issue tracker、文档系统、服务目录等只读上下文带进审查。[GitHub Changelog](https://github.blog/changelog/2026-07-29-copilot-code-review-agent-skills-and-mcp-now-generally-available/)
+**发生了什么：** GitHub 7 月 29 日发布 CodeQL 2.26.1，增加 Go `log/slog`、Java/Kotlin `org.apache.poi`、Spring WebFlux SSRF、Angular `@HostListener('window:message')` 和 Rust 误报优化等能力。[GitHub Changelog](https://github.blog/changelog/2026-07-29-codeql-2-26-1-improves-analysis-accuracy-and-framework-coverage/) Cloudflare changelog 同期更新 WAF 规则，覆盖 Nuxt Server Islands RCE、Fastjson、云元数据 SSRF 和混淆命令注入等风险。[Cloudflare Changelog](https://developers.cloudflare.com/changelog/)
 
-**背景：** 代码审查过去靠 reviewer 记住团队规范。Agent 进入后，规范可以变成文件、技能、MCP 配置和审查 attribution。GitHub 还明确 MCP tool calls 在 code review 中限于 read-only，说明 Agent 审查的权限边界正在形成。
+**背景：** 这些点看起来分散，实质都指向“用户输入进入服务端、日志、消息事件、URI、组件渲染或反序列化”的路径。小团队常常觉得自己不是攻击目标，但自动化扫描会无差别找 Nuxt、Fastjson、Angular、Spring WebFlux、云 metadata 等暴露面。
 
-**为什么重要：** 这对小团队很实用。即使不用 GitHub 企业版，也可以把“我们怎么写 API、怎么处理错误、哪些文件不能随便改、哪些命令必须跑”写成可复用 skill。长期看，团队最佳实践会从口头经验变成可迁移资产。
+**为什么重要：** 自建站、客户后台、电商工具、小程序管理台、API 服务都可能踩到。尤其是为了快速变现搭的站，安全常被排在最后；一旦涉及登录、订单、表单、文件上传、客服消息，风险就不是理论问题。
 
-**实际影响：** 未来做开发工具、代码审查 SaaS、仓库治理模板、MCP server 的机会会更多。尤其是垂直行业：小程序、支付、物流、电商、数据合规都有自己的审查标准，可以产品化成 skill 包。
+**实际影响：** 你今天可以跑一次定向搜索：`rg \"fastjson|@HostListener|WebClient|server island|metadata\"`。如果用 Cloudflare，检查 WAF managed rules 是否开启；如果用 GitHub code scanning，确认 CodeQL 是否自动更新。
 
-**建议/行动：** 给 FirsthandNotes 或你的常用业务仓库建一个 `.github/skills/review/SKILL.md` 草稿，列出内容 schema、构建命令、禁止自动发布范围和安全检查。风险边界是：MCP 只读能降低风险，但不能替代人工 review 和 CI。
+**建议/行动：** 把这类检查做成“自建站上线前安全清单”，以后可扩展成内容或服务。风险边界是：WAF 是缓解层，CodeQL 是静态分析，最终仍要靠升级依赖、收窄输入、校验 origin 和最小权限。
 
-## 4. GitHub 默认模型策略：8 月 26 日前要检查 Copilot 模型治理
+## 4. 零售创新政策：传统生意机会在“供应链 + 体验 + 本地场景”
 
-**发生了什么：** GitHub 7 月 29 日宣布 Copilot Business 和 Enterprise 将引入“已 GA 模型默认可用”策略。未来 28 天该策略可配置但不生效；8 月 26 日起，未显式配置的模型会变成 `inherits default`，如果默认策略启用就自动开放。Open-weight 模型和不在 GitHub data retention agreement 覆盖内的模型排除在默认启用之外。[GitHub Changelog](https://github.blog/changelog/2026-07-29-default-model-enablement-for-copilot-business-and-enterprise/)
+**发生了什么：** 商务部加快零售业创新发展专题发布会提到，商品零售额从 2021 年 39.4 万亿元增至 2025 年 44.3 万亿元；零售业带动就业超 8000 万人；今年 1-5 月限额以上超市、便利店零售额分别增长 3.6%、6.8%，购物中心零售额增长超 10%，仓储会员店、无人值守商店零售额均增长超 20%。[商务部发布会](https://www.mofcom.gov.cn/xwfbzt/2026/swbzkjklsycxztxwfbh/index.html)
 
-**背景：** 过去企业管理员常常需要一个个开模型。随着 Grok、Claude、OpenAI、Kimi 等模型不断进入 Copilot，默认关闭会增加管理成本，默认开启又可能带来合规和成本失控。
+**背景：** 这条不是 AI 新闻，但对赚钱更直接。传统零售不是消失，而是在改造：超市学供应链和服务，购物中心做策展、主题、社区，仓储会员店满足高性价比，无人值守解决便利和人力成本。
 
-**为什么重要：** Agent 工具里的“默认模型”不是小设置。它会影响代码质量、数据流向、成本、审计和团队使用习惯。对个人和小团队也一样，默认模型一旦改变，任务成功率和账单都会跟着变。
+**为什么重要：** 个人和小团队不一定要开大店，但可以围绕零售转型做轻服务：门店私域、会员运营、小红书/抖音内容、选品表、供应商库、团购活动页、库存周转看板、线下活动报名系统。
 
-**实际影响：** 如果你在企业环境或客户项目里用 Copilot，需要在 8 月 26 日前确认：哪些模型允许用于哪些仓库，哪些仓库必须固定模型，是否允许自动模型选择，是否记录实际使用模型。
+**实际影响：** 最值得关注的是“非标准化商业”和“社区型零售”。它们需要内容、活动、社群、空间运营，不完全靠低价拼杀。比如宠物、亲子、银发、户外、手作、健康食品、社区维修，都适合做小范围验证。
 
-**建议/行动：** 把“模型默认启用策略”加入 Agent policy 文档。风险边界是：这条只影响 Copilot Business/Enterprise，但它代表了 AI 工具从功能选择进入治理选择。
+**建议/行动：** 本周选一个本地商圈或社区店，做一份“线上内容 + 线下到店 + 私域复购”拆解。风险边界是：政策数字说明方向，不代表单个门店一定赚钱；租金、人力、库存和履约会吞掉利润。
 
-## 5. CodeQL 与 Cloudflare WAF：前端 SSR 和老牌 Java 组件仍是高危组合
+## 5. 工业利润：原材料、有色、化工和电子链条改善，但小企业仍要看现金周转
 
-**发生了什么：** GitHub 7 月 29 日发布 CodeQL 2.26.1，增强 Go `log/slog`、Java/Kotlin `org.apache.poi`、Spring WebFlux SSRF、JS/TS Angular `@HostListener('window:message')`/`document:message` 和 Rust 硬编码密码学值的分析。[GitHub Changelog](https://github.blog/changelog/2026-07-29-codeql-2-26-1-improves-analysis-accuracy-and-framework-coverage/) 同日 Cloudflare WAF 更新规则，覆盖 Nuxt Server Island RCE、Alibaba Fastjson 反序列化、云元数据 SSRF 和混淆命令注入。[Cloudflare Changelog](https://developers.cloudflare.com/changelog/)
+**发生了什么：** 国家统计局 7 月 27 日解读称，2026 年上半年规模以上工业企业利润同比增长 18.7%，营业收入同比增长 6.5%，6 月利润同比增长 15.1%。制造业利润增长 20.1%，采矿业增长 33.5%；原材料制造业利润增长 71.7%，有色行业增长 99.4%，化工行业增长 67.8%。[国家统计局解读](https://www.stats.gov.cn/sj/sjjd/202607/t20260727_1964193.html)
 
-**背景：** 今天安全线索有一个共同点：现代前端 SSR、消息事件、反序列化、云元数据和服务端组件都把“用户输入”带进了更敏感的位置。Nuxt Server Islands、Angular message handler、Spring WebFlux URI sink、Fastjson 都不是新概念，但组合到云环境里就容易变成实际攻击面。
+**背景：** 这类宏观数据对小生意的意义不在“预测股价”，而在看产业链哪里有预算、哪里成本会动、哪里有补库存或设备更新需求。铜、铝、化工、光纤、设备制造利润改善，往往会带来企业服务、B2B 采购、展会、设备维修和工业品内容需求。
 
-**为什么重要：** 做自建站、后台、小程序管理台、SaaS 控制台的人，往往觉得自己流量小不值得攻击。但供应链扫描、AI 漏洞利用和自动化攻击让“长尾站点”也会被扫到。尤其是电商、支付、登录、上传、客服这类页面。
+**为什么重要：** 如果你要做传统方向，工业链比纯消费更容易产生 B2B 付费：报价工具、采购目录、产品参数站、维修手册、行业百科、设备选型、询盘落地页、外贸独立站。
 
-**实际影响：** 如果项目用 Nuxt、Angular、Spring WebFlux、Fastjson 或云元数据服务，今天应升级依赖、打开 code scanning、检查 WAF 规则，并确认 SSR 页面没有把用户输入直接喂给组件名、props 或 URI。
+**实际影响：** 可关注产业带与 1688 货源：化工耗材、五金工具、工业连接线、测试仪器、包装耗材、设备配件。这些不一定适合直播冲动购，但适合 SEO、目录站、询盘站和长尾内容。
 
-**建议/行动：** 做一次 `rg "fastjson|@HostListener|WebClient|server island|nuxt"` 的代码搜索。风险边界是：WAF 是缓解，不是修复；CodeQL 告警也要人工判断上下文。
+**建议/行动：** 选一个“参数复杂、客单价不低、搜索长尾多”的工业品类，做 20 个产品词页面测试自然搜索。风险边界是：工业利润改善是行业平均，很多中小企业仍面临需求不足和资金周转压力，不要压货重资产试错。
 
-## 6. Vercel：ChatGPT 登录、Eve 集成和自助环境容量都在服务 Agent 化工作流
+## 6. 国内平台规则：抖音密集改规则，京东开放平台迁移进入倒计时
 
-**发生了什么：** Vercel 7 月 29 日上线 “Sign in with ChatGPT”，允许把 ChatGPT 账号作为 Vercel/v0 登录方式，并在添加 Vercel plugin 到 ChatGPT 时授权团队和项目权限。[Vercel Changelog](https://vercel.com/changelog/sign-in-with-chatgpt-is-now-available-on-vercel) 同日 Vercel 还允许 Pro/Enterprise 团队自助购买额外 custom environments，每 5 个环境 $50/月；custom environments 可建 staging、qa 等环境并绑定分支、环境变量和域名。[Vercel 环境容量](https://vercel.com/changelog/additional-custom-environments-can-now-be-purchased) Eve CLI 也支持直接发现和安装官方/第三方 integrations，如 Agent Browser、Slack、Vercel MCP、Braintrust。[Vercel Eve CLI](https://vercel.com/changelog/discover-and-install-eve-integrations-from-the-cli)
+**发生了什么：** 抖音电商学习中心近几天公示和征集多项规则，包括《抖音电商官方大促活动报名规则》修订，涉及商家准入、商品准入、包邮、发货、售后和活动运营要求；还包括商品卡免佣扶持政策、类目错放细则、异常发品处置细则、七夕好礼季招商规则等。[抖音大促规则](https://school.jinritemai.com/doudian/web/articlev0/aJo4XEN3EuBK) [商品卡免佣](https://school.jinritemai.com/doudian/wap/article/aJnx44j7JypP?from_school=1&should_full_screen=1&should_hide_bottom_nav=1) 京东宙斯开发者中心公告显示，宙斯官网和控制台将在 8 月 30 日前关闭并迁移到京东商家开放平台。[京东开放平台](https://jos.jd.com/platformdetail?itemId=2291&listId=0)
 
-**背景：** Vercel 正在把部署平台、v0、ChatGPT plugin、Agent runtime、MCP、observability 和环境管理连起来。对 Agent 产品来说，这些不是“登录方式变化”，而是从对话到部署、从授权到观测的链路正在打通。
+**背景：** 平台生意不是“看到爆品就搬”，而是规则先行。抖音的大促、免佣、类目、发品、售后，直接影响成本和封店风险；京东迁移则影响服务商、ERP、小程序、数据接口和商家工具。
 
-**为什么重要：** 自建站、小工具站、独立 SaaS 的门槛会继续下降，但治理复杂度会上升。AI 能帮你生成网站，也能直接接入部署平台；问题是环境变量、团队权限、预览环境和生产发布是否受控。
+**为什么重要：** 这类规则变化经常比爆品更值钱。懂规则的人可以做：商家报名检查、商品合规体检、类目纠错、API 迁移、售后模板、发货 SLA 看板、活动利润测算。
 
-**实际影响：** 做客户网站、模板站、落地页生成器、AI 建站服务的人，机会在“从需求到上线”的流水线；风险在误授权、环境混乱、成本不透明和客户资产归属不清。
+**实际影响：** 今天适合把“抖音七夕好礼季”当成小样本：看哪些类目有活动折扣、谁承担优惠、包邮和售后要求如何影响毛利。京东方向则适合写迁移清单，吸引还没处理接口的中小商家。
 
-**建议/行动：** 如果要做 AI 建站服务，第一版就设计客户环境隔离、域名交接、源码归属、环境变量清单和发布审批。风险边界是：Sign in with ChatGPT 仍是 beta，不能把核心权限全交给单一登录链路。
+**建议/行动：** 不要先找货，先整理平台规则表。风险边界是：平台政策会变，搜索结果页面有时无法完整渲染，需要以商家后台最终规则为准；不要做刷单、错放类目、虚假宣传或规避审核。
 
-## 7. Cloudflare 后量子认证：安全产品的卖点正在从“加密”走向“身份不可伪造”
+## 7. 闲鱼和小红书：一个走“可信二手”，一个走“好货复购”
 
-**发生了什么：** Cloudflare 7 月 29 日宣布 Authenticated Origin Pulls 和 Custom Origin Trust Store 支持 post-quantum authentication，可用 ML-DSA 签名保护 Cloudflare 到客户 origin server 的连接。Cloudflare 称这是其后量子迁移路线中的一个里程碑，并提到面向公开 WebPKI 的 Merkle Tree Certificates 仍在与 Google 等合作推进。[Cloudflare 博客](https://blog.cloudflare.com/post-quantum-authentication-to-origins/)
+**发生了什么：** 近两日媒体报道，闲鱼与骑市网络举办二手大排量摩托车车商规则共建活动，聚焦车况透明、标准统一和可信交易。[新浪财经转载](https://finance.sina.com.cn/tech/roll/2026-07-28/doc-inikkaaa9271463.shtml) 小红书电商今年商家大会提出“卖好货就来小红书”，21 经济网报道其 rise100 百大商家 2025 年 GMV 同比增长超 2.6 倍，老客购买金额贡献占比 81%，平均复购率 32%。这不是今天新发布，但作为平台定位线索仍有价值。[21 经济网](https://www.21jingji.com/article/20260409/herald/3b578d625dae8e23682d670de2f4e6e8.html)
 
-**背景：** 很多后量子讨论只谈“加密内容未来会不会被解密”。Cloudflare 这次强调的是另一类风险：未来量子计算可能破坏传统凭证，攻击者不仅能解密，还可能伪造身份、冒充服务器或中间节点。
+**背景：** 两个平台都不是单纯低价逻辑。闲鱼高客单二手交易的痛点是信任、鉴定、交付和售后；小红书的核心是内容种草、信任和复购。它们对个人的启发是：别只盯“爆品搬运”，要找需要解释、评估、比较、背书的品类。
 
-**为什么重要：** 对普通独立站来说，后量子认证不是今天就必须改的功能；但对金融、政企、医疗、供应链、长期保密数据和企业 SaaS，这是未来几年安全采购的卖点。会写“PQC readiness”的团队可能更容易卖给高要求客户。
+**为什么重要：** 二手摩托、相机、乐器、户外装备、母婴大件、家电、办公设备，都是信息不对称高、交易决策复杂的品类。小红书则适合高客单、高审美、高信任门槛的商品和服务。
 
-**实际影响：** 自建站服务商、B2B SaaS、合规咨询、云迁移服务可以把“TLS、证书、origin 保护、Cloudflare 配置、密钥轮换”做成安全巡检套餐。
+**实际影响：** 可做的不是违法套利，而是“评估/比价/验货/内容/代发布/售后协助”。例如二手相机验机清单、露营装备二手价格库、家电以旧换新攻略、小红书高客单笔记模板。
 
-**建议/行动：** 给重要站点建立一张“边缘到源站安全清单”：是否强制 HTTPS、是否限制源站只接受 Cloudflare、是否启用 Authenticated Origin Pulls、证书如何轮换。风险边界是：PQC 仍在迁移期，不应包装成恐慌式销售。
+**建议/行动：** 选一个高客单二手品类，做 30 条成交价样本和 10 条避坑内容。风险边界是：二手交易纠纷、鉴定责任、定金诈骗、售后和账号信用风险都很高，不能用虚假描述和盗图。
 
-## 8. Product Hunt 热点：Agent 评测、语音 Agent、自建站 AI 和 Agent 支付正在成小团队机会
+## 8. 暑期文旅消费：补贴、夜游、研学和本地服务是非 AI 小钱窗口
 
-**发生了什么：** Product Hunt 昨日榜显示，Prefactor 排第 1，定位为实时评估 AI Agents；Cekura 排第 2，定位为 voice agents 的 self-improvement loop；Framer AI Agents 进入榜单，定位为用 AI 设计并发布专业网站。[Product Hunt 首页](https://www.producthunt.com/) Product Hunt newsletter 同时提到 MCP-Billing：OAuth 2.1 + usage-based Stripe billing for MCP servers，以及 Rivault：用 Face ID 审批 AI agent 数据访问。[Product Hunt Newsletter](https://www.producthunt.com/newsletters)
+**发生了什么：** 央视网报道，全国暑期文化和旅游消费季从 7 月初持续到 8 月底，文旅部协同有关部门、企业和平台推出观光、避暑、出行、观赛等惠民措施；期间各地将举办超 3 万场文旅消费活动，发放超 4.5 亿元消费券等补贴。[央视网](https://culture-travel.cctv.com/2026/07/08/ARTIGXiStUYbDoFU3XIG4OtD260708.shtml)
 
-**背景：** 这批产品背后有清晰信号：Agent 不缺 demo，缺评测、权限、支付、审计、网站交付和垂直场景。语音 Agent 也从“能打电话”转向“能持续改进”，这更接近销售、客服、本地服务和高客单咨询。
+**背景：** 暑期消费不是只有旅游大平台赚钱。本地小商家、内容号、亲子活动、研学路线、避暑攻略、民宿、包车、摄影、讲解、城市漫游、夜市摊位，都可能借活动和补贴放大成交。
 
-**为什么重要：** 这和你关心的小钱机会直接相关。个人开发者不一定要做大模型，可以做 Agent 周边基础设施：评测面板、任务回放、权限审批、MCP 计费、语音质检、落地页生成、行业模板。
+**为什么重要：** 这是典型非 AI 机会：需求明确、时间窗口短、用户愿意付费、内容能带来转化。AI 只适合辅助写攻略、做落地页、生成行程表，不能替代真实履约。
 
-**实际影响：** 如果要验证一个方向，可以先选垂直人群：装修公司电话跟进、教育咨询回访、闲鱼/小红书商家客服、独立站落地页生成、MCP server 按量计费。
+**实际影响：** 对个人来说，最轻的切入是“目的地内容 + 本地服务撮合”：比如某城市亲子研学一日路线、博物馆预约攻略、夜游地图、避暑民宿比较、车站到景区接驳说明。
 
-**建议/行动：** 今天从 Product Hunt 的榜单里挑 2 个产品拆 landing page：看它卖给谁、怎么定价、核心截图是什么、有没有等待名单。风险边界是：Product Hunt 热度不等于收入，必须继续查真实用户、价格和留存。
+**建议/行动：** 今天选一个你熟悉的城市或品类，做一个页面或小红书合集，放清楚路线、预算、避坑、预约入口和商家联系。风险边界是：文旅补贴有地域和时间限制，活动承诺、退款、交通天气都要写清楚。
 
-## 9. 国内电商：AI 经营工具正在先从商家侧赚钱，而不是消费者侧
+## 9. P&G 财报：消费品不是没有机会，而是成本和品牌信任变得更关键
 
-**发生了什么：** 近期国内电商资料显示，AI 已经深入 618 商家经营环节。新华社报道京东 618 前 4 小时里，JoyStreamer 数字人开播商家同比增长 6 倍，带货成交额突破 7000 万元，JoyMarketing 交互量突破 2200 万人次，AI 客服“京小智”服务超百万商家且大模型服务量同比增长 14 倍。[新华社](https://www.xinhuanet.com/20260601/377ea02675474688979382d0682642f0/c.html) 21 经济网提到，淘系已在使用 AI 工具辅助经营的商家占比约 70%，京东免费开放十余款 AI 工具覆盖选品、客服、直播、运营，阿里妈妈 AI 万相落地大促。[21 经济网](https://www.21jingji.com/article/20260617/herald/55468aa5977ee1ef7a316554d60daad4.html)
+**发生了什么：** P&G 7 月 29 日发布 FY2026 Q4 和全年财报：FY2026 净销售额 870 亿美元，同比增长 3%；Q4 净销售额 212 亿美元，同比增长 2%，有机销售持平。公司预计 FY2027 销售增长 1%-3%，并估计原材料、能源和运输成本带来约 10 亿美元税后压力。[P&G 财报](https://us.pg.com/newsroom/news-releases/PG-Announces-Fourth-Quarter-and-Fiscal-Year-2026-Results/)
 
-**背景：** 用户侧的 AI 购物助手还在教育市场，但商家侧痛点已经很明确：客服贵、直播贵、图片视频贵、投放难、选品不准、退货率高。平台也有动力用 AI 降低商家经营成本，提高广告和交易效率。
+**背景：** 日化、个护、母婴、家清这些传统消费品看似成熟，但它们最能反映普通消费者的价格敏感度。P&G 这样的大公司还能靠品牌、渠道、生产率和股东回报消化压力，小品牌的缓冲更薄。
 
-**为什么重要：** 小钱机会不一定是开店卖爆品，而是给商家卖工具和服务：数字人直播搭建、商品图文批量生成、客服知识库、选品监控、短视频脚本、投放素材测试、售后话术整理。
+**为什么重要：** 做淘宝、小红书、抖音或自建站的消费品生意，不能只看毛利率表。原料、包材、能源、物流、平台费、退货率、达人佣金、广告成本都会挤利润。消费者也更看“真实价值”，不是纯概念。
 
-**实际影响：** 闲鱼、小红书、抖音、淘宝、京东商家都会需要“AI 经营代运营”的轻服务，但竞争也会很快变红海。真正差异在行业模板、数据源、执行交付和效果复盘。
+**实际影响：** 小品牌机会在细分人群和可信表达：敏感肌、宠物清洁、户外清洁、母婴安全、老年护理、宿舍小家电、租房收纳。内容要讲成分、场景、对比、复购，而不是空喊高端。
 
-**建议/行动：** 找一个垂直类目做 7 天试验，例如家电维修、宠物用品、银发用品、户外装备，只做“商品图 + 标题 + 问答 + 售后话术”四件事。风险边界是：平台数据多为平台/媒体披露，不能直接推出某个工具一定赚钱。
+**建议/行动：** 做一个消费品利润表模板：进货、包材、履约、平台费、退货、广告、达人佣金全部纳入。风险边界是：P&G 数据代表全球消费品龙头，不等于所有小品类都承压，但成本纪律必须前置。
 
-## 10. 金融市场：AI capex 开始被投资者按“现金流纪律”重新定价
+## 10. 金融市场：利率分歧、AI capex 和消费成本同时压着风险偏好
 
-**发生了什么：** 美联储 7 月 29 日维持联邦基金目标区间在 3.5%-3.75%，并称通胀仍高于 2% 目标，部分原因来自能源等供给冲击；3 名委员投反对票，倾向加息 25 个基点。[Fed 声明](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm) 微软同日发布 FY26 Q4，收入 900 亿美元同比增长 18%，Microsoft Cloud 收入 593 亿美元同比增长 27%，Azure and other cloud services 增长 43%，Microsoft 365 Copilot 超过 3000 万付费席位。[Microsoft 财报](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast) Meta 的 Q2 2026 earnings 页面已上线；AP 报道称 Meta Q2 收入增长但自由现金流显著承压，背景包括 AI 基础设施投入和费用压力。[Meta IR](https://investor.atmeta.com/home/default.aspx) [AP](https://apnews.com/article/bcbc62dde6d2cac724e3b3385fcabeab)
+**发生了什么：** 美联储 7 月 29 日维持联邦基金目标区间 3.5%-3.75%，声明称经济活动稳健扩张、通胀仍高于 2% 目标，投票为 9-3，Hammack、Kashkari、Logan 支持加息 25 个基点。[Fed 声明](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm) 微软 FY26 Q4 收入 900 亿美元，同比增长 18%，Azure and other cloud services 增长 43%，Microsoft 365 Copilot 超 3000 万付费席位。[Microsoft 财报](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast) BEA 日程显示 7 月 30 日发布美国 Q2 GDP advance estimate 和 6 月个人收入支出数据。[BEA 日程](https://www.bea.gov/news/schedule)
 
-**背景：** 市场已经不只问“AI 会不会增长”，而是问“AI 投入什么时候转化为现金流”。微软的云和 Copilot 席位数据给了投资者更清晰的 monetization 证据；Meta 的广告增长仍强，但自由现金流和 capex 指引让市场担心回报周期。
+**背景：** 市场现在同时看三件事：利率是否继续高位、AI 投入是否产生收入、普通消费是否被成本压住。微软给出了 AI 变现证据，但 P&G 和 Fed 都提醒成本、能源、通胀仍是现实变量。
 
-**为什么重要：** 这对技术创业也有影响。如果大厂进入现金流纪律阶段，下游供应链、云资源、模型价格、企业 AI 采购都会更看 ROI。单纯讲“AI 很强”不够，必须讲“省多少钱、赚多少钱、几周验证”。
+**为什么重要：** 对投资学习来说，不能把“AI 产业趋势”直接等同于“所有 AI 股票/基金都值得买”。对创业来说，客户预算也会更偏 ROI，能省钱、能获客、能缩短履约周期的产品更容易成交。
 
-**实际影响：** 做 AI 工具时，优先选能量化 ROI 的场景：客服成本、销售线索、内容生产、广告素材测试、代码审查返工、数据报表工时。金融侧则要把 AI 产业趋势和股票/基金价格分开看。
+**实际影响：** 研究表可以分三栏：技术/云/AI 收入，传统消费/成本压力，利率/汇率/流动性。中国市场可结合上交所主要指数和成交数据观察风险偏好，但不要用单日涨跌下结论。[上交所首页市场数据](https://www.sse.com.cn/)
 
-**建议/行动：** 建一个“AI capex → 下游机会”观察表：云服务、芯片、内存、电力、数据中心、Agent 工具、企业软件、广告投放。风险边界：本节只用于学习和市场观察，不构成投资建议。
+**建议/行动：** 本周记录 Fed、BEA、微软、P&G 四组数据，练习把宏观、财报和商机联系起来。风险边界：本节只用于信息解读、市场观察和研究线索，不构成投资建议，不推荐任何个股、基金或交易动作。
+
+## 非 AI 热点与传统商机
+
+- **社区零售改造：** 商务部强调购物中心、仓储会员店、无人值守商店、社区型零售和“一店一策”。小团队可做会员运营、活动报名页、私域社群、地图导购和库存清仓工具。验证方式是找 1 家社区店做 2 周活动转化；风险是线下履约重、门店老板执行力参差。
+- **工业品目录站：** 国家统计局数据显示原材料、有色、化工利润改善。可从 1688/产业带选参数复杂的工业品做 SEO 和询盘站，如耗材、配件、检测工具。验证方式是 20 个长尾页面 + 表单；风险是专业门槛、报价波动和交付责任。
+- **暑期本地服务：** 文旅消费季补贴持续到 8 月底，夜游、避暑、亲子、研学、博物馆和接驳服务值得关注。验证方式是做本地攻略合集并引流到微信咨询；风险是天气、交通、退款和资质。
+- **二手高客单信任服务：** 闲鱼二手摩托规则共建提示高客单二手正在规范化。可做验货清单、成交价数据库、代拍代发布、避坑内容；风险是鉴定责任和交易纠纷。
 
 ## 赚钱与市场方向
 
-- **Agent 评测和回放工具有早期需求。** 证据是 Product Hunt 昨日第 1 的 Prefactor 主打实时评估 AI Agents，OpenAI/GitHub/Vercel 也都在强调 Agent harness、技能、MCP、观测。适合懂开发工具的人切入；低成本验证是做一个“记录任务输入、工具调用、结果、失败原因”的小面板。风险是大厂很快会内置基础评测，差异必须来自垂直场景。
-- **MCP 服务器的计费、权限和审计是可收费基础设施。** Product Hunt newsletter 提到 MCP-Billing 和 Rivault，GitHub code review MCP 也已 GA。适合做 Stripe、GitHub、Notion、Linear、飞书等连接器的人。验证路径是先做一个单服务 MCP 的 usage log + billing demo。风险是 OAuth、数据权限和误操作责任要设计清楚。
-- **AI 电商经营服务比“卖 AI 课”更容易接近真实付费。** 京东、淘天数据都指向商家侧工具：客服、直播、投放、图文、选品。适合懂平台运营和自动化的人做轻服务。验证路径是找 3 个小商家免费试做一周，记录节省时间和转化线索。风险是交付重、平台规则变、素材侵权和效果难归因。
-- **自建站 AI 生成从模板生意升级为交付流水线生意。** Framer AI Agents 和 Vercel/ChatGPT 登录说明“从对话到发布”正在缩短。机会不是再做一个建站器，而是做“某行业的一站式上线包”：落地页、表单、支付、邮件、SEO、统计、客服。风险是客户后续维护、域名/源码归属和合规。
+- **平台规则顾问/清单服务：** 抖音和京东规则变化密集，商家愿意为“少踩坑、少被罚、赶上活动”付费。先做免费规则表获客，再卖报名检查、商品合规和迁移服务。
+- **本地文旅内容站/小红书矩阵：** 暑期补贴和亲子/研学需求明确，适合用内容页承接搜索和社媒流量。低成本验证是一个城市、一个主题、十篇内容。
+- **工业品 SEO + 询盘：** 不追热点爆品，追稳定长尾需求。适合懂网站和内容的人；利润来自询盘转介绍、代运营、联盟分成或自营小库存。
+- **消费品成本表工具：** P&G 的成本压力说明小品牌更需要算账。可以做一个面向淘宝/小红书商家的毛利、退货、佣金、广告测算模板或小程序。
+- **Agent 审查规范模板：** 技术侧仍有机会，但要从“做 AI 应用”转成“帮团队把规范、权限和成本落地”。
 
 ## 国内平台/自建站小生意观察
 
-- **小红书高客单口碑种草：** CBNData 提到小红书 2025 年电商 GMV 同比增长 72%，且 3000 元以上客单价商品转化率相对抖音更强。[CBNData](https://m.cbndata.com/information/295560) 现象是用户先查口碑再决策；需求是高客单商品的信任建设；供给可以来自 1688/产业带或品牌代销；流量靠搜索笔记和真实测评；验证方法是选 1 个高客单细分品写 20 篇长尾笔记。风险是虚假种草、商单合规和售后。
-- **AI 商家素材包：** 淘系/京东/抖音都在推 AI 图文、客服、直播工具，说明商家接受度提升。现象是平台免费工具普及，但商家不会用；需求是“帮我把商品图、标题、问答、短视频脚本做出来”；收费可以按单品包、月度运营包或上架数量；验证方法是找一个类目做 10 个 SKU 样板。风险是素材侵权、夸大宣传和平台审核。
-- **京东开放平台迁移带来的服务商机会：** 京东宙斯开发者中心公告显示原平台 8 月 30 日前关闭并迁移到京东商家开放平台，企业账号、资质、软著、安全部署等要求提高。[京东开放平台](https://jos.jd.com/) 现象是个人/小团队接入门槛变高；需求是迁移、接口、授权、API 调试、企业资质辅导；验证方法是做一篇“宙斯到 JDO 迁移清单”获取线索。风险是平台资质、保证金和数据安全责任。
-- **独立站小工具：** Product Hunt 的 Framer AI Agents、自建站 AI 方向说明“快速上线专业站点”仍有需求。现象是用户想从想法直接到站点；需求是落地页、等待名单、支付、SEO；供给是 Framer/Webflow/Next.js 模板；验证方法是做一个单行业模板站，如维修报价、宠物用品测评、AI 工具目录。风险是 SEO 周期长、同质化和支付/隐私合规。
+- **抖音七夕/大促规则型机会：** 现象是活动规则、发货、售后、类目要求密集更新；需求是商家想报名但怕算错毛利或违规；供给来自商家后台和规则中心；流量来源是抖音商家群、公众号、搜索；利润假设是按店铺检查收费或做代报名；低成本验证是整理一张七夕好礼季报名核对表；风险是规则变化、平台审核和售后责任。
+- **京东开放平台迁移：** 现象是宙斯 8 月 30 日前关闭；需求是接口迁移、授权、API 调试、资质补齐；供给是京东商家开放平台文档；流量来源是“宙斯迁移”“京东 API 报错”等搜索；收费方式可按迁移项目或小时服务；风险是企业资质、数据安全和客户系统复杂度。
+- **小红书高复购好货：** 现象是平台强调好货和老客复购；需求是高客单商品需要信任内容；供给可从产业带、品牌分销、手作和本地服务来；转化路径是笔记种草、直播/店铺成交、私域复购；验证是一个品类写 20 篇长尾真实测评；风险是虚假宣传、商单合规和售后。
+- **自建站目录/比较站：** 现象是 Product Hunt 和开源社区持续出现工具、硬件、开发者产品；需求是用户需要比较和购买决策；供给是公开资料、官方文档、联盟计划；变现是 affiliate、广告、线索或付费报告；验证是先做一个细分目录，如开放硬件、二手装备、工业品参数；风险是 SEO 周期和内容同质化。
 
 ## 创业/产品机会
 
-- **Agent 任务审计仪表盘：** 给 Codex/Claude Code/Cursor 任务记录模型、工具、成本、文件 diff、验证命令、失败原因，适合个人和小团队先用。
-- **电商 AI 经营包生成器：** 输入商品链接或 1688 货源，输出小红书笔记、抖音短视频脚本、淘宝标题、FAQ、客服话术和售后模板。
-- **Copilot/GitHub skill 模板市场：** 按框架和行业提供 `.github/skills`，例如 Astro 内容站、小程序、支付系统、Java Spring、安全审查。
-- **MCP usage-based billing starter：** 给独立开发者快速接 Stripe、OAuth、用量日志、限额和账单提醒，专门服务 MCP server 商业化。
-- **京东开放平台迁移助手：** 根据应用类型生成迁移路径、资质清单、接口替代、风险提醒和工单模板。
+- **平台规则监控器：** 监控抖音、天猫、京东、小红书规则更新，自动生成商家影响摘要、成本变化和待办清单。
+- **工业品参数站生成器：** 从 1688/公开资料整理规格、用途、选型、报价注意事项，生成 SEO 页面和询盘表单。
+- **本地文旅落地页套件：** 给民宿、亲子活动、研学机构、城市导览提供页面、预约、优惠券说明和小红书文案。
+- **高客单二手成交价数据库：** 聚焦相机、摩托、乐器、户外装备，做成交价、验货清单和避坑内容。
+- **代码审查 skill 模板市场：** 为 Astro、Next.js、Spring、电商后台、支付系统提供可复制的 `.github/skills`。
 
 ## 营销/内容选题
 
-- 《AI Agent 不缺 demo，缺的是评测、权限和计费》：用 Prefactor、Rivault、MCP-Billing、GitHub MCP 串联。
-- 《Copilot code review skills 怎么写：把团队规范变成 AI 审查资产》：适合工程教程。
-- 《小红书高客单和抖音冲动购的区别：为什么同一个产品要写两套内容》：适合小生意选题。
-- 《AI 电商工具真正省钱的是哪几环：客服、素材、投放还是直播》：用 618 数据做案例拆解。
-- 《微软和 Meta 财报给 AI 创业者的提醒：讲清 ROI 比讲模型更重要》：适合商业科技文章。
+- 《为什么今天的商机不只在 AI：零售、文旅、二手和工业品更接近现金流》
+- 《抖音大促报名之前，商家必须算清楚的 7 个成本》
+- 《京东宙斯 8 月 30 日关闭：开发者和商家该怎么迁移》
+- 《从 P&G 财报看小品牌：为什么毛利表比爆品榜更重要》
+- 《工业品 SEO 怎么做：一个适合独立开发者的非 AI 小生意方向》
+- 《GitHub Models 今天下线：AI 项目迁移检查清单》
 
 ## 金融与市场观察
 
-今天金融侧最重要的不是单日涨跌，而是两个估值锚：利率和 AI 投入回报。Fed 按兵不动但出现 3 票要求加息，说明能源和通胀风险仍压着风险资产；微软用 Azure、Cloud 和 Copilot 付费席位证明 AI 变现路径，Meta 则让市场继续担心 AI capex 吞噬自由现金流。
+今天市场观察的关键词是“分歧”和“纪律”。Fed 维持利率不变，但 9-3 的投票说明内部对通胀仍有明显分歧；微软的云和 Copilot 数据给 AI 变现提供证据，但 P&G 的成本压力提醒传统消费仍受原料、能源、运输和价格敏感度影响。A 股和基金研究上，可以把产业线索分成工业利润改善、消费慢修复、AI capex、平台规则四类，不要用单日行情代替基本面。
 
-对学习和复盘来说，可以把 AI 公司拆成三类：第一类是能把 AI 投入转成明确收入和现金流的公司；第二类是投入巨大但回报周期不清的公司；第三类是给这轮投入卖铲子的公司，如云、芯片、内存、电力、数据中心和运维工具。基金和 ETF 层面还要继续区分底层趋势与交易价格，尤其是跨境 ETF 的溢价、汇率和流动性。
-
-风险边界：本节只用于信息解读、市场观察和研究线索，不构成投资建议，不推荐任何个股、基金或交易动作。
+风险边界：本节只用于信息解读、市场观察和研究线索，不构成投资建议，不推荐任何个股、基金或交易动作。涉及 ETF、基金、股票时还要单独核对费率、溢价、持仓、流动性、汇率和个人风险承受能力。
 
 ## 今日行动清单
 
-1. 给常用仓库新增或草拟 `.github/skills/review/SKILL.md`，把构建命令、内容 schema 和禁止动作写清楚。
-2. 检查 Copilot/Agent 默认模型设置，记录 8 月 26 日前需要处理的团队模型策略。
-3. 搜索项目中的 Nuxt、Fastjson、Angular `message`、Spring WebFlux URI 使用，补安全检查。
-4. 拆解 Product Hunt 上 Prefactor、Cekura、Framer AI Agents、MCP-Billing 的落地页和定价线索。
-5. 选一个国内平台小钱方向做 7 天验证：AI 商家素材包、小红书高客单笔记、京东迁移清单或自建站模板。
-6. 建一张 AI capex 观察表：微软、Meta、云收入、capex、自由现金流、Copilot/AI 付费用户。
+1. 立刻检查所有仓库是否依赖 GitHub Models endpoint 或 BYOK，今天是正式退休日。
+2. 用 `rg "fastjson|@HostListener|WebClient|server island|metadata"` 做一次安全搜索。
+3. 整理一张抖音/京东平台规则变化表，重点看报名、类目、发货、售后、迁移截止日。
+4. 选一个非 AI 小生意方向做 7 天验证：工业品目录站、暑期文旅攻略、二手高客单价格库或社区零售私域。
+5. 给一个消费品或平台商品做完整毛利表，把平台费、退货、广告、达人佣金和物流都算进去。
+6. 草拟 FirsthandNotes 的 `.github/skills/review/SKILL.md`，把内容和构建规范沉淀下来。
 
 ## 来源索引
 
-- AI/Agent：[OpenAI GPT-5.6 效率文章](https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/)、[ChatGPT for Academic Researchers](https://openai.com/index/chatgpt-for-academic-researchers/)
-- GitHub/开发工具：[Copilot code review Agent skills and MCP GA](https://github.blog/changelog/2026-07-29-copilot-code-review-agent-skills-and-mcp-now-generally-available/)、[Copilot 默认模型策略](https://github.blog/changelog/2026-07-29-default-model-enablement-for-copilot-business-and-enterprise/)、[CodeQL 2.26.1](https://github.blog/changelog/2026-07-29-codeql-2-26-1-improves-analysis-accuracy-and-framework-coverage/)
-- Vercel/Cloudflare：[Sign in with ChatGPT on Vercel](https://vercel.com/changelog/sign-in-with-chatgpt-is-now-available-on-vercel)、[Vercel custom environments](https://vercel.com/changelog/additional-custom-environments-can-now-be-purchased)、[Eve integrations CLI](https://vercel.com/changelog/discover-and-install-eve-integrations-from-the-cli)、[Cloudflare WAF 2026-07-29](https://developers.cloudflare.com/changelog/)、[Cloudflare post-quantum origin authentication](https://blog.cloudflare.com/post-quantum-authentication-to-origins/)
-- 商机/热点：[Product Hunt 首页](https://www.producthunt.com/)、[Product Hunt Newsletter](https://www.producthunt.com/newsletters)
-- 国内平台/电商：[CBNData 内容电商分析](https://m.cbndata.com/information/295560)、[新华社 AI 深度介入 618](https://www.xinhuanet.com/20260601/377ea02675474688979382d0682642f0/c.html)、[21 经济网 AI+电商](https://www.21jingji.com/article/20260617/herald/55468aa5977ee1ef7a316554d60daad4.html)、[京东开放平台](https://jos.jd.com/)
-- 金融与市场：[Fed FOMC statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm)、[Microsoft FY26 Q4](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast)、[Meta Investor Relations](https://investor.atmeta.com/home/default.aspx)、[AP Meta Q2 2026 报道](https://apnews.com/article/bcbc62dde6d2cac724e3b3385fcabeab)
+- AI/开发工具：[GitHub Models 退休公告](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/)、[Copilot code review skills/MCP GA](https://github.blog/changelog/2026-07-29-copilot-code-review-agent-skills-and-mcp-now-generally-available/)、[CodeQL 2.26.1](https://github.blog/changelog/2026-07-29-codeql-2-26-1-improves-analysis-accuracy-and-framework-coverage/)、[OpenAI GPT-5.6 效率文章](https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/)
+- 安全/云平台：[Cloudflare Changelog](https://developers.cloudflare.com/changelog/)、[Cloudflare post-quantum origin authentication](https://blog.cloudflare.com/post-quantum-authentication-to-origins/)
+- GitHub/热点雷达：[GitHub Trending](https://github.com/trending)、[Product Hunt](https://www.producthunt.com/)、[Hacker News](https://news.ycombinator.com/)、[Keychron ZGM GitHub](https://github.com/Keychron/zgm)
+- 零售/工业/文旅：[商务部零售创新发布会](https://www.mofcom.gov.cn/xwfbzt/2026/swbzkjklsycxztxwfbh/index.html)、[国家统计局工业利润解读](https://www.stats.gov.cn/sj/sjjd/202607/t20260727_1964193.html)、[央视网暑期文旅消费季](https://culture-travel.cctv.com/2026/07/08/ARTIGXiStUYbDoFU3XIG4OtD260708.shtml)
+- 国内平台：[抖音大促规则修订](https://school.jinritemai.com/doudian/web/articlev0/aJo4XEN3EuBK)、[抖音商品卡免佣政策](https://school.jinritemai.com/doudian/wap/article/aJnx44j7JypP?from_school=1&should_full_screen=1&should_hide_bottom_nav=1)、[京东开放平台迁移公告](https://jos.jd.com/platformdetail?itemId=2291&listId=0)、[闲鱼二手摩托规则共建](https://finance.sina.com.cn/tech/roll/2026-07-28/doc-inikkaaa9271463.shtml)、[小红书好货商家大会报道](https://www.21jingji.com/article/20260409/herald/3b578d625dae8e23682d670de2f4e6e8.html)
+- 消费品/金融：[P&G FY2026 results](https://us.pg.com/newsroom/news-releases/PG-Announces-Fourth-Quarter-and-Fiscal-Year-2026-Results/)、[Fed FOMC statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm)、[Microsoft FY26 Q4](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast)、[BEA release schedule](https://www.bea.gov/news/schedule)、[上交所市场数据](https://www.sse.com.cn/)
