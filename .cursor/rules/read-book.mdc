@@ -16,6 +16,7 @@ For "真读原书", chapter notes, or source-book notes in this repository, foll
 Key requirements:
 
 - Use only user-provided PDF/EPUB files or explicitly public-domain sources.
+- User-provided book files are kept outside the repo in `~/books`; when only a title, slug, or filename is provided, look there first and resolve the absolute PDF/EPUB path.
 - **精读 is the only mode.** Read every book completely, chapter by chapter. There is no fast-reading / targeted / skim mode.
 - **阅读单元 = 一篇笔记**：默认一章一篇；厚章（>1.5万字）有节就按节分组、无节就派两个 agent 出（上）（下）；部/篇 永不做单元。单元目标 5k~15k 字，**绝不跨章**。
 - 先跑 `--plan` 看 TOC 树与单元建议、核对印刷目录，再落盘；必要时用 `--spec plan.json` 手工控制。

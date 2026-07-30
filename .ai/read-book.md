@@ -11,6 +11,7 @@ Core goal: extract publishable chapter notes from the real book text into `src/c
 Before reading, confirm or infer:
 
 - Source file path exists and points to a user-provided PDF/EPUB.
+- Default source location: user-provided book files are kept outside the repo in `~/books`. If the user gives only a book title, slug, or filename, look there first and resolve the absolute PDF/EPUB path before planning extraction.
 - Whether the book is copyrighted or public-domain.
 - Book title, author, slug, category, and target module:
   - `bookModule: 'quant'` for 量化书屋.

@@ -8,6 +8,8 @@ Usage:
 /read-book <PDF/EPUB 文件路径> [分类] [--slug xxx]
 ```
 
+If the user gives only a book title, slug, or filename, first look for the user-provided PDF/EPUB under `~/books` and resolve the absolute path. Keep source books outside the repo.
+
 Read the source book first, extract real chapter text or page-image evidence, then produce publishable chapter notes under `src/content/book-notes/`. Create the corresponding metadata entry under `src/content/books/` first. Do not use reviews, summaries, search snippets, or model memory as substitutes for the book.
 
 Non-negotiable:
