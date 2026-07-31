@@ -2,7 +2,7 @@
 
 > 记录值得长期保存的知识
 
-基于 Astro + Fuwari 的静态知识库，托管在 GitHub Pages：<https://blog.dizhuig.com/>
+基于 Astro + Fuwari 的静态知识库，托管在 GitHub Pages：<https://blog.liuchengyong.cn/>
 
 ## 本地开发
 
