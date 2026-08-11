@@ -26,11 +26,12 @@ const latestBriefingEntry = latestBriefing
 			entry.data.published.toISOString().startsWith(latestBriefing.date),
 		)
 	: undefined;
-const briefingHighlights = (latestBriefingEntry?.body || "")
-	.match(/^##\s+(?:\d+\.\s*)?(.+)$/gm)
-	?.map((heading) => heading.replace(/^##\s+(?:\d+\.\s*)?/, "").trim())
-	.filter((heading) => !["速览", "重点详读"].includes(heading))
-	.slice(0, 2) || [];
+const briefingHighlights =
+	(latestBriefingEntry?.body || "")
+		.match(/^##\s+(?:\d+\.\s*)?(.+)$/gm)
+		?.map((heading) => heading.replace(/^##\s+(?:\d+\.\s*)?/, "").trim())
+		.filter((heading) => !["速览", "重点详读"].includes(heading))
+		.slice(0, 2) || [];
 
 const recentChapter = books
 	.flatMap((book) => book.chapters.map((chapter) => ({ book, chapter })))
@@ -41,13 +42,17 @@ const recentChapter = books
 			b.chapter.number - a.chapter.number,
 	)[0];
 const readingBook = recentChapter?.book;
-const progress = readingBook && recentChapter
-	? Math.round(
-			((readingBook.chapters.findIndex((item) => item.slug === recentChapter.chapter.slug) + 1) /
-				readingBook.chapters.length) *
-				100,
-		)
-	: 0;
+const progress =
+	readingBook && recentChapter
+		? Math.round(
+				((readingBook.chapters.findIndex(
+					(item) => item.slug === recentChapter.chapter.slug,
+				) +
+					1) /
+					readingBook.chapters.length) *
+					100,
+			)
+		: 0;
 
 function formatDate(value: string) {
 	return new Intl.DateTimeFormat("zh-CN", {
@@ -79,9 +84,34 @@ function formatDate(value: string) {
 				</div>
 				<a href={url("/search/")} class="group flex h-12 w-full items-center gap-3 rounded-lg bg-[var(--btn-plain-bg-hover)] px-4 text-50 transition hover:text-[var(--primary)] lg:w-80">
 					<Icon name="material-symbols:search-rounded" class="text-2xl" />
-					<span class="flex-1 text-sm">搜索文章、书籍与晨读</span>
+					<span class="flex-1 text-sm">搜索文章、书籍、晨读与面试</span>
 					<Icon name="material-symbols:arrow-forward-rounded" class="text-xl transition group-hover:translate-x-0.5" />
 				</a>
+			</div>
+		</section>
+
+		<section class="card-base px-6 py-6 md:px-8">
+			<div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+				<div class="flex min-w-0 items-start gap-4">
+					<div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--btn-regular-bg)] text-[var(--primary)]">
+						<Icon name="material-symbols:code-blocks-outline-rounded" class="text-2xl" />
+					</div>
+					<div class="min-w-0">
+						<div class="flex flex-wrap items-center gap-2 text-sm">
+							<span class="font-semibold text-[var(--primary)]">前端面试 · 28 天学习站</span>
+							<span class="text-30">04:00 切日 · Session 动态组合</span>
+						</div>
+						<h2 class="mt-2 text-xl font-bold leading-8 text-90">有时间就学，系统决定下一组</h2>
+						<p class="mt-1 line-clamp-2 max-w-2xl text-sm leading-6 text-50">选择 10、20、30 或 60 分钟，从到期复习、薄弱点、专题、代码和项目题中组合当前最值得学的内容。</p>
+					</div>
+				</div>
+				<div class="flex shrink-0 items-center gap-3">
+					<span class="hidden rounded-lg border border-[var(--line-divider)] px-3 py-2 text-xs text-50 sm:inline-flex">纯静态 · 本地进度</span>
+					<a href={url("/interviews/")} class="btn-regular inline-flex h-10 items-center gap-1 rounded-lg px-4 text-sm font-semibold">
+						继续学习
+						<Icon name="material-symbols:arrow-forward-rounded" class="text-lg" />
+					</a>
+				</div>
 			</div>
 		</section>
 

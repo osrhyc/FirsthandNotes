@@ -41,6 +41,8 @@ Astro 直接读取四个 Content Collection，构建过程不复制 Markdown，�
 
 每日简报由 ChatGPT 定时任务在每天 10:00（Asia/Shanghai）触发，不使用 n8n。Codex、Claude Code 和 Cursor 的工具入口都应引用 `.ai/` 中的共享规则，避免维护多份不同规范。
 
+前端面试是纯静态学习应用：28 天课程与任务池随站点构建，浏览器按本地时间 04:00 切换学习日，并通过 `localStorage` 保存 Session、掌握度与复习计划。它不使用后端、AI 或定时任务。
+
 ## 品牌资源
 
 - Logo：`public/assets/brand/logo.png`
@@ -56,6 +58,7 @@ src/
 ├── content/books/       # 书籍元数据
 ├── content/book-notes/  # 逐章精读笔记
 ├── content/briefings/   # 每日简报
+├── data/                # 前端面试等静态结构化数据
 ├── content.config.ts    # 四个 Astro Content Collection
 ├── config.ts            # Fuwari 站点配置
 └── styles/              # Fuwari 样式

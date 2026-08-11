@@ -43,6 +43,10 @@ export const navBarConfig: NavBarConfig = {
 			url: "/blog/",
 		},
 		{
+			name: "面试",
+			url: "/interviews/",
+		},
+		{
 			name: "阅读",
 			url: "/books/",
 		},

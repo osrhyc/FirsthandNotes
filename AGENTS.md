@@ -62,6 +62,16 @@ For the scheduled 每日简报, follow `.ai/daily-briefing.md`.
 - Keep facts, market interpretation, rumors, and editorial inference distinct, with source links.
 - The daily briefing automation has publication permission only for its own briefing output. Other content still requires local review and explicit approval.
 
+## Frontend Interview Learning Station
+
+The frontend interview module is a pure static browser application. It has no AI generation, backend, repository cron job, or Codex automation.
+
+- `src/data/interview-plan.ts` and `src/data/interview-task-pool.ts` contain the complete 28-day curriculum and static task pool.
+- The browser calculates the learning day locally with a 04:00 cutoff. Day 1 begins on 2026-08-11; 00:00–03:59 belongs to the previous learning day.
+- `src/utils/interview-scheduler.ts` selects deterministic 10–30 minute Sessions from due reviews, weak points, today's focus, scans, code, project work, algorithms, and system design.
+- Learning progress, mastery, review dates, active Sessions, and recent history stay in `localStorage`; do not add server persistence without an explicit product decision.
+- Future S/A core topics must not be unlocked early. Only B-level items from the next two plan days may appear as preview scans. Visible carryover is capped at 45 minutes.
+
 ## Glossary Workflow (名词手册)
 
 When the user asks what a term means (e.g. "换手率是什么"), after answering in chat, also save the explanation to `src/content/posts/glossary-<pinyin-slug>.md` with this frontmatter:

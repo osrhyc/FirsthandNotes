@@ -85,7 +85,7 @@ $: runSearch(query);
 			<input
 				bind:value={query}
 				autofocus
-				placeholder="搜索文章、书籍、章节与晨读"
+				placeholder="搜索文章、书籍、章节、晨读与面试"
 				class="h-full min-w-0 flex-1 bg-transparent text-base text-75 outline-none placeholder:text-30"
 			/>
 			{#if loading}

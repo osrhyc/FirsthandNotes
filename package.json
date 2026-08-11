@@ -6,6 +6,7 @@
     "dev": "astro dev --host 0.0.0.0",
     "start": "astro dev --host 0.0.0.0",
     "check": "astro check",
+    "check:interview": "esbuild scripts/check-interview-scheduler.ts --bundle --platform=node --format=esm --outfile=.astro/interview-scheduler-check.mjs && node .astro/interview-scheduler-check.mjs",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview --host 0.0.0.0",
     "type-check": "tsc --noEmit --isolatedDeclarations"

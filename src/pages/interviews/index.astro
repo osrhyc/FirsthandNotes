@@ -1,0 +1,91 @@
+---
+import InterviewLearningHub from "@components/InterviewLearningHub.svelte";
+import {
+	KNOWLEDGE_POINTS,
+	OUTPUT_TASKS,
+	PRACTICE_TASKS,
+} from "@/data/interview-task-pool";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+const dayOneItems = [
+	...KNOWLEDGE_POINTS.filter((item) => item.day === 1).map((item) => ({
+		title: item.topic,
+		prompt: item.prompt,
+		priority: item.priority,
+		domain: item.domain,
+	})),
+	...PRACTICE_TASKS.filter((item) => item.day === 1).map((item) => ({
+		title: item.title,
+		prompt: item.prompt,
+		priority: item.priority,
+		domain: "代码实践",
+	})),
+	...OUTPUT_TASKS.filter((item) => item.day === 1).map((item) => ({
+		title: item.title,
+		prompt: item.prompt,
+		priority: item.priority,
+		domain: "项目表达",
+	})),
+];
+const totalItems =
+	KNOWLEDGE_POINTS.length + PRACTICE_TASKS.length + OUTPUT_TASKS.length;
+---
+
+<MainGridLayout
+	title="前端面试"
+	description="面向高级前端与前端负责人的 28 天静态学习站，按可用时间动态组合下一组训练。"
+	fullWidth
+>
+	<div class="interview-app-shell">
+		<InterviewLearningHub client:load />
+
+		<section class="interview-static-fallback space-y-4" aria-label="面试题库静态内容">
+			<header class="card-base px-6 py-6 md:px-8">
+				<p class="text-sm font-semibold text-[var(--primary)]">交互模块尚未就绪</p>
+				<h1 class="mt-2 text-2xl font-bold text-90">题库数据已内置，共 {totalItems} 项</h1>
+				<p class="mt-3 text-sm leading-6 text-50">
+					下面先展示 Day 1 的真实题目。刷新页面可重新加载 Session、进度与自评功能，题目本身不会丢失。
+				</p>
+				<a href="/interviews/" data-no-swup class="btn-regular mt-5 inline-flex h-10 items-center rounded-lg px-4 text-sm font-semibold">
+					重新加载交互版
+				</a>
+			</header>
+
+			<section class="card-base overflow-hidden">
+				<header class="border-b border-[var(--line-divider)] px-6 py-5 md:px-8">
+					<p class="text-sm font-semibold text-[var(--primary)]">Day 1 首批内容</p>
+					<h2 class="mt-1 text-lg font-bold text-90">{dayOneItems.length} 项已准备</h2>
+				</header>
+				<ol class="grid gap-px bg-[var(--line-divider)] md:grid-cols-2">
+					{dayOneItems.slice(0, 8).map((item, index) => (
+						<li class="bg-[var(--card-bg)] px-6 py-5 md:px-8">
+							<div class="flex flex-wrap items-center gap-2 text-xs text-30">
+								<span class="rounded-md bg-[var(--btn-regular-bg)] px-2 py-1 font-semibold text-[var(--primary)]">
+									{item.priority} 级
+								</span>
+								<span>{item.domain}</span>
+							</div>
+							<h3 class="mt-3 font-bold text-90">{index + 1}. {item.title}</h3>
+							<p class="mt-2 text-sm leading-6 text-50">{item.prompt}</p>
+						</li>
+					))}
+				</ol>
+			</section>
+		</section>
+	</div>
+</MainGridLayout>
+
+<style>
+	.interview-app-shell > :global(astro-island[ssr]) {
+		display: none;
+	}
+
+	.interview-static-fallback {
+		display: block;
+	}
+
+	.interview-app-shell:has(> astro-island:not([ssr]))
+		> .interview-static-fallback {
+		display: none;
+	}
+</style>

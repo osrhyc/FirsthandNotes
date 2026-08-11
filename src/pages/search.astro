@@ -4,7 +4,10 @@ import SearchPage from "@components/SearchPage.svelte";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getBooks } from "@utils/book-utils";
 import { getBriefings } from "@utils/briefing-utils";
-import { getPublishedPosts, isPublishedContentDate } from "@utils/content-utils";
+import {
+	getPublishedPosts,
+	isPublishedContentDate,
+} from "@utils/content-utils";
 import { getPostUrlBySlug } from "@utils/url-utils";
 
 const [posts, books, notes, briefings] = await Promise.all([
@@ -21,7 +24,9 @@ const records = [
 		description: post.data.description,
 		url: getPostUrlBySlug(post.slug),
 		type: post.data.category === "名词手册" ? "名词" : "技术",
-		keywords: [post.data.category, post.data.level, ...post.data.tags].filter(Boolean).join(" "),
+		keywords: [post.data.category, post.data.level, ...post.data.tags]
+			.filter(Boolean)
+			.join(" "),
 	})),
 	...books.map((book) => ({
 		title: book.title,
@@ -34,7 +39,9 @@ const records = [
 		.filter((note) => isPublishedContentDate(note.data.published))
 		.map((note) => {
 			const book = bookMap.get(note.data.book.id);
-			const chapter = book?.chapters.find((item) => item.number === note.data.chapter);
+			const chapter = book?.chapters.find(
+				(item) => item.number === note.data.chapter,
+			);
 			return {
 				title: note.data.title,
 				description: note.data.note,
@@ -44,7 +51,9 @@ const records = [
 			};
 		}),
 	...briefings
-		.filter((briefing) => isPublishedContentDate(new Date(`${briefing.date}T00:00:00`)))
+		.filter((briefing) =>
+			isPublishedContentDate(new Date(`${briefing.date}T00:00:00`)),
+		)
 		.map((briefing) => ({
 			title: briefing.title,
 			description: briefing.description,
@@ -52,9 +61,17 @@ const records = [
 			type: "晨读",
 			keywords: briefing.date,
 		})),
+	{
+		title: "前端面试 · 28 天学习站",
+		description: "按可用时间自动组合复习、专题、面试、代码与项目表达 Session。",
+		url: "/interviews/",
+		type: "面试",
+		keywords:
+			"高级前端 前端负责人 JavaScript TypeScript Vue React 浏览器 Node 系统设计 AI 算法",
+	},
 ];
 ---
 
-<MainGridLayout title="搜索" description="搜索全站文章、书籍、章节笔记和晨读。" fullWidth>
+<MainGridLayout title="搜索" description="搜索全站文章、书籍、章节笔记、晨读和面试学习站。" fullWidth>
 	<SearchPage records={records} client:load />
 </MainGridLayout>
