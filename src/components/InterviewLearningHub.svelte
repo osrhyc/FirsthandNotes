@@ -78,6 +78,27 @@ let message = "";
 let confirmation: "abandon" | "reset" | null = null;
 let importInput: HTMLInputElement;
 
+interface AnswerSection {
+	label: string;
+	content: string;
+}
+
+function parseAnswerSections(answer: string): AnswerSection[] {
+	const sections = answer
+		.split(/\n\s*\n/)
+		.map((section) => section.trim())
+		.filter(Boolean)
+		.map((section) => {
+			const separator = section.indexOf("：");
+			if (separator <= 0) return { label: "参考答案", content: section };
+			return {
+				label: section.slice(0, separator),
+				content: section.slice(separator + 1).trim(),
+			};
+		});
+	return sections.length ? sections : [{ label: "参考答案", content: answer }];
+}
+
 $: plan = getCurrentPlan(clock);
 $: ledger = state.days[clock.learningDate];
 $: metrics = getDailyMetrics(state, clock, catalog);
@@ -88,6 +109,7 @@ $: currentScheduled = getCurrentScheduledItem(state);
 $: currentItem = currentScheduled
 	? itemById.get(currentScheduled.itemId)
 	: undefined;
+$: answerSections = currentItem ? parseAnswerSections(currentItem.answer) : [];
 $: currentSession = state.activeRun
 	? state.activeRun.sessions[state.activeRun.sessionIndex]
 	: undefined;
@@ -407,8 +429,18 @@ onMount(() => {
 				{:else}
 					<div class="mt-7 space-y-6 border-t border-[var(--line-divider)] pt-6">
 						<section>
-							<h3 class="text-sm font-bold text-[var(--primary)]">参考答案</h3>
-							<p class="mt-3 whitespace-pre-line text-sm leading-7 text-75">{currentItem.answer}</p>
+							<div class="flex flex-wrap items-baseline justify-between gap-2">
+								<h3 class="text-sm font-bold text-[var(--primary)]">清晰参考答案</h3>
+								<span class="text-xs text-30">先抓结论，再理解机制与例子</span>
+							</div>
+							<div class="mt-3 grid gap-3">
+								{#each answerSections as section, index}
+									<div class={`rounded-xl border px-4 py-4 ${index === 0 ? "border-[var(--primary)]/30 bg-[var(--btn-regular-bg)]" : "border-[var(--line-divider)] bg-[var(--card-bg)]"}`}>
+										<h4 class="text-sm font-bold text-90">{section.label}</h4>
+										<p class="mt-2 whitespace-pre-line text-sm leading-7 text-75">{section.content}</p>
+									</div>
+								{/each}
+							</div>
 						</section>
 						<section>
 							<h3 class="text-sm font-bold text-90">评分点</h3>

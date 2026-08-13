@@ -1,3 +1,4 @@
+import { INTERVIEW_ANSWER_DETAILS } from "@/data/interview-answer-details";
 import {
 	INTERVIEW_COHORT,
 	INTERVIEW_PHASE_MIX,
@@ -117,7 +118,7 @@ export interface SessionSummary {
 
 export interface LearningState {
 	schemaVersion: 1;
-	contentVersion: "2026-08-11";
+	contentVersion: string;
 	progress: Record<string, ItemProgress>;
 	days: Record<string, DailyLedger>;
 	activeRun?: LearningRun;
@@ -227,7 +228,7 @@ export function buildCatalog(
 		difficulty: item.difficulty,
 		estimatedMinutes: item.estimatedMinutes,
 		prompt: item.prompt,
-		answer: item.answer,
+		answer: INTERVIEW_ANSWER_DETAILS[item.id] ?? item.answer,
 		rubric: item.rubric,
 		followUps: item.followUps,
 		pitfalls: item.pitfalls,
@@ -248,7 +249,7 @@ export function buildCatalog(
 		difficulty: item.priority === "S" ? "高级" : "进阶",
 		estimatedMinutes: item.estimatedMinutes,
 		prompt: item.prompt,
-		answer: item.solution,
+		answer: INTERVIEW_ANSWER_DETAILS[item.id] ?? item.solution,
 		rubric: item.rubric,
 		followUps: [],
 		pitfalls: [],
@@ -266,7 +267,7 @@ export function buildCatalog(
 export function createEmptyLearningState(): LearningState {
 	return {
 		schemaVersion: INTERVIEW_STATE_VERSION,
-		contentVersion: "2026-08-11",
+		contentVersion: "2026-08-13",
 		progress: {},
 		days: {},
 		recentSessions: [],
@@ -501,7 +502,7 @@ export function normalizeLearningState(
 
 	return {
 		schemaVersion: INTERVIEW_STATE_VERSION,
-		contentVersion: "2026-08-11",
+		contentVersion: "2026-08-13",
 		progress,
 		days,
 		activeRun,

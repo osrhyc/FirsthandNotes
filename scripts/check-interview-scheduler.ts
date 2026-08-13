@@ -14,6 +14,7 @@ import {
 	normalizeLearningState,
 	resolveSessionBudgets,
 } from "@utils/interview-scheduler";
+import { INTERVIEW_ANSWER_DETAILS } from "@/data/interview-answer-details";
 import {
 	KNOWLEDGE_POINTS,
 	OUTPUT_TASKS,
@@ -28,6 +29,28 @@ assert.equal(OUTPUT_TASKS.length, 28);
 assert.equal(catalog.length, 152);
 assert.equal(new Set(catalog.map((item) => item.id)).size, catalog.length);
 assert.ok(catalog.every((item) => item.sourceUrl.startsWith("https://")));
+assert.equal(
+	Object.keys(INTERVIEW_ANSWER_DETAILS).length,
+	catalog.length,
+	"每一道题都应有清晰版参考答案",
+);
+assert.deepEqual(
+	new Set(Object.keys(INTERVIEW_ANSWER_DETAILS)),
+	new Set(catalog.map((item) => item.id)),
+	"清晰版答案的 ID 必须与题库完全一致",
+);
+for (const item of catalog) {
+	const answer = INTERVIEW_ANSWER_DETAILS[item.id];
+	assert.ok(answer.length >= 180, `${item.id} 的清晰版答案仍然过短`);
+	for (const heading of ["结论：", "展开：", "例子：", "面试表达："]) {
+		assert.ok(answer.includes(heading), `${item.id} 缺少 ${heading}`);
+	}
+	assert.equal(
+		item.answer,
+		answer,
+		`${item.id} 没有使用清晰版答案进入 Session`,
+	);
+}
 
 for (let day = 1; day <= 28; day += 1) {
 	const knowledge = KNOWLEDGE_POINTS.filter((item) => item.day === day);
