@@ -41,8 +41,8 @@ let links: NavBarLink[] = navBarConfig.links.map(
         </a>
         <div class="hidden lg:flex">
             {links.map((l) => {
-                return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}
-                          class="btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95"
+                return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null} data-no-swup={l.url === "/ruankao/" ? true : undefined}
+                          class="btn-plain scale-animation rounded-lg h-11 font-bold px-3 xl:px-4 active:scale-95"
                 >
                     <div class="flex items-center">
                         {l.name}

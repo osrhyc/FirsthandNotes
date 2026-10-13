@@ -72,6 +72,15 @@ The frontend interview module is a pure static browser application. It has no AI
 - Learning progress, mastery, review dates, active Sessions, and recent history stay in `localStorage`; do not add server persistence without an explicit product decision.
 - Future S/A core topics must not be unlocked early. Only B-level items from the next two plan days may appear as preview scans. Visible carryover is capped at 45 minutes.
 
+## 软考学习模块
+
+- `/ruankao/` 是纯静态系统架构设计师学习模块，面向 2027 年优先上半年、每天约 2 小时、有开发经验的学习者；考试安排以当年官方公告为准。
+- 先学基础知识，再深入架构；每天都要有讲解、原创练习与解析，不能只有阅读清单。
+- `src/data/ruankao-plan.ts` 提供 28 周学习顺序；`ruankao-foundations.ts` 提供基础讲解与练习；`ruankao-chapters.ts` 维护出版社章节目目录；`ruankao-resources.ts` 维护官方资料和核验日期。
+- 教材未提供原文前，只能将内容标为原创导学，不能声称完成逐节教材总结。用户提供正版教材后按章、小节整理关键知识点和练习；原书不入库、不发布。
+- 进度、笔记、自评和复习日使用独立 localStorage，支持导出/导入；不新增后端、数据库或自动化。
+- 修改学习数据或状态逻辑后运行 `npm run check:ruankao`、`npm run check`、`npm run build`，本地预览后再由用户确认发布。
+
 ## Glossary Workflow (名词手册)
 
 When the user asks what a term means (e.g. "换手率是什么"), after answering in chat, also save the explanation to `src/content/posts/glossary-<pinyin-slug>.md` with this frontmatter:

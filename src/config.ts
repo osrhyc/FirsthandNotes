@@ -47,6 +47,10 @@ export const navBarConfig: NavBarConfig = {
 			url: "/interviews/",
 		},
 		{
+			name: "软考",
+			url: "/ruankao/",
+		},
+		{
 			name: "阅读",
 			url: "/books/",
 		},
