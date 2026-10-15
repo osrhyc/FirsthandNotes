@@ -30,6 +30,16 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 	integrations: [
+		{
+			name: "isolated-vite-cache",
+			hooks: {
+				"astro:config:setup": ({ command, updateConfig }) => {
+					// Build/check start their own Vite server; keep its optimizer
+					// from replacing dependency chunks used by the live dev server.
+					updateConfig({ vite: { cacheDir: `./node_modules/.vite/astro-${command}` } });
+				},
+			},
+		},
 		tailwind({
 			nesting: true,
 		}),

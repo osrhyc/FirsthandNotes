@@ -43,6 +43,7 @@ const isTechnicalModule =
 	Astro.url.pathname.startsWith("/blog/") ||
 	Astro.url.pathname.startsWith("/series/");
 const useDefaultSidebar = !fullWidth && !customSidebar && isTechnicalModule;
+const isRuankaoPage = Astro.url.pathname.startsWith("/ruankao/");
 
 const mainPanelTop = siteConfig.banner.enable
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
@@ -97,10 +98,11 @@ const mainPanelTop = siteConfig.banner.enable
             </div>
 
             <main id="swup-container" class:list={[
-                "transition-swup-fade min-w-0 overflow-hidden",
+                "transition-swup-fade min-w-0",
+                isRuankaoPage ? "overflow-clip" : "overflow-hidden",
             ]}>
-                <div id="content-wrapper" class="onload-animation">
-                    <!-- the overflow-hidden here prevent long text break the layout-->
+                <div id="content-wrapper" class:list={{ "onload-animation": !isRuankaoPage }}>
+                    <!-- Clip wide content without trapping the textbook's sticky navigation. -->
                     <!-- make id different from windows.swup global property -->
                     <slot></slot>
                     <div class="footer col-span-2 onload-animation hidden lg:block">

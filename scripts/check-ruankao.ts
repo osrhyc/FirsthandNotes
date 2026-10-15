@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "node:fs";
+import { TEXTBOOK_UNIT_INDEX, TEXTBOOK_COVERAGE } from "../src/data/ruankao-textbook-index";
+import type { TextbookLesson } from "../src/data/ruankao-textbook-types";
 import { STUDY_WEEKS } from "../src/data/ruankao-plan";
 import { FOUNDATION_LESSONS } from "../src/data/ruankao-foundations";
 import { TEXTBOOK_CHAPTERS } from "../src/data/ruankao-chapters";
@@ -226,4 +229,32 @@ assert.equal(TEXTBOOK_CHAPTERS.flatMap(chapter => chapter.sections).length, 119)
 for (const chapter of TEXTBOOK_CHAPTERS) {
   chapter.sections.forEach((section, index) => assert.equal(section.id, `${chapter.number}.${index + 1}`));
 }
-console.log("软考检查通过：备份校验、学习推进、日期边界、196 天课程、7 课练习与教材目录。");
+// Verify public lesson links and quiz references independently of the private reading workspace.
+const lessonDir = "src/data/ruankao-textbook/units";
+const textbookLessons = readdirSync(lessonDir).filter(name => name.endsWith(".json")).map(name => JSON.parse(readFileSync(`${lessonDir}/${name}`, "utf8")) as TextbookLesson);
+assert.equal(textbookLessons.length, TEXTBOOK_UNIT_INDEX.length);
+assert.equal(TEXTBOOK_COVERAGE.completedUnits, textbookLessons.length);
+assert.ok(TEXTBOOK_COVERAGE.completedUnits <= TEXTBOOK_COVERAGE.totalUnits);
+assert.equal(TEXTBOOK_COVERAGE.sections.length, 119);
+for (const lesson of textbookLessons) {
+  const entry = TEXTBOOK_UNIT_INDEX.find(item => item.id === lesson.id);
+  assert.ok(entry, `${lesson.id} 缺少目录入口`);
+  assert.equal(entry.questionCount, lesson.questions.length);
+  assert.deepEqual(entry.blocks, lesson.blocks.map(({ id, title }) => ({ id, title })));
+  assert.deepEqual(lesson.readPages, Array.from({ length: lesson.pdfEnd - lesson.pdfStart + 1 }, (_, i) => lesson.pdfStart + i));
+  assert.equal(lesson.printedStart, lesson.pdfStart - 15);
+  assert.equal(lesson.printedEnd, lesson.pdfEnd - 15);
+  const sectionIds = new Set(lesson.blocks.map(block => block.id));
+  for (const question of lesson.questions) {
+    assert.equal(question.options.length, 4);
+    assert.equal(new Set(question.options).size, 4);
+    assert.ok(Number.isInteger(question.correct) && question.correct >= 0 && question.correct < 4);
+    assert.ok(question.sourceSections.every(id => sectionIds.has(id)), `${lesson.id} 题目引用不存在的小节`);
+  }
+}
+for (const section of TEXTBOOK_COVERAGE.sections) {
+  assert.ok(TEXTBOOK_CHAPTERS.some(chapter => chapter.sections.some(item => item.id === section.id)));
+  assert.equal(section.completed, textbookLessons.filter(lesson => lesson.sectionIds.includes(section.id)).length);
+  assert.ok(section.completed <= section.total);
+}
+console.log(`软考检查通过：备份、学习推进、日期边界、196天课程、7课练习、教材目录及${textbookLessons.length}个PDF精读单元。结构校验不代替知识审校。`);

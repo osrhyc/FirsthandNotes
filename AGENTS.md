@@ -75,9 +75,12 @@ The frontend interview module is a pure static browser application. It has no AI
 ## 软考学习模块
 
 - `/ruankao/` 是纯静态系统架构设计师学习模块，面向 2027 年优先上半年、每天约 2 小时、有开发经验的学习者；考试安排以当年官方公告为准。
-- 先学基础知识，再深入架构；每天都要有讲解、原创练习与解析，不能只有阅读清单。
-- `src/data/ruankao-plan.ts` 提供 28 周学习顺序；`ruankao-foundations.ts` 提供基础讲解与练习；`ruankao-chapters.ts` 维护出版社章节目目录；`ruankao-resources.ts` 维护官方资料和核验日期。
-- 教材未提供原文前，只能将内容标为原创导学，不能声称完成逐节教材总结。用户提供正版教材后按章、小节整理关键知识点和练习；原书不入库、不发布。
+- 学习分两轮，`/ruankao/` 默认进入章节学习。第一轮按教材真实章节和小节通读全部知识点，理解概念、联系与适用条件，配少量原创练习和解析；不会的内容标记疑问与错因，不直接跳到所谓重点。完成通读后，第二轮再集中训练薄弱项与有可靠来源支持的考试重点。
+- 第一轮每天约 2 小时，建议 15 分钟回忆、70 分钟章节学习、25 分钟练习、10 分钟整理错因。长单元可以分天学，不为赶进度省略小节。考点占比必须有可追溯的大纲或真题统计依据，不能虚构固定百分比，也不能把历年分布当作 2027 年保证。
+- `src/data/ruankao-plan.ts` 的 28 周学习顺序保留为参考计划，不取代第一轮章节通读；原有学习记录保留。`ruankao-foundations.ts` 提供基础讲解与练习；`ruankao-chapters.ts` 维护出版社章节目录；`ruankao-resources.ts` 维护官方资料和核验日期。
+- 用户已提供教程第2版原PDF，并明确弃用OCR：教材课程必须逐页视觉阅读原PDF（渲染后看图），不能使用旧OCR、重新OCR或用记忆补充冒充原书。原书与渲染页图仅在被忽略的 `book-workspace/ruankao-textbook-2/`，不入库、不发布。
+- `ruankao-textbook/units/*.json`保存逐小节改写、页码、原创练习及答案；独立课程路由为`/ruankao/textbook/[id]/`。按私有reading-plan分单元逐一精读，相邻单元共享页按标题切开，记录readPages；未完成单元要显示待整理，不能夸大阅读覆盖。
+- 同步教材数据用`node scripts/sync-ruankao-textbook.mjs`，生成公开索引及覆盖统计；题目引用必须对应本单元block。教材疑点单列，经核查的纠错另附官方技术来源，不照搬明显错误。
 - 进度、笔记、自评和复习日使用独立 localStorage，支持导出/导入；不新增后端、数据库或自动化。
 - 修改学习数据或状态逻辑后运行 `npm run check:ruankao`、`npm run check`、`npm run build`，本地预览后再由用户确认发布。
 

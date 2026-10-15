@@ -1,0 +1,30 @@
+export type TextbookQuestion = {
+  prompt: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+  sourceSections: string[];
+};
+export type TextbookLesson = {
+  id: string;
+  chapter: number;
+  title: string;
+  sectionIds: string[];
+  pdfStart: number;
+  pdfEnd: number;
+  printedStart: number;
+  printedEnd: number;
+  summary: string;
+  blocks: { id: string; title: string; pdfPages: number[]; paragraphs: string[]; points: string[] }[];
+  keyPoints: string[];
+  example: { title: string; body: string };
+  pitfalls: string[];
+  questions: TextbookQuestion[];
+  practice: string;
+  practiceAnswer: string;
+  uncertainties: string[];
+  readPages: number[];
+  reviewedOn: string;
+  annotations?: { text: string; url: string; title: string }[];
+};
+export type TextbookUnitIndex = Pick<TextbookLesson, "id" | "chapter" | "title" | "sectionIds" | "pdfStart" | "pdfEnd" | "printedStart" | "printedEnd"> & { blocks: { id: string; title: string }[]; questionCount: number };

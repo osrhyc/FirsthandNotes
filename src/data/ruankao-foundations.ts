@@ -18,6 +18,7 @@ export type FoundationLesson = {
 	practice: string;
 	practiceAnswer: string;
 	sourceUrl: string;
+	additionalSources?: { title: string; url: string }[];
 };
 
 export const FOUNDATION_LESSONS: FoundationLesson[] = [
@@ -108,7 +109,7 @@ export const FOUNDATION_LESSONS: FoundationLesson[] = [
 		explanation: [
 			"磁盘上的程序是一组指令和数据；运行它时，操作系统要安排内存、文件等资源，并记录运行状态。进程就是理解这份运行环境的重要概念。一个编辑器程序可以启动多个进程，所以“一个软件名称”等于“一个进程”并不成立。进程之间通常有各自的地址空间，需要专门的通信或共享机制才能交换数据。",
 			"线程表示进程内可被调度执行的一条执行路径。以常见系统线程为例，同一进程中的线程共享进程的地址空间和部分资源，但每个线程有自己的执行位置、寄存器状态和栈。可以把进程理解为一间有公共资料的工作室，线程是不同工作者；这只是职责类比，不要把它理解成线程能不受限制地同时工作。",
-			"并发是多个任务在一段时间内交替推进；并行强调同一时刻确实有多个执行单元在工作。单核也可以通过切换线程形成并发，多核才可能让多个线程真正并行。增加线程数量不保证提速：任务可能等待同一把锁，或花费更多时间切换，也可能本来就受磁盘或网络速度限制。",
+			"并发是多个任务在重叠的时间段内推进，可以交替，也可以并行；并行强调同一时刻确实在执行多个任务。在单核、单硬件线程的简化模型中，切换线程可以形成并发。多核能够提供并行执行资源；支持 SMT（如超线程）的单个物理核心也能同时推进多个硬件线程，不能简单断言只有多核才能并行。增加线程数量不保证提速：任务可能等待同一把锁，或花费更多时间切换，也可能本来就受磁盘或网络速度限制。",
 			"共享带来便利，也带来竞态。假设计数器是 0，两个线程都先读取 0，各自加 1，再都写回 1，最终结果只有 1。这说明“加一”可能由多步组成，不能凭自然语言把它当作不可分割操作。后续会学习锁与原子操作；现在先能指出哪些数据共享、哪些步骤可能交错，就已经抓住问题的起点。",
 		],
 		example:
@@ -145,6 +146,9 @@ export const FOUNDATION_LESSONS: FoundationLesson[] = [
 			"可能顺序：A 读 5→B 读 5→A 算出 6→B 算出 6→A 写 6→B 写 6。共享数据是计数器，两个线程用同一个旧值覆盖了彼此的更新。需要保证整次读改写对竞争线程不可交错，例如用同一把锁保护，或使用适合的原子递增操作。",
 		sourceUrl:
 			"https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads",
+		additionalSources: [
+			{ title: "Intel：超线程与物理核心", url: "https://www.intel.com/content/www/us/en/gaming/resources/hyper-threading.html" },
+		],
 	},
 	{
 		id: "virtual-memory",
@@ -209,14 +213,14 @@ export const FOUNDATION_LESSONS: FoundationLesson[] = [
 			{
 				prompt: "客户端收到 HTTP 404，最合理的理解是什么？",
 				options: [
-					"服务器或中间 HTTP 服务已返回响应，但未找到所请求资源",
+					"HTTP 服务已返回响应，表示未找到目标资源的当前表示，或不愿公开其存在",
 					"一定没有建立过任何网络连接",
 					"浏览器已经成功拿到目标内容",
 					"所有服务器进程都已崩溃",
 				],
 				correct: 0,
 				explanation:
-					"404 是 HTTP 层的响应状态，通常表示未找到目标资源。收到它说明某个 HTTP 服务给出了结果，和连接失败、完全无响应不是同一种故障。",
+					"按 RFC 9110，404 表示未找到目标资源的当前表示，或服务端不愿公开其存在；它也不证明资源永久不存在。收到它说明获得了 HTTP 层的响应，和连接失败、完全无响应不是同一种故障。",
 			},
 			{
 				prompt: "HTTP 无状态与网站保持登录之间是什么关系？",
@@ -263,6 +267,10 @@ export const FOUNDATION_LESSONS: FoundationLesson[] = [
 		// TCP 内容另核查 RFC 9293 的 2.2 与 3.7 节：https://www.rfc-editor.org/rfc/rfc9293.html
 		sourceUrl:
 			"https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages",
+		additionalSources: [
+			{ title: "RFC 9110 §15.5.5：404 语义", url: "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.5.5" },
+			{ title: "RFC 9293 §3.7：TCP 字节流", url: "https://www.rfc-editor.org/rfc/rfc9293.html#section-3.7" },
+		],
 	},
 	{
 		id: "relational-database",

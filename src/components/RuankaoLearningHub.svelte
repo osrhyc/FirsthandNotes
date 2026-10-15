@@ -3,6 +3,7 @@
   import RuankaoFoundationLesson from "./RuankaoFoundationLesson.svelte";
   import { FOUNDATION_LESSONS } from "@/data/ruankao-foundations";
   import { TEXTBOOK_CHAPTERS, CATALOG_URL } from "@/data/ruankao-chapters";
+  import { TEXTBOOK_UNIT_INDEX, TEXTBOOK_COVERAGE, textbookUnitUrl, unitsForSection } from "@/data/ruankao-textbook-index";
   import { STUDY_WEEKS } from "@/data/ruankao-plan";
   import { STUDY_RESOURCES, EXAM_FACTS, VERIFIED_ON } from "@/data/ruankao-resources";
   import { STORAGE_KEY, TOTAL_DAYS, TASK_MINUTES, emptyRecord, initialProgress, isComplete, nextStudyDay, parseProgress, reviewDate, localDate, type StudyProgress, type Mastery } from "@/utils/ruankao-progress";
@@ -10,7 +11,7 @@
   let progress = initialProgress();
   let ready = false;
   let selectedDay = 1;
-  let tab = "today";
+  let tab = "chapters";
   let message = "";
   let storageError = "";
   let pendingImport: StudyProgress | null = null;
@@ -18,7 +19,13 @@
   let today = localDate();
   let foundationIndex = 0;
   let dayHeading: HTMLHeadingElement | undefined;
-  const tabs = [{ id: "today", label: "今日学习" }, { id: "chapters", label: "章节导学" }, { id: "plan", label: "28 周路线" }, { id: "resources", label: "资料与考试" }, { id: "records", label: "学习记录" }];
+  const weekChapters: number[][] = [[2, 6], [2], [2], [2, 17], [6], [6], [5], [2, 5], [5, 9], [1, 2, 7], [7, 13, 15], [8], [6, 15, 19], [13, 14, 15], [11, 14], [4, 18], [3, 11, 16], [2], [6, 8, 13], [12, 15, 18], [20], [20], [2, 5, 6], [7, 8, 9, 10], [20], [20], [20], [20]];
+  $: relatedUnits = TEXTBOOK_UNIT_INDEX.filter(unit => weekChapters[week.week - 1].includes(unit.chapter));
+  const firstWeekSections = [["2.1", "2.2", "2.3.1"], [], ["2.3.2"], ["2.2.2", "2.2.3"], ["2.3.5", "2.5.4"], ["2.3.3", "6.1", "6.2"], ["2.1", "2.3.2", "2.3.3"]];
+  $: suggestedUnits = selectedDay <= 7 ? [...new Map(firstWeekSections[selectedDay - 1].flatMap(unitsForSection).map(unit => [unit.id, unit])).values()] : relatedUnits;
+  $: coveredChapters = new Set(TEXTBOOK_UNIT_INDEX.map(unit => unit.chapter)).size;
+
+  const tabs = [{ id: "chapters", label: "章节学习" }, { id: "today", label: "日计划与笔记" }, { id: "plan", label: "28 周参考路线" }, { id: "resources", label: "资料与考试" }, { id: "records", label: "学习记录" }];
   const masteryLabels: Record<Mastery, string> = { "": "未自评", weak: "还不熟 · 明天复习", okay: "基本理解 · 3 天后", good: "能独立解释 · 7 天后" };
   $: week = STUDY_WEEKS[Math.floor((selectedDay - 1) / 7)];
   $: focus = week.days[(selectedDay - 1) % 7];
@@ -47,6 +54,8 @@
   ];
 
   onMount(() => {
+    const requestedTab = new URLSearchParams(window.location.search).get("tab");
+    if (tabs.some(item => item.id === requestedTab)) tab = requestedTab!;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) progress = parseProgress(JSON.parse(saved));
@@ -150,15 +159,14 @@
       <p class="rk-eyebrow">2027 备考计划 · 高级资格</p>
       <h1>系统架构设计师</h1>
       <p class="rk-hero-desc">每天两小时，把开发经验练成架构能力。</p>
-      <div class="rk-hero-tags"><span>先过基础知识</span><span>每天有讲解，也有练习</span></div>
+      <div class="rk-hero-tags"><span>第一轮 · 按章学全</span><span>第二轮 · 补弱抓重点</span></div>
       <p class="rk-policy">目标：2027 上半年，如开考则参加。日期与报名安排待官方确认。</p>
     </div>
     <div class="rk-progress-summary">
-      <span class="rk-label">你的学习进度</span>
-      <div class="rk-progress-number">{completedDays}<span> / {TOTAL_DAYS} 天</span></div>
-      <progress value={completedDays} max={TOTAL_DAYS} aria-label="总体学习进度"></progress>
-      <div class="rk-progress-caption"><span>{percent}% 已完成</span><span>28 周 · 约 392 小时</span></div>
-      <button class="rk-gold-button" disabled={!ready} on:click={() => selectDay(nextDay)}>{completedDays === TOTAL_DAYS ? "回顾最后一天" : completedDays ? "继续我的学习" : "从第 1 天开始"}<span aria-hidden="true"> →</span></button>
+      <span class="rk-label">当前主线 · 第一轮章节学习</span>
+      <div class="rk-progress-number">20<span> 章 · 按小节推进</span></div>
+      <div class="rk-progress-caption"><span>每天 2 小时</span><span>先理解，再练习</span></div>
+      {#if TEXTBOOK_UNIT_INDEX.length}<a class="rk-gold-button" href={textbookUnitUrl(TEXTBOOK_UNIT_INDEX[0].id)} data-no-swup>从第 1 章开始<span aria-hidden="true"> →</span></a>{/if}
     </div>
   </header>
 
@@ -170,6 +178,7 @@
   <p class="rk-message" role="status" aria-live="polite">{message}</p>
 
   {#if tab === "today"}
+    <section class="rk-card"><p class="rk-kicker">补充工具 · 按需使用</p><h2>日计划与学习笔记</h2><p class="rk-muted">当前主线是按教材章节通读。这里保留原 28 周专题计划和笔记，供查漏、记录错因与后续训练使用，不需要与章节学习同时完成两套任务。</p><p class="rk-small">专题计划已完成 {completedDays} / {TOTAL_DAYS} 天（{percent}%）。这不是教材阅读进度。</p><button class="rk-inline-button" on:click={() => tab = "chapters"}>返回章节学习 →</button></section>
     <div class="rk-learning-grid">
       <div class="rk-main-column">
         <section class="rk-card">
@@ -203,6 +212,7 @@
         <section class="rk-card">
           <p class="rk-kicker">理解 → 自测 → 输出</p><h3>本日学习卡</h3>
           <ul class="rk-point-list">{#each focus.points as point}<li>{point}</li>{/each}</ul>
+          {#if suggestedUnits.length}<div class="rk-textbook-suggestions"><span class="rk-kicker">{selectedDay <= 7 ? "今日关联教材" : "本周关联教材"} · 原 PDF 精读</span><p class="rk-small">从下列单元选择与今天主题相关的一组小节，纳入学习时段；练习题随单元提供。长单元可以分天读。</p><details class="rk-details" open={selectedDay <= 7}><summary>查看 {suggestedUnits.length} 个关联教材单元</summary>{#each suggestedUnits as unit}<a href={textbookUnitUrl(unit.id)} data-no-swup><strong>{unit.title}</strong><span>教材 {unit.sectionIds.join("、")} · 书内 {unit.printedStart}—{unit.printedEnd} 页 ↗</span></a>{/each}</details></div>{/if}
           {#if selectedDay <= FOUNDATION_LESSONS.length}
             {#key selectedDay}<RuankaoFoundationLesson lesson={FOUNDATION_LESSONS[selectedDay - 1]} />{/key}
           {/if}
@@ -231,17 +241,21 @@
       </aside>
     </div>
   {:else if tab === "chapters"}
-    <section class="rk-card"><p class="rk-kicker">按章定位，按小节学习</p><h2>先把基础知识过一遍</h2><p class="rk-muted">下面提供可直接学习的原创基础讲解：概念、例子、选择题解析和小实践配套安排。掌握后再进入系统架构专题。</p><p class="rk-small">教材目录依据<a href={CATALOG_URL} target="_blank" rel="noopener noreferrer">出版社公开目录 ↗</a>。当前尚未提供教材原文，因此这里的知识卡是原创导学，不能作为已逐节精读教材的总结。提供正版教材或章节原文后，可继续按目录补齐逐节知识点和练习。</p></section>
+    <section class="rk-card"><p class="rk-kicker">第一轮 · 当前学习主线</p><h2>按章节，把知识点完整过一遍</h2><p class="rk-muted">从第 1 章开始，依次学习每章、每小节：先看概念和例子，再闭卷复述，最后做随堂题。先建立完整的知识框架，不按考点热度跳过章节；遇到难点先写清疑问，保留到第二轮深入练习。</p><div class="rk-first-pass"><div><strong>15 分钟 · 回忆</strong><p>复述昨天的 3 个知识点，回看一道错题。</p></div><div><strong>70 分钟 · 章节学习</strong><p>顺着目录读一组小节，标出概念、区别和适用条件。</p></div><div><strong>25 分钟 · 随堂练习</strong><p>选做对应单元的 3–5 道题或一项实践，对照解析说明依据。</p></div><div><strong>10 分钟 · 留下记录</strong><p>记下读到的小节、错因和疑问，作为第二轮依据。</p></div></div><p class="rk-small">合计 120 分钟。长单元可以分天读，每天都保留练习；已会的内容仍快速复述确认。第一轮完成标准是全书知识点均已接触，并能区分“已理解”和“待加强”。</p><p class="rk-small">教材目录对照<a href={CATALOG_URL} target="_blank" rel="noopener noreferrer">出版社公开目录 ↗</a>；正文依据用户提供的原 PDF 页面整理，弃用损坏的 OCR。目前已整理 {TEXTBOOK_UNIT_INDEX.length} / {TEXTBOOK_COVERAGE.totalUnits} 个精读单元，涉及 {coveredChapters} 章。这是资料整理进度，不是你的阅读完成度。{#if TEXTBOOK_UNIT_INDEX.length === TEXTBOOK_COVERAGE.totalUnits}全书单元均已开放，可从第 1 章依次学习。{:else}其余单元仍待整理。{/if}</p></section>
+    <details class="rk-card rk-details"><summary>第二轮怎么练 · 首轮通读后再开始</summary><div class="rk-plan-notes"><p><strong>先补薄弱点</strong><br />按错题和闭卷复述结果，优先处理反复出错、解释不清的概念；回看对应小节，再换题验证。</p><p><strong>再练高频与高分值主题</strong><br />依据可核验的历年试题、题目分值和当年大纲安排训练。先补“薄弱且常考”的交集，不凭经验编造占比。</p><p><strong>最后做综合训练</strong><br />把知识迁移到案例、论文与计时模拟中。只做对原题不算掌握，要能解释理由和换情境应用。</p></div><p class="rk-small">具体考点权重待按科目、年份和试题来源统计后确定；当前不提供未经核验的占比分配。现有练习不会自动汇总薄弱点，请保留错因与自评记录。</p></details>
+    <section class="rk-card rk-catalog"><h3>教程第 2 版 · 章与二级小节目录</h3><p class="rk-muted">这里列出 20 章、119 个二级小节。精读单元内继续展开三级知识点；长小节拆为多个单元。点击课程进入讲解与练习，按小节顺序继续学习。</p><div class="rk-roadmap">{#each TEXTBOOK_CHAPTERS as chapter}<details class="rk-details"><summary>第 {chapter.number} 章 · {chapter.title}</summary><ul class="rk-catalog-sections">{#each chapter.sections as section}{@const sectionUnits = unitsForSection(section.id)}{@const coverage = TEXTBOOK_COVERAGE.sections.find(item => item.id === section.id)}<li><div><span>{section.id}</span> {section.title} <small class="rk-coverage">{coverage?.completed || 0}/{coverage?.total || 0} 单元</small></div>{#if sectionUnits.length}<div class="rk-unit-links">{#each sectionUnits as unit}<a href={textbookUnitUrl(unit.id)} data-no-swup>{unit.title}<small>书内 {unit.printedStart}—{unit.printedEnd} 页 · {unit.questionCount} 道练习 →</small></a>{/each}</div>{:else}<small class="rk-pending">原 PDF 待逐页整理</small>{/if}</li>{/each}</ul></details>{/each}</div></section>
+    <details class="rk-card rk-details rk-supplement"><summary>课前基础补充 · 7 篇原创入门课</summary>
     <div class="rk-learning-grid">
       <section class="rk-card">{#key foundationIndex}<RuankaoFoundationLesson lesson={FOUNDATION_LESSONS[foundationIndex]} />{/key}<button class="rk-primary-button" on:click={() => selectDay(foundationIndex + 1)}>进入对应学习日，记录答案 →</button></section>
-      <aside class="rk-aside"><section class="rk-card"><h3>已备好的基础课程</h3><ol class="rk-week-days">{#each FOUNDATION_LESSONS as lesson, i}<li><button class:current={foundationIndex === i} aria-current={foundationIndex === i ? "step" : undefined} on:click={() => foundationIndex = i}><span class="rk-day-number">{String(i + 1).padStart(2, "0")}</span><span>{lesson.title}</span></button></li>{/each}</ol></section></aside>
+      <aside class="rk-aside"><section class="rk-card"><h3>课前基础补充（原创）</h3><ol class="rk-week-days">{#each FOUNDATION_LESSONS as lesson, i}<li><button class:current={foundationIndex === i} aria-current={foundationIndex === i ? "step" : undefined} on:click={() => foundationIndex = i}><span class="rk-day-number">{String(i + 1).padStart(2, "0")}</span><span>{lesson.title}</span></button></li>{/each}</ol></section></aside>
     </div>
-    <section class="rk-card rk-catalog"><h3>教程第 2 版 · 完整章节目录</h3><p class="rk-muted">目录供定位和规划使用。除上方原创基础课外，逐节原书总结待教材原文补齐；不把目录占位算成已学课程。</p><div class="rk-roadmap">{#each TEXTBOOK_CHAPTERS as chapter}<details class="rk-details"><summary>第 {chapter.number} 章 · {chapter.title}</summary><ul class="rk-catalog-sections">{#each chapter.sections as section}<li><span>{section.id}</span> {section.title}</li>{/each}</ul></details>{/each}</div></section>
+    </details>
   {:else if tab === "plan"}
-    <section class="rk-card"><p class="rk-kicker">为每天 2 小时设计</p><h2>先基础，后架构，每天都练</h2><p class="rk-muted">前期先过计算机基础、网络、数据库与软件工程，用小题和小实践巩固；再进入架构专题、案例与论文训练。周次是学习顺序，不是官方考期倒计时。</p><div class="rk-plan-notes"><p><strong>每周 14 小时</strong><br />包含回顾、输出和订正；落下时顺延，不用一天补数天。</p><p><strong>完成后进入巩固期</strong><br />每周一组综合题、一组案例、一篇论文，按弱项调整，直到官方考试日期。</p><p><strong>考前安排完整机考模拟</strong><br />日常 2 小时只能分段训练。考前建议另留整块 4 小时连考，再按当次安排练 2 小时论文。</p></div><p class="rk-small">如官方考期早于完成计划，优先压缩已掌握的基础复习，并在对话中调整安排；不要压缩案例和论文的完整作答练习。</p></section>
+    <section class="rk-card"><p class="rk-kicker">参考任务库 · 配合两轮学习使用</p><h2>通读后，按弱项选择专题训练</h2><p class="rk-muted">当前优先按教材章节学全知识点。以下保留原 28 周专题路线：第一轮仅按需补充解释与练习，第二轮再根据错题和重点选择任务，不要求另起一套 196 天计划。周次不等于官方考期倒计时。</p><div class="rk-plan-notes"><p><strong>每天仍以 2 小时为限</strong><br />章节阅读与专题任务共用当天时间，不叠加两份任务量。</p><p><strong>通读后补弱抓重点</strong><br />先补薄弱概念，再依据有来源的试题统计强化高频与高分值主题，穿插案例与论文。</p><p><strong>考前安排完整机考模拟</strong><br />日常 2 小时只能分段训练。考前建议另留整块 4 小时连考，再按当次安排练 2 小时论文。</p></div></section>
     <div class="rk-roadmap">{#each STUDY_WEEKS as item}<section class="rk-card"><div class="rk-section-top"><span class="rk-kicker">W{String(item.week).padStart(2, "0")} · {item.phase}</span><span class="rk-small">{item.days.filter((_, i) => isComplete(progress.records[(item.week - 1) * 7 + i + 1])).length}/7 天</span></div><h3>{item.title}</h3><p class="rk-muted">{item.goal}</p><details class="rk-details"><summary>展开 7 天任务</summary><ol class="rk-plan-days">{#each item.days as day, i}{@const number = (item.week - 1) * 7 + i + 1}<li><button on:click={() => selectDay(number)}><span>Day {number}</span>{day.title}<span aria-hidden="true"> →</span></button></li>{/each}</ol></details></section>{/each}</div>
   {:else if tab === "resources"}
     <section class="rk-card"><p class="rk-kicker">资料核验：{VERIFIED_ON}</p><h2>先有一条主线，再按需补充</h2><p class="rk-muted">先准备考试大纲、教程与官方试题解析。尚未购书，也可以从今日学习卡和出版社公开样章开始。</p><p class="rk-small">以下为本次能核实的版本。2027 如有新大纲、新教材或新考务通知，应据此调整；再印不等于改版。</p></section>
+    <section class="rk-card"><h3>资料来源与核验范围</h3><div class="rk-facts"><article><h4>考试规则与书目信息</h4><p>依据考试主管部门公告与出版社页面整理，每条附原始链接。现有考试规则用于备考参考，2027 年安排仍需当次官方通知确认。</p></article><article><h4>讲解、计划与题目</h4><p>28 周路线、课前基础补充与每日自测为原创导学。教材精读单元另以原 PDF 逐页阅读，附章节与页码；单元中的辅助例子和题目仍为原创，不是官方真题或官方答案。</p></article><article><h4>2026-10-14 内容复核</h4><p>原有 7 篇基础课、16 道选择题与 196 条每日自测已作初步复核。新增教材精读根据原 PDF 整理，图表与公式回看原页；教材中的版本差异或疑问另作校注。AI 整理不等于考试机构审定。</p></article></div><p class="rk-small">功能检查与构建通过只验证页面和数据结构，不证明知识全部正确。学习以正版教材、大纲和官方试题解析为主线，原创内容用于辅助理解与练习。</p></section>
     {#each ["主线资料", "免费补充", "官方入口"] as kind}<section class="rk-card"><h3>{kind}</h3><div class="rk-resource-list">{#each STUDY_RESOURCES.filter(item => item.kind === kind) as resource}<article class="rk-resource"><a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.title}<span aria-hidden="true"> ↗</span></a><p>{resource.detail}</p>{#if resource.isbn}<p class="rk-small">ISBN {resource.isbn}</p>{/if}<p class="rk-resource-use">怎么用：{resource.usage}</p></article>{/each}</div></section>{/each}
     <section class="rk-card"><p class="rk-kicker">现行规则作参考，2027 以当次通知为准</p><h3>先读清考试要求</h3><div class="rk-facts">{#each EXAM_FACTS as fact}<article><h4>{fact.title}</h4><p>{fact.detail}</p><a href={fact.url} target="_blank" rel="noopener noreferrer">{fact.source} ↗</a></article>{/each}</div><p class="rk-small">报名省市尚未确定，属地要求、费用和报名窗口需按本人报考地的通知核验。官方机考模拟平台的开放时间和资格以当次公告为准。</p></section>
   {:else}
@@ -253,15 +267,17 @@
 </div>
 
 <style>
+  .rk-first-pass{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:22px 0}.rk-first-pass>div{padding:16px;border:1px solid var(--line-divider);border-top:2px solid #d99a20;border-radius:8px;background:var(--btn-plain-bg-hover)}.rk-first-pass strong{font-size:13px;color:var(--text-90)}.rk-first-pass p{font-size:12px;color:var(--text-50);margin-top:8px}.rk-progress-summary a{display:block;text-align:center}@media(max-width:850px){.rk-first-pass{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:450px){.rk-first-pass{grid-template-columns:1fr}}
+  .rk-textbook-suggestions{border:1px solid #dfc995;background:var(--btn-plain-bg-hover);padding:20px;border-radius:10px;margin:20px 0}.rk-textbook-suggestions a{display:block;border-top:1px solid var(--line-divider);padding:12px 0;color:var(--text-90)}.rk-textbook-suggestions a span{display:block;font-size:12px;color:var(--btn-content);margin-top:4px}.rk-unit-links{display:grid;gap:7px;padding:7px 0 12px 32px}.rk-unit-links a{display:block;background:var(--btn-plain-bg-hover);padding:10px 14px;border-radius:7px;color:var(--text-90);font-size:13px}.rk-unit-links small{display:block;color:var(--btn-content);font-size:11px;margin-top:4px}.rk-pending{display:block;color:var(--text-50);font-size:11px;padding:3px 0 10px 32px}
   .rk-hub{--btn-content:#8b6116;--btn-regular-bg:#f6efdf;--btn-plain-bg-hover:#f5f1e8;--page-bg:#f5f4f1;background:var(--page-bg);--text-90:#263342;--text-75:#536171;--text-50:#66717d;--rk-ink:var(--brand-navy,#111d2d);--rk-gold:#d99a20;--rk-muted:var(--text-50,#66717d);color:var(--text-90,#263342);font-size:15px;line-height:1.7}
-  :global(.dark) .rk-hub{--btn-content:#8b6116;--btn-regular-bg:#f6efdf;--btn-plain-bg-hover:#f5f1e8;--page-bg:#f5f4f1;background:var(--page-bg);--text-90:#e4e9ee;--text-75:#c4cdd6;--text-50:#a6b1bc}
-  .rk-catalog{margin-top:18px}.rk-catalog-sections{list-style:none;font-size:13px;margin-top:16px}.rk-catalog-sections li{padding:6px 0}.rk-catalog-sections span{color:var(--btn-content);margin-right:8px}.rk-small a{color:var(--btn-content)}
+  :global(.dark) .rk-hub{--btn-content:#dfaf54;--btn-regular-bg:#2c2b25;--btn-plain-bg-hover:#202c39;--page-bg:#111d2d;background:var(--page-bg);--text-90:#e4e9ee;--text-75:#c4cdd6;--text-50:#a6b1bc}
+  .rk-coverage{font-size:11px;color:var(--text-50);white-space:nowrap;margin-left:8px}.rk-catalog{margin-top:18px}.rk-supplement{margin-top:18px}.rk-supplement>.rk-learning-grid{margin-top:20px}.rk-catalog-sections{list-style:none;font-size:13px;margin-top:16px}.rk-catalog-sections li{padding:6px 0}.rk-catalog-sections span{color:var(--btn-content);margin-right:8px}.rk-small a{color:var(--btn-content)}
   .rk-hero{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:40px;background:#111d2d;color:#f5f4f1;padding:40px;border-radius:16px;border-top:3px solid #d99a20}
   .rk-eyebrow,.rk-kicker{font-size:12px;font-weight:700;letter-spacing:.09em;color:var(--btn-content);margin:0 0 10px}
   .rk-eyebrow{color:#e9b85c}.rk-hero h1{font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:.03em;line-height:1.35;margin:0 0 12px;color:#f5f4f1}
   .rk-hero-desc{font-size:16px;color:#d1d8df;margin:0 0 20px}.rk-hero-tags{display:flex;gap:8px;flex-wrap:wrap}.rk-hero-tags span{border:1px solid #405063;color:#d5dce5;font-size:12px;padding:4px 10px;border-radius:4px}.rk-policy{margin-top:18px;font-size:12px;color:#aebbc9;max-width:480px}
   .rk-progress-summary{align-self:center;border-left:1px solid #405063;padding-left:28px}.rk-label{font-size:12px;color:#b4bfca}.rk-progress-number{font-size:46px;font-weight:700;line-height:1.5}.rk-progress-number span{font-size:13px;font-weight:400;color:#b4bfca}
-  progress{display:block;width:100%;height:5px;border:0;background:#3e4d5f;border-radius:8px;overflow:hidden}progress::-webkit-progress-bar{background:#3e4d5f}progress::-webkit-progress-value{background:#d99a20}progress::-moz-progress-bar{background:#d99a20}.rk-progress-caption{display:flex;justify-content:space-between;font-size:11px;color:#b4bfca;margin:8px 0 20px}
+  .rk-progress-caption{display:flex;justify-content:space-between;font-size:11px;color:#b4bfca;margin:8px 0 20px}
   button,a,input,textarea,summary{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:default;opacity:.45}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid #d99a20;outline-offset:4px}
   .rk-gold-button,.rk-primary-button,.rk-secondary-button{border-radius:7px;padding:10px 16px;font-size:13px;font-weight:600;line-height:1.5;transition:background .2s}.rk-gold-button{background:#d99a20;color:#111d2d;width:100%;display:flex;justify-content:space-between}.rk-gold-button:hover{background:#e7ad3b}.rk-primary-button{background:var(--btn-regular-bg);color:var(--btn-content);margin-top:12px}.rk-secondary-button{border:1px solid var(--line-divider);color:var(--text-75,#536171);margin-top:12px}.rk-inline-button{color:var(--btn-content);font-weight:600;font-size:13px;text-align:left}.rk-inline-button:hover{text-decoration:underline}
   .rk-tabs{display:flex;gap:26px;border-bottom:1px solid var(--line-divider);padding:0 8px;margin-top:16px;overflow:auto}.rk-tabs button{font-size:14px;white-space:nowrap;padding:16px 2px 13px;color:var(--text-50,#6c747d);border-bottom:3px solid transparent}.rk-tabs button.active{color:var(--text-90,#111d2d);font-weight:700;border-color:#d99a20}.rk-message{font-size:13px;color:var(--btn-content);margin:10px 8px;min-height:0}.rk-message:empty{margin:14px 0}.rk-notice{border:1px solid #d99a20;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:12px}
